@@ -1,0 +1,18 @@
+#启动端口
+server:
+  port: 8080
+#相关配置
+spring:
+  #  security:
+  #    user:
+  #      name: test   # 用户名
+  #      password: 123456  # 密码
+  #      roles: # 角色
+  #        - user
+  #        - admin
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/backend?Unicode=true&characterEncoding=UTF-8
+    username: root
+    password: '030701'
+    driver-class-name: com.mysql.cj.jdbc.Driver
