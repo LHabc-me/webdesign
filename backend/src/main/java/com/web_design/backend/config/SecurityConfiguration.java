@@ -41,16 +41,16 @@ public class SecurityConfiguration {
                                            PersistentTokenRepository repository) throws Exception {
         return http
                 .authorizeHttpRequests()
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginProcessingUrl("/api/auth/login")
+                .loginProcessingUrl("/login")
                 .successHandler(this::onAuthenticationSuccess)
                 .failureHandler(this::onAuthenticationFailure)
                 .and()
                 .logout()
-                .logoutUrl("/api/auth/logout")
+                .logoutUrl("/logout")
                 .logoutSuccessHandler(this::onAuthenticationSuccess)
                 // 记住我
                 .and()
