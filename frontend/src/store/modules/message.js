@@ -20,6 +20,9 @@ export const useMessage = defineStore('message', {
     info(msg) {
       this.show({msg, color: 'green'})
     },
+    success(msg) {
+      this.show({msg, color: 'green'})
+    },
     warning(msg) {
       this.show({msg, color: 'yellow'})
     },

@@ -55,6 +55,7 @@
                 type="submit"
                 @click="login"
                 color="primary"
+                :loading="loading"
               >
                 {{ $t('login.login') }}
               </VBtn>
@@ -86,6 +87,12 @@ import {ref} from "vue";
 import {post} from "@/net";
 import {i18n} from "@/i18n";
 import {useUser} from "@/store/modules/user";
+import {useMessage} from "@/store/modules/message";
+import {useRouter} from "vue-router";
+
+const message = useMessage()
+const user = useUser()
+const router = useRouter()
 
 const form = ref({
   email: '',
@@ -99,24 +106,38 @@ const rules = {
   counter: (i, j) => value => value.length >= i && value.length <= j || i18n.global.t('login.length-should-be-between-i-and-j', {i, j}),
   email: value => {
     const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return pattern.test(value) || i18n.global.t('login.invalid-e-mail')
+    return pattern.test(value) || i18n.global.t('login.invalid-email')
   },
 }
 
+const loading = ref(false)
+
+
 function login() {
   console.log('login')
-  if (!form.value.email || !form.value.password) {
+  if (rules.email(form.value.email) !== true ||
+    rules.counter(6, 20)(form.value.password) !== true) {
     return
   }
+  loading.value = true
   post('/api/login', {
     email: form.value.email,
     pwd: form.value.password
   }).then(({data}) => {
     console.log(data)
+    if (data.message === 'success') {
+      user.type = data.type
+      user.id = data.id
+      message.success('login.success')
+      router.push('/')
+    } else {
+      message.error(i18n.global.t('login.login-failed'))
+    }
+  }).finally(() => {
+    loading.value = false
   })
 }
 
-const user = useUser()
 
 function loginAsGuest() {
   console.log('loginAsGuest')

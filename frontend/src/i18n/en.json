@@ -22,7 +22,7 @@
     "dont-have-account": "Don't have an account?",
     "or": "or",
     "continue-as-guest": "Continue as guest",
-    "invalid-e-mail": "Invalid e-mail",
+    "invalid-email": "Invalid e-mail",
     "length-should-be-between-i-and-j": "Length should be between {i} and {j}",
     "required": "Required"
   },
@@ -42,7 +42,7 @@
     "two-passwords-not-match": "Two passwords not match",
     "verification-code": "Verification code",
     "send": "send",
-    "invalid-e-mail": "Invalid e-mail",
+    "invalid-email": "Invalid e-mail",
     "length-should-be-between-i-and-j": "Length should be between {i} and {j}",
     "required": "Required",
     "verification-code-sent": "Verification code sent",

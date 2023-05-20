@@ -88,6 +88,7 @@
               type="submit"
               @click="register"
               color="primary"
+              :loading="loading"
             >
               {{ $t('register.register') }}
             </VBtn>
@@ -106,8 +107,13 @@ import {computed, ref} from "vue";
 import {get, post} from "@/net";
 import {useMessage} from "@/store/modules/message";
 import {i18n} from "@/i18n";
+import {useRouter} from "vue-router";
+import {useUser} from "@/store/modules/user";
 
 const message = useMessage()
+const router = useRouter()
+const user = useUser()
+
 const form = ref({
   email: '',
   username: '',
@@ -125,14 +131,14 @@ const rules = {
   counter: (i, j) => value => value.length >= i && value.length <= j || i18n.global.t('register.length-should-be-between-i-and-j', {i, j}),
   email: value => {
     const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return pattern.test(value) || i18n.global.t('register.invalid-e-mail')
+    return pattern.test(value) || i18n.global.t('register.invalid-email')
   },
   sameAs: target => value => value === target || i18n.global.t('register.two-passwords-not-match')
 }
 
 function resendVerificationCode() {
   if (rules.email(form.value.email) !== true) {
-    message.error(i18n.global.t('register.invalid-e-mail'))
+    message.error(i18n.global.t('register.invalid-email'))
     return
   }
   resendVerificationCodeInterval.value = 60
@@ -143,30 +149,35 @@ function resendVerificationCode() {
     }
   }, 1000)
 
-  get('/api/verification-code', {
+  post('/api/register/verification-code', {
     email: form.value.email,
   }).then(({data}) => {
     console.log(data)
     if (data.message === 'success') {
-      message.info(i18n.global.t('register.verification-code-sent'))
+      message.success(i18n.global.t('register.verification-code-sent'))
     } else {
       message.error(i18n.global.t('register.verification-code-sent-failed'))
     }
   })
 }
 
+
+const loading = ref(false)
+
 function register() {
   console.log('register')
-  if (!form.value.email ||
-    !form.value.username ||
-    !form.value.password ||
-    !form.value['repeat-password'] ||
+  if (rules.email(form.value.email) !== true ||
+    rules.counter(3, 20)(form.value.username) !== true ||
+    rules.counter(6, 20)(form.value.password) !== true ||
+    rules.counter(6, 20)(form.value['repeat-password']) !== true ||
     !form.value['verification-code']) {
     return
   }
   if (form.value.password !== form.value['repeat-password']) {
     return
   }
+  loading.value = true
+
   post('/api/register', {
     email: form.value.email,
     name: form.value.username,
@@ -175,10 +186,19 @@ function register() {
   }).then(({data}) => {
     console.log(data)
     if (data.message === 'success') {
-      message.info(i18n.global.t('register.register-success'))
+      message.success(i18n.global.t('register.register-success'))
+      user.type = data.type
+      user.id = data.id
+      message.success('login.success')
+      router.push('/')
     } else {
       message.error(i18n.global.t('register.register-failed'))
     }
+  }).catch(e => {
+    console.log(e)
+    message.error(i18n.global.t('register.register-failed'))
+  }).finally(() => {
+    loading.value = false
   })
 }
 

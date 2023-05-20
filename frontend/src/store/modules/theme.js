@@ -15,4 +15,11 @@ export const useTheme = defineStore('theme', {
       }
     }
   },
+  persist: {
+    enabled: true,
+    strategies: [{
+      key: 'theme',
+      storage: localStorage,
+    }],
+  }
 })

@@ -22,7 +22,7 @@
     "dont-have-account": "还没有账号？",
     "or": "或",
     "continue-as-guest": "以游客身份登录",
-    "invalid-e-mail": "无效的电子邮箱",
+    "invalid-email": "无效的电子邮箱",
     "length-should-be-between-i-and-j": "长度应该在{i}到{j}之间",
     "required": "必填项"
   },
@@ -42,7 +42,7 @@
     "two-passwords-not-match": "两次输入的密码不一致",
     "verification-code": "验证码",
     "send": "发送",
-    "invalid-e-mail": "无效的电子邮箱",
+    "invalid-email": "无效的电子邮箱",
     "length-should-be-between-i-and-j": "长度应该在{i}到{j}之间",
     "required": "必填项",
     "verification-code-sent": "验证码已发送到您的邮箱，请查收",
