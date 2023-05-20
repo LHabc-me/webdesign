@@ -16,3 +16,19 @@ spring:
     username: root
     password: '030701'
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mail:
+    host: smtp.163.com
+    username: kina_zhang423@163.com
+    password: HDEUNICDUMBKZYQH
+    port: 465
+    properties:
+      from: kina_zhang423@163.com
+      mail:
+        smtp:
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+    data:
+      redis:
+        database: 0
+        host: localhost
+        port: 6379
