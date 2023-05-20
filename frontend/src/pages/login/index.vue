@@ -55,11 +55,11 @@
                 </a>
               </div>
 
-              <!-- login button -->
               <VBtn
                 :block="true"
                 type="submit"
                 @click="login"
+                color="primary"
               >
                 {{ $t('login.login') }}
               </VBtn>
@@ -71,7 +71,7 @@
                 {{ $t('login.dont-have-account') }}
                 <router-link to="/register">{{ $t('login.register') }}</router-link>
                 {{ $t('login.or') }}
-                <router-link to="/">{{ $t('login.continue-as-guest') }}</router-link>
+                <router-link to="/" @click="loginAsGuest">{{ $t('login.continue-as-guest') }}</router-link>
               </span>
             </div>
 
@@ -90,6 +90,7 @@ import logo from '@/assets/logo.png'
 import {ref} from "vue";
 import {post} from "@/net";
 import {i18n} from "@/i18n";
+import {useUser} from "@/store/modules/user";
 
 const form = ref({
   email: '',
@@ -100,11 +101,11 @@ const form = ref({
 const isPasswordVisible = ref(false)
 
 const rules = {
-  required: value => !!value || i18n.global.t('register.required'),
-  counter: (i, j) => value => value.length >= i && value.length <= j || i18n.global.t('register.length-should-be-between-i-and-j', {i, j}),
+  required: value => !!value || i18n.global.t('login.required'),
+  counter: (i, j) => value => value.length >= i && value.length <= j || i18n.global.t('login.length-should-be-between-i-and-j', {i, j}),
   email: value => {
     const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return pattern.test(value) || i18n.global.t('register.invalid-e-mail')
+    return pattern.test(value) || i18n.global.t('login.invalid-e-mail')
   },
 }
 
@@ -121,6 +122,12 @@ function login() {
   })
 }
 
+const user = useUser()
+
+function loginAsGuest() {
+  console.log('loginAsGuest')
+  user.type = 'guest'
+}
 </script>
 <!--@formatter:off-->
 <route>

@@ -1,0 +1,49 @@
+{
+  "website": {
+    "name": "Reading World"
+  },
+  "user": {
+    "account": "Account",
+    "profile": "Profile",
+    "logout": "Logout",
+    "login": "Login",
+    "settings": "Settings"
+  },
+  "login": {
+    "welcome": "Welcome to Reading World",
+    "login-and-continue": "Login and continue",
+    "username": "Username",
+    "email": "E-mail",
+    "password": "Password",
+    "login": "Login",
+    "register": "Register",
+    "forget-password": "Reset password",
+    "remember-me": "Remember me",
+    "dont-have-account": "Don't have an account?",
+    "or": "or",
+    "continue-as-guest": "Continue as guest",
+    "invalid-e-mail": "Invalid e-mail",
+    "length-should-be-between-i-and-j": "Length should be between {i} and {j}",
+    "required": "Required"
+  },
+  "register": {
+    "welcome": "Welcome to Reading World",
+    "login-and-continue": "Login and continue",
+    "username": "Username",
+    "email": "E-mail",
+    "password": "Password",
+    "repeat-password": "Repeat password",
+    "login": "Login",
+    "register": "Register",
+    "remember-me": "Remember me",
+    "register-your-account": "Register your account",
+    "already-have-account": "Already have an account?",
+    "back-to-login": "Back to login",
+    "two-passwords-not-match": "Two passwords not match",
+    "verification-code": "Verification code",
+    "get-verification-code": "Get verification code",
+    "invalid-e-mail": "Invalid e-mail",
+    "length-should-be-between-i-and-j": "Length should be between {i} and {j}",
+    "required": "Required"
+  }
+}

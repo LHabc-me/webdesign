@@ -1,6 +1,8 @@
 <template>
-  <router-view>
-  </router-view>
+  <VThemeProvider :theme="theme.name">
+    <router-view>
+    </router-view>
+  </VThemeProvider>
   <v-snackbar location="top"
               v-model="message.visible"
               :color="message.color"
@@ -25,9 +27,11 @@
 </template>
 
 <script setup>
-import {useMessage} from "@/store/modules/message";
+import {useMessage} from "@/store/modules/message"
+import {useTheme} from "@/store/modules/theme"
 
-const message = useMessage();
+const message = useMessage()
+const theme = useTheme()
 </script>
 
 <style lang="less">

@@ -2,11 +2,11 @@
 </script>
 
 <template>
-  <v-app>
-    <v-main>
+  <VApp>
+    <VMain>
       <router-view/>
-    </v-main>
-  </v-app>
+    </VMain>
+  </VApp>
 </template>
 
 <style lang="less">

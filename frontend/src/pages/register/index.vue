@@ -83,6 +83,7 @@
               :block="true"
               type="submit"
               @click="register"
+              color="primary"
             >
               {{ $t('register.register') }}
             </VBtn>

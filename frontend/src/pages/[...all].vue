@@ -1,11 +1,10 @@
-<script>
+<!--@formatter:off-->
+<template></template>
 
-</script>
-
-<template>
-  404
-</template>
-
-<style scoped lang="less">
-
-</style>
+<route lang="json5">
+{
+  meta: {
+    redirect: '/error/404',
+  }
+}
+</route>
