@@ -6,7 +6,6 @@ import com.web_design.backend.service.AuthorizeService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.TimeoutUtils;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -31,7 +30,7 @@ public class AuthorizeServiceImpl implements AuthorizeService {
     MailSender mailSender;
 
     @Resource
-    StringRedisTemplate redisTemplate;
+    StringRedisTemplate template;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -60,8 +59,8 @@ public class AuthorizeServiceImpl implements AuthorizeService {
     @Override
     public boolean sendValidateEmail(String email, String sessionId) {
         String key = "email:" + sessionId + ":" + email;
-        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
-            long expire = Optional.ofNullable(redisTemplate.getExpire(key, TimeUnit.SECONDS)).orElse(0L);
+        if (Boolean.TRUE.equals(template.hasKey(key))) {
+            long expire = Optional.ofNullable(template.getExpire(key, TimeUnit.SECONDS)).orElse(0L);
             if (expire > 120) {
                 return false;
             }
@@ -75,7 +74,7 @@ public class AuthorizeServiceImpl implements AuthorizeService {
         message.setText("您的验证码为：" + code);
         try {
             mailSender.send(message);
-            redisTemplate.opsForValue().set(key, String.valueOf(code), 3, TimeUnit.MINUTES);
+            template.opsForValue().set(key, String.valueOf(code), 3, TimeUnit.MINUTES);
             return true;
         } catch (MailException e) {
             e.printStackTrace();
