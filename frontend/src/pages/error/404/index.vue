@@ -7,3 +7,11 @@
 <style scoped lang="less">
 
 </style>
+<!--@formatter:off-->
+<route>
+{
+  meta: {
+    layout: 'blank',
+  }
+}
+</route>

@@ -1,6 +1,6 @@
 <template>
   <VApp>
-    <VAppBar>
+    <VAppBar class="elevation-3">
       <template #prepend>
         <VBtn icon="mdi-menu" @click="showMenu = !showMenu"></VBtn>
         <span>{{ $t('website.name') }}</span>
@@ -70,7 +70,7 @@ import {i18n} from "@/i18n";
 import {useUser} from "@/store/modules/user";
 import {useRouter} from "vue-router";
 
-const showMenu = ref(true)
+const showMenu = ref(false)
 const theme = useTheme()
 const i18nStore = useI18n()
 const router = useRouter()
@@ -93,33 +93,31 @@ const langs = [
 
 
 const user = computed(() => {
-  const user = [
-    {
-      name: i18n.global.t('user.profile'),
-      icon: 'mdi-account',
-      onClick: () => {
-
-      }
-    },
-    {
-      name: i18n.global.t('user.settings'),
-      icon: 'mdi-cog',
-      onClick: () => {
-
-      }
-    },
-
-  ]
+  let user = []
   const userStore = useUser()
   if (userStore.isLogin) {
-    user.push({
-      name: i18n.global.t('user.logout'),
-      icon: 'mdi-logout',
-      onClick: () => {
-        userStore.isLogin = false
-        router.push('/login')
+    user = [
+      {
+        name: i18n.global.t('user.profile'),
+        icon: 'mdi-account',
+        onClick: () => {
+        }
+      },
+      {
+        name: i18n.global.t('user.settings'),
+        icon: 'mdi-cog',
+        onClick: () => {
+        }
+      },
+      {
+        name: i18n.global.t('user.logout'),
+        icon: 'mdi-logout',
+        onClick: () => {
+          userStore.isLogin = false
+          router.push('/login')
+        }
       }
-    })
+    ]
   } else {
     user.push({
       name: i18n.global.t('user.login'),

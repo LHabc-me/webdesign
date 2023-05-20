@@ -19,7 +19,7 @@ const user = useUser()
 const router = useRouter()
 
 function click() {
-  router.push('login')
+  router.push('/login')
 }
 
 </script>

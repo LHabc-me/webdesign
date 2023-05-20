@@ -30,11 +30,6 @@
                 type="email"
                 :rules="[rules.required, rules.email]"
               />
-              <VTextField
-                v-model="form.username"
-                :label="$t('login.username')"
-                :rules="[rules.required, rules.counter(3, 20)]"
-              />
               <VTextField v-model="form.password"
                           :label="$t('login.password')"
                           :type="isPasswordVisible ? 'text' : 'password'"
@@ -94,7 +89,6 @@ import {useUser} from "@/store/modules/user";
 
 const form = ref({
   email: '',
-  username: '',
   password: '',
   remember: false,
 })
@@ -111,11 +105,11 @@ const rules = {
 
 function login() {
   console.log('login')
-  if (!form.value.username || !form.value.password) {
+  if (!form.value.email || !form.value.password) {
     return
   }
   post('/api/login', {
-    name: form.value.username,
+    email: form.value.email,
     pwd: form.value.password
   }).then(({data}) => {
     console.log(data)
@@ -129,11 +123,12 @@ function loginAsGuest() {
   user.type = 'guest'
 }
 </script>
+
 <!--@formatter:off-->
-<route>
+<route lang="json5">
 {
   meta: {
-    layout: 'blank',
+    layout: 'user',
   }
 }
 </route>

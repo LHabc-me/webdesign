@@ -41,7 +41,7 @@
     "back-to-login": "Back to login",
     "two-passwords-not-match": "Two passwords not match",
     "verification-code": "Verification code",
-    "get-verification-code": "Get verification code",
+    "send": "send",
     "invalid-e-mail": "Invalid e-mail",
     "length-should-be-between-i-and-j": "Length should be between {i} and {j}",
     "required": "Required"

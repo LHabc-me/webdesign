@@ -56,9 +56,13 @@
               type="text"
               :rules="[rules.required]"
             >
-              <template #append>
-                <VBtn class="h-75">
-                  {{ $t('register.get-verification-code') }}
+              <template #append-inner>
+                <VBtn class="h-75"
+                      :disabled="resendVerificationCodeInterval !== 0"
+                      @click="resendVerificationCode"
+                      variant="flat"
+                      color="primary">
+                  {{ $t('register.send') + resendInterval }}
                 </VBtn>
               </template>
             </VTextField>
@@ -98,7 +102,7 @@
 </style>
 
 <script setup>
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {post} from "@/net";
 import {useMessage} from "@/store/modules/message";
 import {i18n} from "@/i18n";
@@ -113,6 +117,9 @@ const form = ref({
   remember: false,
 })
 const isPasswordVisible = ref(false)
+const resendVerificationCodeInterval = ref(0)
+const resendInterval = computed(() => resendVerificationCodeInterval.value > 0 ? `(${resendVerificationCodeInterval.value})` : '')
+
 const rules = {
   required: value => !!value || i18n.global.t('register.required'),
   counter: (i, j) => value => value.length >= i && value.length <= j || i18n.global.t('register.length-should-be-between-i-and-j', {i, j}),
@@ -123,9 +130,24 @@ const rules = {
   sameAs: target => value => value === target || i18n.global.t('register.two-passwords-not-match')
 }
 
+function resendVerificationCode() {
+  if (rules.email(form.value.email) !== true) {
+    message.error(i18n.global.t('register.invalid-e-mail'))
+    return
+  }
+  resendVerificationCodeInterval.value = 60
+  const interval = setInterval(() => {
+    resendVerificationCodeInterval.value--
+    if (resendVerificationCodeInterval.value === 0) {
+      clearInterval(interval)
+    }
+  }, 1000)
+}
+
 function register() {
   console.log('register')
-  if (!form.value.username ||
+  if (!form.value.email ||
+    !form.value.username ||
     !form.value.password ||
     !form.value['repeat-password'] ||
     !form.value['verification-code']) {
@@ -135,8 +157,10 @@ function register() {
     return
   }
   post('/api/register', {
+    email: form.value.email,
     name: form.value.username,
-    pwd: form.value.password
+    pwd: form.value.password,
+    "verification-code": form.value['verification-code'],
   }).then(({data}) => {
     console.log(data)
     if (data.message === 'success') {
@@ -149,10 +173,10 @@ function register() {
 
 </script>
 <!--@formatter:off-->
-<route>
+<route lang="json5">
 {
   meta: {
-    layout: 'blank',
+    layout: 'user',
   }
 }
 </route>
