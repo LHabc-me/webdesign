@@ -103,7 +103,7 @@
 
 <script setup>
 import {computed, ref} from "vue";
-import {post} from "@/net";
+import {get, post} from "@/net";
 import {useMessage} from "@/store/modules/message";
 import {i18n} from "@/i18n";
 
@@ -142,6 +142,17 @@ function resendVerificationCode() {
       clearInterval(interval)
     }
   }, 1000)
+
+  get('/api/verification-code', {
+    email: form.value.email,
+  }).then(({data}) => {
+    console.log(data)
+    if (data.message === 'success') {
+      message.info(i18n.global.t('register.verification-code-sent'))
+    } else {
+      message.error(i18n.global.t('register.verification-code-sent-failed'))
+    }
+  })
 }
 
 function register() {

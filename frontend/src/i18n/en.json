@@ -44,6 +44,8 @@
     "send": "send",
     "invalid-e-mail": "Invalid e-mail",
     "length-should-be-between-i-and-j": "Length should be between {i} and {j}",
-    "required": "Required"
+    "required": "Required",
+    "verification-code-sent": "Verification code sent",
+    "verification-code-sent-failed": "Verification code sent failed"
   }
 }
