@@ -2,7 +2,7 @@
 import vue from '@vitejs/plugin-vue'
 import vuetify, {transformAssetUrls} from 'vite-plugin-vuetify'
 import Pages from 'vite-plugin-pages'
-import AutoImport from 'unplugin-auto-import/vite'
+import Layouts from 'vite-plugin-vue-layouts';
 
 // Utilities
 import {defineConfig} from 'vite'
@@ -10,7 +10,6 @@ import {fileURLToPath, URL} from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: './',
   plugins: [
     vue({
       template: {transformAssetUrls}
@@ -20,10 +19,7 @@ export default defineConfig({
       autoImport: true,
     }),
     Pages(),
-    AutoImport({
-      imports: ['vue', 'vue-router', '@vueuse/core', 'vue-i18n', 'pinia'],
-      vueTemplate: true,
-    }),
+    Layouts(),
   ],
   define: {'process.env': {}},
   resolve: {
@@ -42,5 +38,18 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    cors: true,
+    proxy: {
+      '/api': {
+        target: 'http://www.kina0630.xyz:8080',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, '')
+      },
+      '/dev/api': {
+        target: 'http://127.0.0.1:8080',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/dev\/api/, '')
+      }
+    }
   },
 })
