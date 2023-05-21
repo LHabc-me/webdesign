@@ -21,10 +21,7 @@
     "remember-me": "记住我",
     "dont-have-account": "还没有账号？",
     "or": "或",
-    "continue-as-guest": "以游客身份登录",
-    "invalid-email": "无效的电子邮箱",
-    "length-should-be-between-i-and-j": "长度应该在{i}到{j}之间",
-    "required": "必填项"
+    "continue-as-guest": "以游客身份登录"
   },
   "register": {
     "welcome": "欢迎来到阅读天地！",
@@ -39,13 +36,15 @@
     "register-your-account": "注册账号",
     "already-have-account": "已经有账号了？",
     "back-to-login": "返回登录",
-    "two-passwords-not-match": "两次输入的密码不一致",
     "verification-code": "验证码",
     "send": "发送",
+    "verification-code-sent": "验证码已发送到您的邮箱，请查收",
+    "verification-code-sent-failed": "验证码发送失败，请稍后重试"
+  },
+  "rules": {
     "invalid-email": "无效的电子邮箱",
     "length-should-be-between-i-and-j": "长度应该在{i}到{j}之间",
     "required": "必填项",
-    "verification-code-sent": "验证码已发送到您的邮箱，请查收",
-    "verification-code-sent-failed": "验证码发送失败，请稍后重试"
+    "two-passwords-not-match": "两次输入的密码不一致"
   }
 }

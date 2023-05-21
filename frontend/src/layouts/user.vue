@@ -84,11 +84,10 @@ const langs = [
     name: 'English',
     code: 'en'
   },
-
-  {
-    name: '日本語',
-    code: 'ja'
-  },
+  // {
+  //   name: '日本語',
+  //   code: 'ja'
+  // },
 ]
 
 

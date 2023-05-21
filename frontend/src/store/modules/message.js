@@ -1,33 +1,45 @@
 import {defineStore} from 'pinia'
+import {useToast} from 'vue-toast-notification'
 
 export const useMessage = defineStore('message', {
-  state: () => ({
-    msg: '',
-    color: '',
-    visible: false,
-    showClose: false,
-    timeout: 3000,
-  }),
+  state: () => {
+    return {
+      message: useToast()
+    }
+  },
   getters: {},
   actions: {
-    show({msg, color, timeout = 3000, showClose = false}) {
-      this.msg = msg
-      this.color = color
-      this.timeout = timeout
-      this.showClose = showClose
-      this.visible = true
-    },
     info(msg) {
-      this.show({msg, color: 'green'})
+      this.message.open({
+        message: msg,
+        type: 'info',
+        position: 'top',
+        duration: 3000,
+      })
     },
     success(msg) {
-      this.show({msg, color: 'green'})
+      this.message.open({
+        message: msg,
+        type: 'success',
+        position: 'top',
+        duration: 3000,
+      })
     },
     warning(msg) {
-      this.show({msg, color: 'yellow'})
+      this.message.open({
+        message: msg,
+        type: 'warning',
+        position: 'top',
+        duration: 3000,
+      })
     },
     error(msg) {
-      this.show({msg, color: 'red'})
+      this.message.open({
+        message: msg,
+        type: 'error',
+        position: 'top',
+        duration: 3000,
+      })
     },
   },
 })

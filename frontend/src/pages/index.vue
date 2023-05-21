@@ -19,7 +19,10 @@ const user = useUser()
 const router = useRouter()
 
 function click() {
-  router.push('/login')
+  message.success('success')
+  message.error('error')
+  message.warning('warning')
+  message.info('info')
 }
 
 </script>

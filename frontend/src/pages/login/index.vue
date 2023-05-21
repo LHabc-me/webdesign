@@ -35,7 +35,7 @@
                           :type="isPasswordVisible ? 'text' : 'password'"
                           :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
                           @click:append-inner="isPasswordVisible = !isPasswordVisible"
-                          :rules="[rules.required, rules.counter(6,20)]"/>
+                          :rules="[rules.required, rules.pwdLength]"/>
 
               <div class="mt-1 mb-4"
                    layout="row">
@@ -82,13 +82,13 @@
 </style>
 
 <script setup>
-import logo from '@/assets/logo.png'
 import {ref} from "vue";
 import {post} from "@/net";
 import {i18n} from "@/i18n";
 import {useUser} from "@/store/modules/user";
 import {useMessage} from "@/store/modules/message";
 import {useRouter} from "vue-router";
+import {rules} from "@/assets/script/rules";
 
 const message = useMessage()
 const user = useUser()
@@ -101,14 +101,6 @@ const form = ref({
 })
 const isPasswordVisible = ref(false)
 
-const rules = {
-  required: value => !!value || i18n.global.t('login.required'),
-  counter: (i, j) => value => value.length >= i && value.length <= j || i18n.global.t('login.length-should-be-between-i-and-j', {i, j}),
-  email: value => {
-    const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return pattern.test(value) || i18n.global.t('login.invalid-email')
-  },
-}
 
 const loading = ref(false)
 
@@ -116,7 +108,7 @@ const loading = ref(false)
 function login() {
   console.log('login')
   if (rules.email(form.value.email) !== true ||
-    rules.counter(6, 20)(form.value.password) !== true) {
+    rules.pwdLength(form.value.password) !== true) {
     return
   }
   loading.value = true
@@ -125,7 +117,7 @@ function login() {
     pwd: form.value.password
   }).then(({data}) => {
     console.log(data)
-    if (data.message === 'success') {
+    if (data.success) {
       user.type = data.type
       user.id = data.id
       message.success('login.success')

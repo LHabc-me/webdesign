@@ -32,7 +32,7 @@
             <VTextField
               v-model="form.username"
               :label="$t('register.username')"
-              :rules="[rules.required, rules.counter(3, 20)]"
+              :rules="[rules.required, rules.userNameLength]"
             />
             <VTextField
               v-model="form.password"
@@ -40,7 +40,7 @@
               :type="isPasswordVisible ? 'text' : 'password'"
               :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
               @click:append-inner="isPasswordVisible = !isPasswordVisible"
-              :rules="[rules.required, rules.counter(6, 20)]"
+              :rules="[rules.required, rules.pwdLength]"
             />
             <VTextField
               v-model="form['repeat-password']"
@@ -48,7 +48,7 @@
               :type="isPasswordVisible ? 'text' : 'password'"
               :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
               @click:append-inner="isPasswordVisible = !isPasswordVisible"
-              :rules="[rules.required, rules.sameAs(form.password)]"
+              :rules="[rules.required, rules.samePwd(form.password)]"
             />
             <VTextField
               v-model="form['verification-code']"
@@ -109,6 +109,7 @@ import {useMessage} from "@/store/modules/message";
 import {i18n} from "@/i18n";
 import {useRouter} from "vue-router";
 import {useUser} from "@/store/modules/user";
+import {rules} from "@/assets/script/rules";
 
 const message = useMessage()
 const router = useRouter()
@@ -126,19 +127,10 @@ const isPasswordVisible = ref(false)
 const resendVerificationCodeInterval = ref(0)
 const resendInterval = computed(() => resendVerificationCodeInterval.value > 0 ? `(${resendVerificationCodeInterval.value})` : '')
 
-const rules = {
-  required: value => !!value || i18n.global.t('register.required'),
-  counter: (i, j) => value => value.length >= i && value.length <= j || i18n.global.t('register.length-should-be-between-i-and-j', {i, j}),
-  email: value => {
-    const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return pattern.test(value) || i18n.global.t('register.invalid-email')
-  },
-  sameAs: target => value => value === target || i18n.global.t('register.two-passwords-not-match')
-}
 
 function resendVerificationCode() {
   if (rules.email(form.value.email) !== true) {
-    message.error(i18n.global.t('register.invalid-email'))
+    message.error(i18n.global.t('rules.invalid-email'))
     return
   }
   resendVerificationCodeInterval.value = 60
@@ -153,7 +145,7 @@ function resendVerificationCode() {
     email: form.value.email,
   }).then(({data}) => {
     console.log(data)
-    if (data.message === 'success') {
+    if (data.success) {
       message.success(i18n.global.t('register.verification-code-sent'))
     } else {
       message.error(i18n.global.t('register.verification-code-sent-failed'))
@@ -167,9 +159,9 @@ const loading = ref(false)
 function register() {
   console.log('register')
   if (rules.email(form.value.email) !== true ||
-    rules.counter(3, 20)(form.value.username) !== true ||
-    rules.counter(6, 20)(form.value.password) !== true ||
-    rules.counter(6, 20)(form.value['repeat-password']) !== true ||
+    rules.userNameLength(form.value.username) !== true ||
+    rules.pwdLength(form.value.password) !== true ||
+    rules.pwdLength(form.value['repeat-password']) !== true ||
     !form.value['verification-code']) {
     return
   }
