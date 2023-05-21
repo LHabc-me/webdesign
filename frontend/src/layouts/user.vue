@@ -2,7 +2,7 @@
   <VApp>
     <VAppBar class="elevation-3">
       <template #prepend>
-        <VBtn icon="mdi-menu" @click="showMenu = !showMenu"></VBtn>
+        <VBtn icon="mdi-menu" @click="menuBtnClick"></VBtn>
         <span>{{ $t('website.name') }}</span>
       </template>
       <template #append>
@@ -12,11 +12,10 @@
                   icon="mdi-translate"></VBtn>
           </template>
           <v-list>
-            <VListItem
-              v-for="(item, index) in langs"
-              :key="index"
-              :value="index"
-              @click="i18nStore.changeLang(item.code)">
+            <VListItem v-for="(item, index) in langs"
+                       :key="index"
+                       :value="index"
+                       @click="i18nStore.changeLang(item.code)">
               <VListItemTitle>{{ item.name }}</VListItemTitle>
             </VListItem>
           </v-list>
@@ -27,16 +26,14 @@
         <VMenu transition="fade-transition">
           <template #activator="{ props }">
             <VBtn v-bind="props"
-                  icon="mdi-account"
-            >
+                  icon="mdi-account">
             </VBtn>
           </template>
           <VList>
-            <VListItem
-              v-for="(item, index) in user"
-              :key="index"
-              :value="index"
-              @click="item.onClick">
+            <VListItem v-for="(item, index) in user"
+                       :key="index"
+                       :value="index"
+                       @click="item.onClick">
               <template #prepend>
                 <VIcon :icon="item.icon"
                        class="me-2"></VIcon>
@@ -47,37 +44,60 @@
         </VMenu>
       </template>
     </VAppBar>
-    <VNavigationDrawer v-if="showMenu">
-      <div class="h-50">
-        <span class="text-h2">1</span>
-      </div>
-      <VDivider></VDivider>
-      <div>
-        <span class="text-h2">2</span>
-      </div>
-    </VNavigationDrawer>
+
+    <keep-alive>
+      <VNavigationDrawer v-if="showMenu">
+        <VList>
+          <div v-for="(list, list_index) in lists" :key="list_index">
+            <VListSubheader v-if="list.title">{{ list.title }}</VListSubheader>
+            <VListItem v-for="(item, item_index) in list.items"
+                       :key="item_index"
+                       color="primary"
+                       variant="flat"
+                       :active="item.isActive"
+                       :value="list_index*100+item_index"
+                       @click="$router.push(item.to)">
+              <template #prepend>
+                <VIcon :icon="item.icon"></VIcon>
+              </template>
+              <VListItemTitle>{{ item.text }}</VListItemTitle>
+            </VListItem>
+            <VDivider v-if="list_index < lists.length - 1"/>
+          </div>
+        </VList>
+      </VNavigationDrawer>
+    </keep-alive>
     <VMain>
-      <router-view class="pa-10"/>
+      <router-view class="pa-10"
+                   v-slot="{Component}">
+        <keep-alive>
+          <component :is="Component"/>
+        </keep-alive>
+      </router-view>
     </VMain>
   </VApp>
 </template>
 
 <script setup>
-import {ref, computed} from "vue"
+import {ref, computed, watchEffect} from "vue"
 import {useTheme} from "@/store/modules/theme"
 import {useI18n} from "@/store/modules/i18n"
 import {i18n} from "@/i18n";
 import {useUser} from "@/store/modules/user";
+import {useMessage} from "@/store/modules/message";
 import {useRouter} from "vue-router";
 
-const showMenu = ref(false)
 const theme = useTheme()
 const i18nStore = useI18n()
 const router = useRouter()
+const userStore = useUser()
+const message = useMessage()
+
+const showMenu = ref(false)
 
 const langs = [
   {
-    name: '中文',
+    name: '简体中文',
     code: 'zh'
   },
   {
@@ -93,7 +113,6 @@ const langs = [
 
 const user = computed(() => {
   let user = []
-  const userStore = useUser()
   if (userStore.isLogin) {
     user = [
       {
@@ -128,6 +147,80 @@ const user = computed(() => {
   }
   return user
 })
+
+const lists = [
+  {
+    items: [{
+      text: '首页',
+      icon: 'mdi-home',
+      to: '/'
+    }]
+  },
+  {
+    title: '读者专题', items: [
+      {
+        text: '专题1',
+        icon: 'mdi-clock',
+        to: '/'
+      },
+      {
+        text: '专题2',
+        icon: 'mdi-account',
+        to: '/'
+      },
+      {
+        text: '专题3',
+        icon: 'mdi-flag',
+        to: '/'
+      }
+    ]
+  },
+  {
+    title: '作者专题', items: [
+      {
+        text: '专题1',
+        icon: 'mdi-clock',
+        to: '/'
+      },
+      {
+        text: '专题2',
+        icon: 'mdi-account',
+        to: '/'
+      },
+      {
+        text: '专题3',
+        icon: 'mdi-flag',
+        to: '/'
+      }
+    ]
+  },
+  {
+    title: '管理员专题', items: [
+      {
+        text: '专题1',
+        icon: 'mdi-clock',
+        to: '/'
+      },
+      {
+        text: '专题2',
+        icon: 'mdi-account',
+        to: '/'
+      },
+      {
+        text: '专题3',
+        icon: 'mdi-flag',
+        to: '/'
+      }
+    ]
+  },
+]
+
+function menuBtnClick() {
+  if (!userStore.isLogin) {
+    message.info(i18n.global.t('user.login-first'))
+    // return
+  }
+  showMenu.value = !showMenu.value
+}
+
 </script>
-<style lang="less">
-</style>

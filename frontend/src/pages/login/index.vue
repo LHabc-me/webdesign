@@ -23,12 +23,11 @@
         <VForm @submit.prevent="() => {}">
           <VRow>
             <VCol cols="12">
-              <VTextField
-                v-if="true"
-                v-model="form.email"
-                :label="$t('login.email')"
-                type="email"
-                :rules="[rules.required, rules.email]"
+              <VTextField v-if="true"
+                          v-model="form.email"
+                          :label="$t('login.email')"
+                          type="email"
+                          :rules="[rules.required, rules.email]"
               />
               <VTextField v-model="form.password"
                           :label="$t('login.password')"
@@ -41,7 +40,8 @@
                    layout="row">
                 <VCheckbox self="left"
                            v-model="form.remember"
-                           :label="$t('login.remember-me')"/>
+                           :label="$t('login.remember-me')"
+                           color="primary"/>
 
                 <a self="right"
                    class="ms-2 mb-1"
@@ -125,6 +125,9 @@ function login() {
     } else {
       message.error(i18n.global.t('login.login-failed'))
     }
+  }).catch(e => {
+    console.log(e)
+    message.error(i18n.global.t('login.login-failed'))
   }).finally(() => {
     loading.value = false
   })

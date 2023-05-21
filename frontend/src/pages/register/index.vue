@@ -69,18 +69,18 @@
 
             <div class="mt-1 mb-4"
                  layout="row">
-              <VCheckbox
-                self="left"
-                v-model="form.remember"
-                :label="$t('register.remember-me')"
+              <VCheckbox self="left"
+                         v-model="form.remember"
+                         :label="$t('register.remember-me')"
+                         color="primary"
               />
               <span self="right">
-                  {{ $t('register.already-have-account') }}
-                  <a self="right"
-                     href="/login">
-                    {{ $t('register.login') }}
-                  </a>
-                </span>
+                {{ $t('register.already-have-account') }}
+                <a self="right"
+                   href="/login">
+                  {{ $t('register.login') }}
+                </a>
+              </span>
             </div>
 
             <VBtn
