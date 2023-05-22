@@ -46,16 +46,16 @@
     </VAppBar>
 
     <keep-alive>
-      <VNavigationDrawer v-if="showMenu">
-        <VList>
+      <VNavigationDrawer v-model="showMenu"
+                         :temporary="true">
+        <VList :mandatory="true">
           <div v-for="(list, list_index) in lists" :key="list_index">
             <VListSubheader v-if="list.title">{{ list.title }}</VListSubheader>
             <VListItem v-for="(item, item_index) in list.items"
                        :key="item_index"
                        color="primary"
                        variant="flat"
-                       :active="item.isActive"
-                       :value="list_index*100+item_index"
+                       :active="$route.path === item.to"
                        @click="$router.push(item.to)">
               <template #prepend>
                 <VIcon :icon="item.icon"></VIcon>
@@ -79,7 +79,7 @@
 </template>
 
 <script setup>
-import {ref, computed, watchEffect} from "vue"
+import {ref, computed} from "vue"
 import {useTheme} from "@/store/modules/theme"
 import {useI18n} from "@/store/modules/i18n"
 import {i18n} from "@/i18n";
@@ -161,17 +161,17 @@ const lists = [
       {
         text: '专题1',
         icon: 'mdi-clock',
-        to: '/'
+        to: '/register'
       },
       {
         text: '专题2',
         icon: 'mdi-account',
-        to: '/'
+        to: '/login'
       },
       {
         text: '专题3',
         icon: 'mdi-flag',
-        to: '/'
+        to: '/1'
       }
     ]
   },
@@ -180,17 +180,17 @@ const lists = [
       {
         text: '专题1',
         icon: 'mdi-clock',
-        to: '/'
+        to: '/2'
       },
       {
         text: '专题2',
         icon: 'mdi-account',
-        to: '/'
+        to: '/3'
       },
       {
         text: '专题3',
         icon: 'mdi-flag',
-        to: '/'
+        to: '/4'
       }
     ]
   },
@@ -199,17 +199,17 @@ const lists = [
       {
         text: '专题1',
         icon: 'mdi-clock',
-        to: '/'
+        to: '/5'
       },
       {
         text: '专题2',
         icon: 'mdi-account',
-        to: '/'
+        to: '/6'
       },
       {
         text: '专题3',
         icon: 'mdi-flag',
-        to: '/'
+        to: '/7'
       }
     ]
   },

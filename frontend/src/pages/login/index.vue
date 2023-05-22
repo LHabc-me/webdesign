@@ -43,11 +43,11 @@
                            :label="$t('login.remember-me')"
                            color="primary"/>
 
-                <a self="right"
-                   class="ms-2 mb-1"
-                   href="/forgetpassword">
+                <router-link self="right"
+                             class="ms-2 mb-1"
+                             to="/forgetpassword">
                   {{ $t('login.forget-password') }}
-                </a>
+                </router-link>
               </div>
 
               <VBtn
@@ -89,10 +89,12 @@ import {useUser} from "@/store/modules/user";
 import {useMessage} from "@/store/modules/message";
 import {useRouter} from "vue-router";
 import {rules} from "@/assets/script/rules";
+import {useTheme} from "vuetify";
 
 const message = useMessage()
 const user = useUser()
 const router = useRouter()
+const theme = useTheme()
 
 const form = ref({
   email: '',

@@ -76,10 +76,10 @@
               />
               <span self="right">
                 {{ $t('register.already-have-account') }}
-                <a self="right"
-                   href="/login">
+                <router-link self="right"
+                             to="/login">
                   {{ $t('register.login') }}
-                </a>
+                </router-link>
               </span>
             </div>
 
