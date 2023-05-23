@@ -1,6 +1,5 @@
-<!--@formatter:off-->
 <template></template>
-
+<!--@formatter:off-->
 <route lang="json5">
 {
   meta: {

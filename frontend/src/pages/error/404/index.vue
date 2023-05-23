@@ -1,6 +1,7 @@
 <template>
   <div class="h-screen" layout="column center-center">
     <span class="text-h1 font-weight-bold">404</span>
+    <VBtn @click="$router.go(-1)">返回上级</VBtn>
   </div>
 </template>
 

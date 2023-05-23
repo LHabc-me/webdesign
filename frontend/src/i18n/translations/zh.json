@@ -32,5 +32,6 @@
   "reset-password": "重置密码",
   "new-password": "新密码",
   "reset-password-success": "密码重置成功",
-  "reset-password-failed": "密码重置失败"
+  "reset-password-failed": "密码重置失败",
+  "search-book": "搜索作品"
 }

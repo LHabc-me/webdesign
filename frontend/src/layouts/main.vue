@@ -50,6 +50,7 @@
                          :temporary="true">
         <VList :mandatory="true">
           <div v-for="(list, list_index) in lists" :key="list_index">
+            <VDivider v-if="list_index !== 0"/>
             <VListSubheader v-if="list.title">{{ list.title }}</VListSubheader>
             <VListItem v-for="(item, item_index) in list.items"
                        :key="item_index"
@@ -62,7 +63,6 @@
               </template>
               <VListItemTitle>{{ item.text }}</VListItemTitle>
             </VListItem>
-            <VDivider v-if="list_index < lists.length - 1"/>
           </div>
         </VList>
       </VNavigationDrawer>
@@ -113,7 +113,7 @@ const langs = [
 
 const user = computed(() => {
   let user = []
-  if (userStore.isLogin) {
+  if (true || userStore.isLogin) {
     user = [
       {
         name: i18n.global.t('profile'),
@@ -157,59 +157,64 @@ const lists = [
     }]
   },
   {
-    title: '读者专题', items: [
+    title: '读者专区', items: [
       {
-        text: '专题1',
+        text: '最近阅读',
         icon: 'mdi-clock',
-        to: '/register'
+        to: '/recent'
       },
       {
-        text: '专题2',
+        text: '我的收藏',
+        icon: 'mdi-star-box',
+        to: '/collect'
+      },
+      {
+        text: i18n.global.t('profile'),
         icon: 'mdi-account',
-        to: '/login'
-      },
-      {
-        text: '专题3',
-        icon: 'mdi-flag',
-        to: '/1'
+        to: '/profile'
       }
     ]
   },
   {
-    title: '作者专题', items: [
+    title: '作者专区', items: [
       {
-        text: '专题1',
-        icon: 'mdi-clock',
-        to: '/2'
+        text: '管理作品',
+        icon: 'mdi-book-open-blank-variant',
+        to: '/author/workspace'
       },
       {
-        text: '专题2',
-        icon: 'mdi-account',
-        to: '/3'
+        text: '上传作品',
+        icon: 'mdi-pencil',
+        to: '/author/upload'
       },
       {
-        text: '专题3',
+        text: '作者中心',
         icon: 'mdi-flag',
-        to: '/4'
+        to: '/author/center'
       }
     ]
   },
   {
-    title: '管理员专题', items: [
+    title: '管理员专区', items: [
       {
-        text: '专题1',
-        icon: 'mdi-clock',
-        to: '/5'
+        text: '收支情况',
+        icon: 'mdi-currency-usd',
+        to: '/admin/finance'
       },
       {
-        text: '专题2',
-        icon: 'mdi-account',
-        to: '/6'
+        text: '活动管理',
+        icon: 'mdi-party-popper',
+        to: '/admin/activity'
       },
       {
-        text: '专题3',
-        icon: 'mdi-flag',
-        to: '/7'
+        text: '热度管理',
+        icon: 'mdi-fire',
+        to: '/admin/hot'
+      },
+      {
+        text: '用户管理',
+        icon: 'mdi-account-multiple',
+        to: '/admin/user'
       }
     ]
   },

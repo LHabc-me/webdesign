@@ -146,7 +146,7 @@ function loginAsGuest() {
 <route lang="json5">
 {
   meta: {
-    layout: 'user',
+    layout: 'main',
   }
 }
 </route>
