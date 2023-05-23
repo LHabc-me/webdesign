@@ -3,7 +3,7 @@
     <VAppBar class="elevation-3">
       <template #prepend>
         <VBtn icon="mdi-menu" @click="menuBtnClick"></VBtn>
-        <span>{{ $t('website.name') }}</span>
+        <span>{{ $t('website-name') }}</span>
       </template>
       <template #append>
         <VMenu transition="fade-transition">
@@ -116,7 +116,7 @@ const user = computed(() => {
   if (userStore.isLogin) {
     user = [
       {
-        name: i18n.global.t('user.profile'),
+        name: i18n.global.t('profile'),
         icon: 'mdi-account',
         onClick: () => {
         }
@@ -128,7 +128,7 @@ const user = computed(() => {
         }
       },
       {
-        name: i18n.global.t('user.logout'),
+        name: i18n.global.t('logout'),
         icon: 'mdi-logout',
         onClick: () => {
           userStore.isLogin = false
@@ -138,7 +138,7 @@ const user = computed(() => {
     ]
   } else {
     user.push({
-      name: i18n.global.t('user.login'),
+      name: i18n.global.t('login'),
       icon: 'mdi-login',
       onClick: () => {
         router.push('/login')
@@ -217,7 +217,7 @@ const lists = [
 
 function menuBtnClick() {
   if (!userStore.isLogin) {
-    message.info(i18n.global.t('user.login-first'))
+    message.info(i18n.global.t('login-first'))
     // return
   }
   showMenu.value = !showMenu.value

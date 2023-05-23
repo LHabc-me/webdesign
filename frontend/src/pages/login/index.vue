@@ -6,16 +6,16 @@
            layout="column center-center">
       <VCardItem layout="column center-center">
         <VCardTitle class="font-weight-semibold text-2xl text-uppercase">
-          {{ $t('website.name') }}
+          {{ $t('website-name') }}
         </VCardTitle>
       </VCardItem>
 
       <VCardText class="pt-2">
         <h5 class="text-h5 font-weight-semibold mb-1">
-          {{ $t('login.welcome') }}
+          {{ $t('website-welcome') }}
         </h5>
         <p class="mb-0">
-          {{ $t('login.login-and-continue') }}
+          {{ $t('login-and-continue') }}
         </p>
       </VCardText>
 
@@ -25,12 +25,12 @@
             <VCol cols="12">
               <VTextField v-if="true"
                           v-model="form.email"
-                          :label="$t('login.email')"
+                          :label="$t('email')"
                           type="email"
                           :rules="[rules.required, rules.email]"
               />
               <VTextField v-model="form.password"
-                          :label="$t('login.password')"
+                          :label="$t('password')"
                           :type="isPasswordVisible ? 'text' : 'password'"
                           :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
                           @click:append-inner="isPasswordVisible = !isPasswordVisible"
@@ -40,13 +40,13 @@
                    layout="row">
                 <VCheckbox self="left"
                            v-model="form.remember"
-                           :label="$t('login.remember-me')"
+                           :label="$t('remember-me')"
                            color="primary"/>
 
                 <router-link self="right"
                              class="ms-2 mb-1"
-                             to="/forgetpassword">
-                  {{ $t('login.forget-password') }}
+                             to="/reset-password">
+                  {{ $t('forget-password') }}
                 </router-link>
               </div>
 
@@ -57,17 +57,17 @@
                 color="primary"
                 :loading="loading"
               >
-                {{ $t('login.login') }}
+                {{ $t('login') }}
               </VBtn>
             </VCol>
 
             <div class="mt-5"
                  layout="row center-center">
               <span>
-                {{ $t('login.dont-have-account') }}
-                <router-link to="/register">{{ $t('login.register') }}</router-link>
-                {{ $t('login.or') }}
-                <router-link to="/" @click="loginAsGuest">{{ $t('login.continue-as-guest') }}</router-link>
+                {{ $t('dont-have-account') }}
+                <router-link to="/register">{{ $t('register') }}</router-link>
+                {{ $t('or') }}
+                <router-link to="/" @click="loginAsGuest">{{ $t('continue-as-guest') }}</router-link>
               </span>
             </div>
 
@@ -122,14 +122,14 @@ function login() {
     if (data.success) {
       user.type = data.type
       user.id = data.id
-      message.success('login.success')
+      message.success('success')
       router.push('/')
     } else {
-      message.error(i18n.global.t('login.login-failed'))
+      message.error(i18n.global.t('login-failed'))
     }
   }).catch(e => {
     console.log(e)
-    message.error(i18n.global.t('login.login-failed'))
+    message.error(i18n.global.t('login-failed'))
   }).finally(() => {
     loading.value = false
   })

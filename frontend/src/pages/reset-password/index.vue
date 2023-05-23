@@ -16,7 +16,7 @@
           {{ $t('website-welcome') }}
         </h5>
         <p class="mb-0">
-          {{ $t('register-your-account') }}
+          {{ $t('reset-password') }}
         </p>
       </VCardText>
 
@@ -30,13 +30,8 @@
                         :rules="[rules.required, rules.email]"
             />
             <VTextField
-              v-model="form.username"
-              :label="$t('username')"
-              :rules="[rules.required, rules.userNameLength]"
-            />
-            <VTextField
               v-model="form.password"
-              :label="$t('password')"
+              :label="$t('new-password')"
               :type="isPasswordVisible ? 'text' : 'password'"
               :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
               @click:append-inner="isPasswordVisible = !isPasswordVisible"
@@ -75,10 +70,14 @@
                          color="primary"
               />
               <span self="right">
-                {{ $t('already-have-account') }}
                 <router-link self="right"
-                             to="/login">
+                             to="/login"
+                             class="mr-2">
                   {{ $t('login') }}
+                </router-link>
+                <router-link self="right"
+                             to="/register">
+                  {{ $t('register') }}
                 </router-link>
               </span>
             </div>
@@ -156,7 +155,7 @@ function resendVerificationCode() {
 const loading = ref(false)
 
 function register() {
-  console.log('register')
+  console.log('reset-password')
   if (rules.email(form.value.email) !== true ||
     rules.userNameLength(form.value.username) !== true ||
     rules.pwdLength(form.value.password) !== true ||
@@ -169,7 +168,7 @@ function register() {
   }
   loading.value = true
 
-  post('/api/register', {
+  post('/api/reset-password', {
     email: form.value.email,
     username: form.value.username,
     password: form.value.password,
@@ -177,14 +176,14 @@ function register() {
   }).then(({data}) => {
     console.log(data)
     if (data.success) {
-      message.success(i18n.global.t('register-success'))
+      message.success(i18n.global.t('reset-password-success'))
       router.push('/login')
     } else {
-      message.error(i18n.global.t('register-failed'))
+      message.error(i18n.global.t('reset-password-failed'))
     }
   }).catch(e => {
     console.log(e)
-    message.error(i18n.global.t('register-failed'))
+    message.error(i18n.global.t('reset-password-failed'))
   }).finally(() => {
     loading.value = false
   })
@@ -194,8 +193,8 @@ function register() {
 <!--@formatter:off-->
 <route lang="json5">
 {
-  meta: {
-    layout: 'user',
-  }
+meta: {
+layout: 'user',
+}
 }
 </route>
