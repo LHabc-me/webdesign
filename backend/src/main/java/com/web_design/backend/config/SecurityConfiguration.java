@@ -17,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
@@ -39,20 +41,30 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            PersistentTokenRepository repository) throws Exception {
+//        // 创建 AuthenticationFilter 实例
+//        UsernamePasswordAuthenticationFilter authenticationFilter =
+//                new JsonAuthenticationFilter();
+//        // 配置 AuthenticationManager
+//        authenticationFilter.setAuthenticationManager(authenticationManagerBean());
+//        // 替换过滤器
+//        http.addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http
                 .authorizeHttpRequests()
                 .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginProcessingUrl("/login")
-                .successHandler(this::onAuthenticationSuccess)
-                .failureHandler(this::onAuthenticationFailure)
-                .and()
+                .addFilterBefore(authenticationManagerBean(), UsernamePasswordAuthenticationFilter.class)
+//                .formLogin()
+//                .loginProcessingUrl("/login")
+//                .usernameParameter("email")
+//                .successHandler(this::onAuthenticationSuccess)
+//                .failureHandler(this::onAuthenticationFailure)
+//                .and()
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(this::onAuthenticationSuccess)
-                // 记住我
+//                // 记住我
                 .and()
                 .rememberMe()
                 .rememberMeParameter("remember")
@@ -71,6 +83,18 @@ public class SecurityConfiguration {
                 .authenticationEntryPoint(this::onAuthenticationFailure)
                 .and()
                 .build();
+    }
+
+    @Bean
+    public JsonAuthenticationFilter authenticationManagerBean() {
+        JsonAuthenticationFilter authenticationFilter = new JsonAuthenticationFilter();
+        authenticationFilter.setAuthenticationFailureHandler(this::onAuthenticationFailure); //设置登录失败处理类
+        authenticationFilter.setAuthenticationSuccessHandler(this::onAuthenticationSuccess); //设置登录成功处理类
+        authenticationFilter.setFilterProcessesUrl("/login");
+//        authenticationFilter.setRememberMeServices(rememberMeServices()); //设置记住我
+        authenticationFilter.setUsernameParameter("email");
+        authenticationFilter.setPasswordParameter("password");
+        return authenticationFilter;
     }
 
     @Bean

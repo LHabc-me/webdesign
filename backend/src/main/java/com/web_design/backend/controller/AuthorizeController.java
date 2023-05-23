@@ -36,9 +36,8 @@ public class AuthorizeController {
     }
 
     @PostMapping("/register")
-    public RestBean<String> registerUser(@RequestBody JSONObject userJSON,
+    public RestBean<String> registerUser(@RequestBody JSONObject userForm,
                                          HttpSession session) {
-        JSONObject userForm = userJSON.getJSONObject("data");
         @Pattern(regexp = USERNAME_REGEX) @Length(min = 2, max = 8)
         String username = userForm.get("username").toString();
         @Length(min = 6, max = 16)
@@ -46,7 +45,7 @@ public class AuthorizeController {
         @Pattern(regexp = EMAIL_REGEX)
         String email = userForm.get("email").toString();
         @Length(min = 6, max = 6)
-        String verificationCode = userForm.get("verificationCode").toString();
+        String verificationCode = userForm.get("verification-code").toString();
 
         ErrCode errCode = service.validateAndRegister(email, username, password, verificationCode, session.getId());
         if (errCode == ErrCode.Success)

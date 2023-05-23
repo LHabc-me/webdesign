@@ -37,15 +37,21 @@ public class AuthorizeServiceImpl implements AuthorizeService {
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        if (username == null)
-            throw new UsernameNotFoundException("用户名不能为空");
-        Account account = mapper.findAccountByEmail(username);
-        if (account == null)
-            throw new UsernameNotFoundException("用户名或密码错误");
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Account account = mapper.findAccountByEmail(email);
+        System.out.println(account.getEmail());
+        if (email == null)
+            throw new UsernameNotFoundException("邮箱不能为空");
+//        Account account = mapper.findAccountByEmail(email);
+
+        if (account == null) {
+            System.out.println("此用户不存在");
+            throw new UsernameNotFoundException("此用户不存在");
+        }
+
 
         return User
-                .withUsername(account.getUsername())
+                .withUsername(account.getEmail())
                 .password(account.getPassword())
                 .authorities("user")
                 .build();
@@ -84,8 +90,8 @@ public class AuthorizeServiceImpl implements AuthorizeService {
             return ErrCode.Success;
         } catch (MailException e) {
             e.printStackTrace();
-            // 邮箱不存在
-            return ErrCode.EmailNotExist;
+            // 邮箱格式错误
+            return ErrCode.EmailFormatError;
         }
     }
 
@@ -111,17 +117,24 @@ public class AuthorizeServiceImpl implements AuthorizeService {
             // 尚未发送验证码
             return ErrCode.NotSendValidateCode;
         }
-//        String key = "email:" + email;
-//        if (Boolean.TRUE.equals(template.hasKey(key))) {
-//            String code = template.opsForValue().get(key);
-//            if (code.equals(validateCode)) {
-//                Account account = new Account();
-//                account.setEmail(email);
-//                account.setUsername(username);
-//                account.setPassword(password);
-//                mapper.insertAccount(account);
-//                return true;
-//            }
-//        }
     }
+
+    @Override
+    public ErrCode validateAndLogin(String email, String password) {
+        Account account = mapper.findAccountByEmail(email);
+        if (account == null) {
+            // 用户不存在
+            return ErrCode.AccountNotExist;
+        } else {
+            if (encoder.matches(password, account.getPassword())) {
+                // 登录成功
+                return ErrCode.Success;
+            } else {
+                // 密码错误
+                return ErrCode.PasswordNotMatch;
+            }
+        }
+    }
+
+
 }

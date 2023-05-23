@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="backend_test" type="JUnit" factoryName="JUnit">
+    <module name="backend" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="ALTERNATIVE_JRE_PATH" value="19" />
+    <option name="PACKAGE_NAME" value="com.web_design.backend" />
+    <option name="MAIN_CLASS_NAME" value="com.web_design.backend.BackendApplicationTests" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="class" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
