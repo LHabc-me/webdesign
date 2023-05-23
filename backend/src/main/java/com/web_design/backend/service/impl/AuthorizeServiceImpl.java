@@ -1,6 +1,7 @@
 package com.web_design.backend.service.impl;
 
 import com.web_design.backend.entity.Account;
+import com.web_design.backend.entity.ErrCode;
 import com.web_design.backend.mapper.UserMapper;
 import com.web_design.backend.service.AuthorizeService;
 import jakarta.annotation.Resource;
@@ -12,6 +13,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -32,14 +34,15 @@ public class AuthorizeServiceImpl implements AuthorizeService {
     @Resource
     StringRedisTemplate template;
 
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (username == null)
             throw new UsernameNotFoundException("用户名不能为空");
-        Account account = mapper.findAccountByNameOrEmail(username);
+        Account account = mapper.findAccountByEmail(username);
         if (account == null)
             throw new UsernameNotFoundException("用户名或密码错误");
-
 
         return User
                 .withUsername(account.getUsername())
@@ -57,13 +60,16 @@ public class AuthorizeServiceImpl implements AuthorizeService {
      * 5. 用户在注册时，再从Redis里面取出对应键值对，然后看验证码是否一致
      */
     @Override
-    public boolean sendValidateEmail(String email, String sessionId) {
+    public ErrCode sendValidateEmail(String email, String sessionId) {
         String key = "email:" + sessionId + ":" + email;
         if (Boolean.TRUE.equals(template.hasKey(key))) {
             long expire = Optional.ofNullable(template.getExpire(key, TimeUnit.SECONDS)).orElse(0L);
-            if (expire > 120) {
-                return false;
-            }
+            if (expire > 120) return ErrCode.ValidateCodeExpired;
+        }
+
+        // 验证邮箱是否已经注册
+        if ((mapper.findAccountByEmail(email)) != null) {
+            return ErrCode.EmailAlreadyExist;
         }
         Random random = new Random();
         int code = random.nextInt(899999) + 100000;
@@ -75,10 +81,47 @@ public class AuthorizeServiceImpl implements AuthorizeService {
         try {
             mailSender.send(message);
             template.opsForValue().set(key, String.valueOf(code), 3, TimeUnit.MINUTES);
-            return true;
+            return ErrCode.Success;
         } catch (MailException e) {
             e.printStackTrace();
-            return false;
+            // 邮箱不存在
+            return ErrCode.EmailNotExist;
         }
+    }
+
+    @Override
+    public ErrCode validateAndRegister(String email, String username, String password, String validateCode, String sessionId) {
+        String key = "email:" + sessionId + ":" + email;
+        if (Boolean.TRUE.equals(template.hasKey(key))) {
+            String code = template.opsForValue().get(key);
+            // 验证码过期
+            if (code == null) return ErrCode.ValidateCodeExpired;
+            if (code.equals(validateCode)) {
+                if (mapper.createAccount(username, encoder.encode(password), email) > 0)
+                    return ErrCode.Success;
+                else {
+                    // 注册失败,数据库内部错误
+                    return ErrCode.RegisterSqlFailed;
+                }
+            } else {
+                // 验证码不匹配
+                return ErrCode.ValidateCodeNotMatch;
+            }
+        } else {
+            // 尚未发送验证码
+            return ErrCode.NotSendValidateCode;
+        }
+//        String key = "email:" + email;
+//        if (Boolean.TRUE.equals(template.hasKey(key))) {
+//            String code = template.opsForValue().get(key);
+//            if (code.equals(validateCode)) {
+//                Account account = new Account();
+//                account.setEmail(email);
+//                account.setUsername(username);
+//                account.setPassword(password);
+//                mapper.insertAccount(account);
+//                return true;
+//            }
+//        }
     }
 }
