@@ -69,7 +69,7 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 
         // 验证邮箱是否已经注册
         if ((mapper.findAccountByEmail(email)) != null) {
-            return ErrCode.EmailAlreadyExist;
+            return ErrCode.EmailAlreadyRegistered;
         }
         Random random = new Random();
         int code = random.nextInt(899999) + 100000;

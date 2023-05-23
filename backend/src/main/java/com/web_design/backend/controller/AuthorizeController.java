@@ -30,14 +30,15 @@ public class AuthorizeController {
 //        System.out.println(email);
         ErrCode errCode = service.sendValidateEmail(email, session.getId());
         if (errCode == ErrCode.Success)
-            return RestBean.success();
+            return RestBean.success("verification-code send success");
         else
             return RestBean.failure(400, errCode);
     }
 
     @PostMapping("/register")
-    public RestBean<String> registerUser(@RequestBody JSONObject userForm,
+    public RestBean<String> registerUser(@RequestBody JSONObject userJSON,
                                          HttpSession session) {
+        JSONObject userForm = userJSON.getJSONObject("data");
         @Pattern(regexp = USERNAME_REGEX) @Length(min = 2, max = 8)
         String username = userForm.get("username").toString();
         @Length(min = 6, max = 16)
@@ -49,7 +50,7 @@ public class AuthorizeController {
 
         ErrCode errCode = service.validateAndRegister(email, username, password, verificationCode, session.getId());
         if (errCode == ErrCode.Success)
-            return RestBean.success();
+            return RestBean.success("success");
         else
             return RestBean.failure(400, errCode);
     }
