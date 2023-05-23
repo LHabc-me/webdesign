@@ -122,7 +122,7 @@ const user = computed(() => {
         }
       },
       {
-        name: i18n.global.t('user.settings'),
+        name: i18n.global.t('设置'),
         icon: 'mdi-cog',
         onClick: () => {
         }

@@ -83,12 +83,11 @@
               </span>
             </div>
 
-            <VBtn
-              :block="true"
-              type="submit"
-              @click="register"
-              color="primary"
-              :loading="loading"
+            <VBtn :block="true"
+                  type="submit"
+                  @click="register"
+                  color="primary"
+                  :loading="loading"
             >
               {{ $t('register.register') }}
             </VBtn>
@@ -172,8 +171,8 @@ function register() {
 
   post('/api/register', {
     email: form.value.email,
-    name: form.value.username,
-    pwd: form.value.password,
+    username: form.value.username,
+    password: form.value.password,
     "verification-code": form.value['verification-code'],
   }).then(({data}) => {
     console.log(data)

@@ -116,7 +116,7 @@ function login() {
   loading.value = true
   post('/api/login', {
     email: form.value.email,
-    pwd: form.value.password
+    password: form.value.password
   }).then(({data}) => {
     console.log(data)
     if (data.success) {
