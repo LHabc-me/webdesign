@@ -171,7 +171,6 @@ function resetpwd() {
 
   post('/api/reset-password', {
     email: form.value.email,
-    username: form.value.username,
     password: form.value.password,
     "verification-code": form.value['verification-code'],
   }).then(({data}) => {

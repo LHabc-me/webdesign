@@ -17,3 +17,13 @@ a {
     color: rgba(var(--v-theme-primary));
   }
 }
+
+.primary-color-hover {
+  &:hover {
+    color: rgba(var(--v-theme-primary));
+  }
+}
+
+.mouse-pointer {
+  cursor: pointer;
+}

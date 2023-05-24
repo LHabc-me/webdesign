@@ -42,15 +42,50 @@
             </VMenu>
           </VTextField>
         </VCol>
-        <div style="min-height: 70.5vh">
+        <div>
           <VList>
-            <VListItem v-for="i in 4" :key="i">
-              <VCard max-height="200">
+            <VListItem v-for="(item, index) in [1, 2, 3, 4]"
+                       :key="index">
+              <VDivider v-if="index !== 0" class="mb-2"></VDivider>
+              <div layout="row"
+                   style="height: 145px;"
+                   @click="()=>{}">
                 <VImg src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-                      height="145"
-                      width="120"
-                      cover></VImg>
-              </VCard>
+                      class="h-100"
+                      max-width="110"
+                      width="110"
+                      :cover="true"></VImg>
+                <VCard class="h-100 elevation-0">
+                  <VCardTitle>
+                    <span class="primary-color-hover mouse-pointer">书名</span>
+                  </VCardTitle>
+                  <VCardSubtitle layout="row">
+                    <span class="primary-color-hover mouse-pointer">作者</span>
+                    <VDivider :vertical="true" class="mx-1"></VDivider>
+                    <span class="primary-color-hover mouse-pointer">分类</span>
+                    <VDivider :vertical="true" class="mx-1"></VDivider>
+                    <span class="book-status">状态</span>
+                  </VCardSubtitle>
+                  <VCardText>作品简介</VCardText>
+                </VCard>
+
+                <div class="h-100"
+                     layout="column"
+                     self="right"
+                     style="width: 210px">
+                  <div class="h-50">
+                    <span class="float-end">
+                      <VIcon icon="mdi-fire"></VIcon>
+                      <span class="text-center">热度100</span>
+                    </span>
+                  </div>
+                  <div class="h-50"
+                       layout="row bottom-justify">
+                    <VBtn color="primary">书籍详情</VBtn>
+                    <VBtn variant="outlined">加入收藏</VBtn>
+                  </div>
+                </div>
+              </div>
             </VListItem>
           </VList>
         </div>
@@ -76,7 +111,6 @@
           ></VCarouselItem>
         </VCarousel>
       </VCol>
-
     </VRow>
   </div>
 </template>
@@ -97,10 +131,9 @@ const searchMenu = ref([])
 </script>
 
 <style lang="scss" scoped>
-* {
-  border: red 1px solid;
-}
-
+//* {
+//  border: red 1px solid;
+//}
 </style>
 
 <!--@formatter:off-->
