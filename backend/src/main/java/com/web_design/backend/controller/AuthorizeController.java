@@ -24,11 +24,10 @@ public class AuthorizeController {
 
     @PostMapping("/verification-code")
     public RestBean<String> validateRegisterEmail(@RequestBody JSONObject emailJSON,
-                                                  HttpSession session,
-                                                  boolean isRegister) {
+                                                  HttpSession session) {
         @Pattern(regexp = EMAIL_REGEX)
         String email = emailJSON.get("email").toString();
-        ErrCode errCode = service.sendValidateEmail(email, session.getId(), isRegister);
+        ErrCode errCode = service.sendValidateEmail(email, session.getId());
         if (errCode == ErrCode.Success)
             return RestBean.success("verification-code send success");
         else

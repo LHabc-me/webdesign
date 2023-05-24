@@ -63,21 +63,21 @@ public class AuthorizeServiceImpl implements AuthorizeService {
      * 5. 用户在注册时，再从Redis里面取出对应键值对，然后看验证码是否一致
      */
     @Override
-    public ErrCode sendValidateEmail(String email, String sessionId, boolean isRegister) {
-        String key = "email:" + sessionId + ":" + email + ":" + isRegister;
+    public ErrCode sendValidateEmail(String email, String sessionId) {
+        String key = "email:" + sessionId + ":" + email;
         if (Boolean.TRUE.equals(template.hasKey(key))) {
             long expire = Optional.ofNullable(template.getExpire(key, TimeUnit.SECONDS)).orElse(0L);
             if (expire > 120) return ErrCode.ValidateCodeExpired;
         }
-        Account account = mapper.findAccountByEmail(email);
-        // 若为重置密码则验证此账户是否存在
-        if (!isRegister && account == null) {
-            return ErrCode.AccountNotExist;
-        }
-        // 若为注册则验证邮箱是否已经注册
-        if (isRegister && account != null) {
-            return ErrCode.EmailAlreadyRegistered;
-        }
+//        Account account = mapper.findAccountByEmail(email);
+//        // 若为重置密码则验证此账户是否存在
+//        if (account == null) {
+//            return ErrCode.AccountNotExist;
+//        }
+//        // 若为注册则验证邮箱是否已经注册
+//        if (isRegister && account != null) {
+//            return ErrCode.EmailAlreadyRegistered;
+//        }
 
         Random random = new Random();
         int code = random.nextInt(899999) + 100000;
@@ -99,7 +99,7 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 
     @Override
     public ErrCode validateAndRegister(String email, String username, String password, String validateCode, String sessionId) {
-        String key = "email:" + sessionId + ":" + email + ":true";
+        String key = "email:" + sessionId + ":" + email;
         if (Boolean.TRUE.equals(template.hasKey(key))) {
             String code = template.opsForValue().get(key);
             // 验证码过期
@@ -107,10 +107,15 @@ public class AuthorizeServiceImpl implements AuthorizeService {
             if (code.equals(validateCode)) {
                 // 从Redis中删除验证码
                 template.delete(key);
+                // 验证邮箱是否已经注册
+                if (mapper.findAccountByEmail(email) != null)
+                    return ErrCode.EmailAlreadyRegistered;
+
+                // 注册成功
                 if (mapper.createAccount(username, encoder.encode(password), email) > 0)
                     return ErrCode.Success;
                 else {
-                    // 注册失败,数据库内部错误
+                    // 注册失败, SQL错误
                     return ErrCode.RegisterSqlFailed;
                 }
             } else {
@@ -125,7 +130,7 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 
     @Override
     public ErrCode validateAndResetPassword(String email, String username, String password, String validateCode, String sessionId) {
-        String key = "email:" + sessionId + ":" + email + ":false";
+        String key = "email:" + sessionId + ":" + email;
         if (Boolean.TRUE.equals(template.hasKey(key))) {
             String code = template.opsForValue().get(key);
             // 验证码过期
@@ -133,9 +138,15 @@ public class AuthorizeServiceImpl implements AuthorizeService {
             if (code.equals(validateCode)) {
                 // 从Redis中删除验证码
                 template.delete(key);
+                // 验证账号是否存在
+                if (mapper.findAccountByEmail(email) == null)
+                    return ErrCode.AccountNotExist;
+
+                // 重置密码成功
                 if (mapper.resetPassword(email, encoder.encode(password)) > 0)
                     return ErrCode.Success;
                 else
+                    // 重置密码失败, SQL错误
                     return ErrCode.ResetPasswordSqlFailed;
             } else {
                 // 验证码不匹配
