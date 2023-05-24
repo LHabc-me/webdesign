@@ -1,9 +1,10 @@
-package com.web_design.backend.config;
+package com.web_design.backend.config.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,7 +15,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JsonAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class MyAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+    public MyAuthenticationFilter(AuthenticationManager authenticationManager,
+                                  MyAuthenticationHandler authenticationHandler) throws Exception {
+        super(authenticationManager);
+        setAuthenticationSuccessHandler(authenticationHandler);
+        setAuthenticationFailureHandler(authenticationHandler);
+        setUsernameParameter("email");
+        setPasswordParameter("password");
+        setFilterProcessesUrl("/login");
+    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
