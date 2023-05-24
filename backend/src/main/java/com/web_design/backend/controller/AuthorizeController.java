@@ -34,18 +34,6 @@ public class AuthorizeController {
             return RestBean.failure(400, errCode);
     }
 
-//    @PostMapping("/reset-password/verification-code")
-//    public RestBean<String> validateResetEmail(@RequestBody JSONObject emailJSON,
-//                                               HttpSession session) {
-//        @Pattern(regexp = EMAIL_REGEX)
-//        String email = emailJSON.get("email").toString();
-//        ErrCode errCode = service.sendValidateEmail(email, session.getId(), false);
-//        if (errCode == ErrCode.Success)
-//            return RestBean.success("verification-code send success");
-//        else
-//            return RestBean.failure(400, errCode);
-//    }
-
     @PostMapping("/register")
     public RestBean<String> registerUser(@RequestBody JSONObject userForm,
                                          HttpSession session) {
