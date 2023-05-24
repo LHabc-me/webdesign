@@ -122,7 +122,7 @@ function login() {
     if (data.success) {
       user.type = data.type
       user.id = data.id
-      message.success('success')
+      message.success(i18n.global.t('login-success'))
       router.push('/')
     } else {
       message.error(i18n.global.t('login-failed'))

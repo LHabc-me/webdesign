@@ -140,7 +140,7 @@ function resendVerificationCode() {
     }
   }, 1000)
 
-  post('/api/register/verification-code', {
+  post('/api/verification-code', {
     email: form.value.email,
   }).then(({data}) => {
     console.log(data)

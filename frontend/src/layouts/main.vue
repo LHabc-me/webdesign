@@ -68,7 +68,7 @@
       </VNavigationDrawer>
     </keep-alive>
     <VMain>
-      <router-view class="pa-10"
+      <router-view class="pa-10 pb-0"
                    v-slot="{Component}">
         <keep-alive>
           <component :is="Component"/>
@@ -151,7 +151,7 @@ const user = computed(() => {
 const lists = [
   {
     items: [{
-      text: '首页',
+      text: i18n.global.t('home-page'),
       icon: 'mdi-home',
       to: '/'
     }]
@@ -159,12 +159,12 @@ const lists = [
   {
     title: '读者专区', items: [
       {
-        text: '最近阅读',
+        text: i18n.global.t('recently-read'),
         icon: 'mdi-clock',
         to: '/recent'
       },
       {
-        text: '我的收藏',
+        text: i18n.global.t('my-collection'),
         icon: 'mdi-star-box',
         to: '/collect'
       },
