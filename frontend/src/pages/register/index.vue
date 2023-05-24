@@ -2,10 +2,8 @@
   <div class="pa-4 h-100"
        layout="column center-center">
     <VCard class="pa-4 pt-7"
-           max-width="448"
-           layout="column center-center">
-      <VCardItem class="justify-center">
-
+           width="448">
+      <VCardItem layout="column center-center">
         <VCardTitle class="font-weight-semibold text-2xl text-uppercase">
           {{ $t('website-name') }}
         </VCardTitle>
@@ -22,76 +20,78 @@
 
       <VCardText>
         <VForm @submit.prevent="() => {}">
-          <VCol cols="12">
-            <VTextField v-if="true"
-                        v-model="form.email"
-                        :label="$t('email')"
-                        type="email"
-                        :rules="[rules.required, rules.email]"
-            />
-            <VTextField
-              v-model="form.username"
-              :label="$t('username')"
-              :rules="[rules.required, rules.userNameLength]"
-            />
-            <VTextField
-              v-model="form.password"
-              :label="$t('password')"
-              :type="isPasswordVisible ? 'text' : 'password'"
-              :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
-              @click:append-inner="isPasswordVisible = !isPasswordVisible"
-              :rules="[rules.required, rules.pwdLength]"
-            />
-            <VTextField
-              v-model="form['repeat-password']"
-              :label="$t('repeat-password')"
-              :type="isPasswordVisible ? 'text' : 'password'"
-              :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
-              @click:append-inner="isPasswordVisible = !isPasswordVisible"
-              :rules="[rules.required, rules.samePwd(form.password)]"
-            />
-            <VTextField
-              v-model="form['verification-code']"
-              :label="$t('verification-code')"
-              type="text"
-              :rules="[rules.required]"
-            >
-              <template #append-inner>
-                <VBtn class="h-75"
-                      :disabled="resendVerificationCodeInterval !== 0"
-                      @click="resendVerificationCode"
-                      variant="flat"
-                      color="primary">
-                  {{ $t('send') + resendInterval }}
-                </VBtn>
-              </template>
-            </VTextField>
-
-            <div class="mt-1 mb-4"
-                 layout="row">
-              <VCheckbox self="left"
-                         v-model="form.remember"
-                         :label="$t('remember-me')"
-                         color="primary"
+          <VRow>
+            <VCol cols="12">
+              <VTextField v-if="true"
+                          v-model="form.email"
+                          :label="$t('email')"
+                          type="email"
+                          :rules="[rules.required, rules.email]"
               />
-              <span self="right">
+              <VTextField
+                v-model="form.username"
+                :label="$t('username')"
+                :rules="[rules.required, rules.userNameLength]"
+              />
+              <VTextField
+                v-model="form.password"
+                :label="$t('password')"
+                :type="isPasswordVisible ? 'text' : 'password'"
+                :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
+                @click:append-inner="isPasswordVisible = !isPasswordVisible"
+                :rules="[rules.required, rules.pwdLength]"
+              />
+              <VTextField
+                v-model="form['repeat-password']"
+                :label="$t('repeat-password')"
+                :type="isPasswordVisible ? 'text' : 'password'"
+                :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
+                @click:append-inner="isPasswordVisible = !isPasswordVisible"
+                :rules="[rules.required, rules.samePwd(form.password)]"
+              />
+              <VTextField
+                v-model="form['verification-code']"
+                :label="$t('verification-code')"
+                type="text"
+                :rules="[rules.required]"
+              >
+                <template #append-inner>
+                  <VBtn class="h-75"
+                        :disabled="resendVerificationCodeInterval !== 0"
+                        @click="resendVerificationCode"
+                        variant="flat"
+                        color="primary">
+                    {{ $t('send') + resendInterval }}
+                  </VBtn>
+                </template>
+              </VTextField>
+
+              <div class="mt-1 mb-4"
+                   layout="row">
+                <VCheckbox self="left"
+                           v-model="form.remember"
+                           :label="$t('remember-me')"
+                           color="primary"
+                />
+                <span self="right">
                 {{ $t('already-have-account') }}
                 <router-link self="right"
                              to="/login">
                   {{ $t('login') }}
                 </router-link>
               </span>
-            </div>
+              </div>
 
-            <VBtn :block="true"
-                  type="submit"
-                  @click="register"
-                  color="primary"
-                  :loading="loading"
-            >
-              {{ $t('register') }}
-            </VBtn>
-          </VCol>
+              <VBtn :block="true"
+                    type="submit"
+                    @click="register"
+                    color="primary"
+                    :loading="loading"
+              >
+                {{ $t('register') }}
+              </VBtn>
+            </VCol>
+          </VRow>
         </VForm>
       </VCardText>
     </VCard>
@@ -161,6 +161,7 @@ function register() {
     rules.userNameLength(form.value.username) !== true ||
     rules.pwdLength(form.value.password) !== true ||
     rules.pwdLength(form.value['repeat-password']) !== true ||
+    rules.samePwd(form.value['repeat-password'])(form.value.password) !== true ||
     !form.value['verification-code']) {
     return
   }

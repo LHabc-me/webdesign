@@ -2,8 +2,7 @@
   <div class="pa-4 h-100"
        layout="column center-center">
     <VCard class="pa-4 pt-7"
-           max-width="448"
-           layout="column center-center">
+           width="448">
       <VCardItem layout="column center-center">
         <VCardTitle class="font-weight-semibold text-2xl text-uppercase">
           {{ $t('website-name') }}

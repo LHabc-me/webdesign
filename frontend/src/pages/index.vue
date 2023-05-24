@@ -44,10 +44,12 @@
         </VCol>
         <div style="min-height: 70.5vh">
           <VList>
-            <VListItem>
-              <VCard>
-                <VCardTitle>Book 1</VCardTitle>
-                <VCardText>Book 1</VCardText>
+            <VListItem v-for="i in 4" :key="i">
+              <VCard max-height="200">
+                <VImg src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+                      height="145"
+                      width="120"
+                      cover></VImg>
               </VCard>
             </VListItem>
           </VList>
@@ -90,7 +92,7 @@ const user = useUser()
 const router = useRouter()
 
 const searchContent = ref('')
-const searchMenu = ref([1, 2, 3])
+const searchMenu = ref([])
 
 </script>
 
