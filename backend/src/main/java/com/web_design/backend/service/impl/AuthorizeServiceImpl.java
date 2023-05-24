@@ -38,17 +38,14 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Account account = mapper.findAccountByEmail(email);
-        System.out.println(account.getEmail());
         if (email == null)
             throw new UsernameNotFoundException("邮箱不能为空");
-//        Account account = mapper.findAccountByEmail(email);
 
+        Account account = mapper.findAccountByEmail(email);
         if (account == null) {
             System.out.println("此用户不存在");
             throw new UsernameNotFoundException("此用户不存在");
         }
-
 
         return User
                 .withUsername(account.getEmail())
@@ -66,17 +63,22 @@ public class AuthorizeServiceImpl implements AuthorizeService {
      * 5. 用户在注册时，再从Redis里面取出对应键值对，然后看验证码是否一致
      */
     @Override
-    public ErrCode sendValidateEmail(String email, String sessionId) {
-        String key = "email:" + sessionId + ":" + email;
+    public ErrCode sendValidateEmail(String email, String sessionId, boolean isRegister) {
+        String key = "email:" + sessionId + ":" + email + ":" + isRegister;
         if (Boolean.TRUE.equals(template.hasKey(key))) {
             long expire = Optional.ofNullable(template.getExpire(key, TimeUnit.SECONDS)).orElse(0L);
             if (expire > 120) return ErrCode.ValidateCodeExpired;
         }
-
-        // 验证邮箱是否已经注册
-        if ((mapper.findAccountByEmail(email)) != null) {
+        Account account = mapper.findAccountByEmail(email);
+        // 若为重置密码则验证此账户是否存在
+        if (!isRegister && account == null) {
+            return ErrCode.AccountNotExist;
+        }
+        // 若为注册则验证邮箱是否已经注册
+        if (isRegister && account != null) {
             return ErrCode.EmailAlreadyRegistered;
         }
+
         Random random = new Random();
         int code = random.nextInt(899999) + 100000;
         SimpleMailMessage message = new SimpleMailMessage();
@@ -97,12 +99,14 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 
     @Override
     public ErrCode validateAndRegister(String email, String username, String password, String validateCode, String sessionId) {
-        String key = "email:" + sessionId + ":" + email;
+        String key = "email:" + sessionId + ":" + email + ":true";
         if (Boolean.TRUE.equals(template.hasKey(key))) {
             String code = template.opsForValue().get(key);
             // 验证码过期
             if (code == null) return ErrCode.ValidateCodeExpired;
             if (code.equals(validateCode)) {
+                // 从Redis中删除验证码
+                template.delete(key);
                 if (mapper.createAccount(username, encoder.encode(password), email) > 0)
                     return ErrCode.Success;
                 else {
@@ -120,21 +124,45 @@ public class AuthorizeServiceImpl implements AuthorizeService {
     }
 
     @Override
-    public ErrCode validateAndLogin(String email, String password) {
-        Account account = mapper.findAccountByEmail(email);
-        if (account == null) {
-            // 用户不存在
-            return ErrCode.AccountNotExist;
-        } else {
-            if (encoder.matches(password, account.getPassword())) {
-                // 登录成功
-                return ErrCode.Success;
+    public ErrCode validateAndResetPassword(String email, String username, String password, String validateCode, String sessionId) {
+        String key = "email:" + sessionId + ":" + email + ":false";
+        if (Boolean.TRUE.equals(template.hasKey(key))) {
+            String code = template.opsForValue().get(key);
+            // 验证码过期
+            if (code == null) return ErrCode.ValidateCodeExpired;
+            if (code.equals(validateCode)) {
+                // 从Redis中删除验证码
+                template.delete(key);
+                if (mapper.resetPassword(email, encoder.encode(password)) > 0)
+                    return ErrCode.Success;
+                else
+                    return ErrCode.ResetPasswordSqlFailed;
             } else {
-                // 密码错误
-                return ErrCode.PasswordNotMatch;
+                // 验证码不匹配
+                return ErrCode.ValidateCodeNotMatch;
             }
+        } else {
+            // 尚未发送验证码
+            return ErrCode.NotSendValidateCode;
         }
     }
+
+//    @Override
+//    public ErrCode validateAndLogin(String email, String password) {
+//        Account account = mapper.findAccountByEmail(email);
+//        if (account == null) {
+//            // 用户不存在
+//            return ErrCode.AccountNotExist;
+//        } else {
+//            if (encoder.matches(password, account.getPassword())) {
+//                // 登录成功
+//                return ErrCode.Success;
+//            } else {
+//                // 密码错误
+//                return ErrCode.PasswordNotMatch;
+//            }
+//        }
+//    }
 
 
 }

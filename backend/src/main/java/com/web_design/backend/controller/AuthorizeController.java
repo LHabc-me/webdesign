@@ -22,18 +22,30 @@ public class AuthorizeController {
     @Resource
     AuthorizeService service;
 
-    @PostMapping("/register/verification-code")
-    public RestBean<String> validateEmail(@RequestBody JSONObject emailJSON,
-                                          HttpSession session) {
+    @PostMapping("/verification-code")
+    public RestBean<String> validateRegisterEmail(@RequestBody JSONObject emailJSON,
+                                                  HttpSession session,
+                                                  boolean isRegister) {
         @Pattern(regexp = EMAIL_REGEX)
         String email = emailJSON.get("email").toString();
-//        System.out.println(email);
-        ErrCode errCode = service.sendValidateEmail(email, session.getId());
+        ErrCode errCode = service.sendValidateEmail(email, session.getId(), isRegister);
         if (errCode == ErrCode.Success)
             return RestBean.success("verification-code send success");
         else
             return RestBean.failure(400, errCode);
     }
+
+//    @PostMapping("/reset-password/verification-code")
+//    public RestBean<String> validateResetEmail(@RequestBody JSONObject emailJSON,
+//                                               HttpSession session) {
+//        @Pattern(regexp = EMAIL_REGEX)
+//        String email = emailJSON.get("email").toString();
+//        ErrCode errCode = service.sendValidateEmail(email, session.getId(), false);
+//        if (errCode == ErrCode.Success)
+//            return RestBean.success("verification-code send success");
+//        else
+//            return RestBean.failure(400, errCode);
+//    }
 
     @PostMapping("/register")
     public RestBean<String> registerUser(@RequestBody JSONObject userForm,
@@ -51,6 +63,31 @@ public class AuthorizeController {
         if (errCode == ErrCode.Success)
             return RestBean.success("success");
         else
+            return RestBean.failure(400, errCode);
+    }
+
+    /**
+     * 1. 发验证邮件
+     * 2. 验证验证码是否正确，正确就在Session中存一个标记
+     * 3. 用户发起重置密码请求，验证Session中是否有标记，如果有就重置密码
+     */
+    @PostMapping("/reset-password")
+    public RestBean<String> resetPassword(@RequestBody JSONObject resetJSON,
+                                          HttpSession session) {
+        @Pattern(regexp = USERNAME_REGEX) @Length(min = 2, max = 8)
+        String username = resetJSON.get("username").toString();
+        @Length(min = 6, max = 16)
+        String password = resetJSON.get("password").toString();
+        @Pattern(regexp = EMAIL_REGEX)
+        String email = resetJSON.get("email").toString();
+        @Length(min = 6, max = 6)
+        String verificationCode = resetJSON.get("verification-code").toString();
+
+        ErrCode errCode = service.validateAndResetPassword(email, username, password, verificationCode, session.getId());
+        if (errCode == ErrCode.Success) {
+
+            return RestBean.success("reset-password success");
+        } else
             return RestBean.failure(400, errCode);
     }
 }

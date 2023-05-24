@@ -17,6 +17,9 @@ public enum ErrCode {
     // 登录相关
     AccountNotExist(21),            // 账号不存在
     PasswordNotMatch(22),           // 密码不匹配
+
+    // 重置密码相关
+    ResetPasswordSqlFailed(31),     // 重置密码sql执行失败
     ;
 
     private final int code;

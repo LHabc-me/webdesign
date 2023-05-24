@@ -7,9 +7,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public interface AuthorizeService extends UserDetailsService {
 
-    ErrCode sendValidateEmail(String email, String sessionId);
+    ErrCode sendValidateEmail(String email, String sessionId, boolean isRegister);
 
     ErrCode validateAndRegister(String email, String username, String password, String validateCode, String sessionId);
 
-    ErrCode validateAndLogin(String email, String password);
+    ErrCode validateAndResetPassword(String email, String username, String password, String validateCode, String sessionId);
+
+//    ErrCode validateAndLogin(String email, String password);
 }
