@@ -11,7 +11,6 @@ public interface AuthorizeService extends UserDetailsService {
 
     ErrCode validateAndRegister(String email, String username, String password, String validateCode, String sessionId);
 
-    ErrCode validateAndResetPassword(String email, String username, String password, String validateCode, String sessionId);
+    ErrCode validateAndResetPassword(String email, String password, String validateCode, String sessionId);
 
-//    ErrCode validateAndLogin(String email, String password);
 }

@@ -1,4 +1,4 @@
-package com.web_design.backend.entity;
+package com.web_design.backend.entity.auth;
 
 import lombok.Data;
 

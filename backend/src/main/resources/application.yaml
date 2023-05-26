@@ -27,8 +27,31 @@ spring:
         smtp:
           socketFactory:
             class: javax.net.ssl.SSLSocketFactory
-    data:
-      redis:
-        database: 0
-        host: localhost
-        port: 6379
+  data:
+    redis:
+      database: 0
+      host: localhost
+      port: 6379
+
+  servlet:
+    #      http:
+    #        enabled: true                # 启用http上传
+    #        max-request-size: 1GB         # 上传文件总的最大值 默认10MB
+    #        max-file-size: 100MB         #单个文件最大值 默认10MB
+    #        #        file-size-threshold: 512KB   # 当上传文件达到指定配置量的时候会将文件内容写入磁盘
+    #        location: /home/kiakiana_423/UploadTest             # 设置上传的临时目录
+    multipart:
+      enabled: true                 # 启用http上传
+      max-file-size: 100MB          #单个文件最大值 默认10MB
+      max-request-size: 1GB         # 上传文件总的最大值 默认10MB
+      file-size-threshold: 1MB      # 当上传文件达到指定配置量的时候会将文件内容写入磁盘
+      location: /home/kiakiana_423/UploadTest/             # 设置上传的临时目录
+#
+#        file:
+#          #上传路径
+#          path: /home/kiakiana_423/UploadTest
+#        access:
+#          base-url:
+#            #访问路径
+#            file: /home/kiakiana_423/UploadTest
+

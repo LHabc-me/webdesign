@@ -1,6 +1,6 @@
 package com.web_design.backend.service.impl;
 
-import com.web_design.backend.entity.Account;
+import com.web_design.backend.entity.auth.Account;
 import com.web_design.backend.entity.ErrCode;
 import com.web_design.backend.mapper.UserMapper;
 import com.web_design.backend.service.AuthorizeService;
@@ -129,7 +129,7 @@ public class AuthorizeServiceImpl implements AuthorizeService {
     }
 
     @Override
-    public ErrCode validateAndResetPassword(String email, String username, String password, String validateCode, String sessionId) {
+    public ErrCode validateAndResetPassword(String email, String password, String validateCode, String sessionId) {
         String key = "email:" + sessionId + ":" + email;
         if (Boolean.TRUE.equals(template.hasKey(key))) {
             String code = template.opsForValue().get(key);

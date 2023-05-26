@@ -61,8 +61,8 @@ public class AuthorizeController {
     @PostMapping("/reset-password")
     public RestBean<String> resetPassword(@RequestBody JSONObject resetJSON,
                                           HttpSession session) {
-        @Pattern(regexp = USERNAME_REGEX) @Length(min = 2, max = 8)
-        String username = resetJSON.get("username").toString();
+//        @Pattern(regexp = USERNAME_REGEX) @Length(min = 2, max = 8)
+//        String username = resetJSON.get("username").toString();
         @Length(min = 6, max = 16)
         String password = resetJSON.get("password").toString();
         @Pattern(regexp = EMAIL_REGEX)
@@ -70,7 +70,7 @@ public class AuthorizeController {
         @Length(min = 6, max = 6)
         String verificationCode = resetJSON.get("verification-code").toString();
 
-        ErrCode errCode = service.validateAndResetPassword(email, username, password, verificationCode, session.getId());
+        ErrCode errCode = service.validateAndResetPassword(email, password, verificationCode, session.getId());
         if (errCode == ErrCode.Success) {
 
             return RestBean.success("reset-password success");
