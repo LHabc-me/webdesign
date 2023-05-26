@@ -68,7 +68,7 @@
       </VNavigationDrawer>
     </keep-alive>
     <VMain>
-      <router-view class="pa-10 pb-0 mb-0"
+      <router-view class="pa-10 pb-0"
                    v-slot="{Component}">
         <keep-alive>
           <component :is="Component"/>
@@ -119,6 +119,7 @@ const user = computed(() => {
         name: i18n.global.t('profile'),
         icon: 'mdi-account',
         onClick: () => {
+          router.push('/profile')
         }
       },
       {
