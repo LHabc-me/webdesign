@@ -5,10 +5,9 @@
              class="mouse-pointer"
              @click="uploadAvatarInput.click()">
       <VImg ref="img"
-            src="https://cdn.vuetifyjs.com/images/john.jpg">
+            src="avatar">
       </VImg>
     </VAvatar>
-    <form></form>
     <input ref="uploadAvatarInput"
            type="file"
            class="d-none"
@@ -27,7 +26,7 @@ onMounted(() => {
   uploadAvatarInput.value.addEventListener('change', (event) => {
     const form = new FormData()
     form.append("file", event.target.files[0])
-    post("/user/avatar", form, {}, {"Content-Type": "multipart/form-data"})
+    post("api/user/avatar", form, {}, {"Content-Type": "multipart/form-data"})
       .then(({data}) => {
         console.log(data)
       })

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-75 h-75 mx-auto">
+  <div class="w-75 mx-auto">
     <VRow v-for="i in 6"
           :key="i">
       <VCol v-for="j in 6"

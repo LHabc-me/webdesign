@@ -8,8 +8,6 @@
 <script>
 import VuePdfEmbed from 'vue-pdf-embed'
 
-// OR THE FOLLOWING IMPORT FOR VUE 2
-// import VuePdfEmbed from 'vue-pdf-embed/dist/vue2-pdf-embed'
 
 export default {
   components: {
