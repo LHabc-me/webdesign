@@ -1,5 +1,5 @@
 <template>
-  <div class="h-100">
+  <div class="h-100 pb-0">
     <VRow>
       <VCol cols="2">
         <VCarousel :cycle="true"
@@ -42,6 +42,7 @@
             </VMenu>
           </VTextField>
         </VCol>
+
         <div>
           <VList>
             <VListItem v-for="(item, index) in [1, 2, 3, 4]"
@@ -81,8 +82,12 @@
                   </div>
                   <div class="h-50"
                        layout="row bottom-justify">
-                    <VBtn color="primary">书籍详情</VBtn>
-                    <VBtn variant="outlined">加入收藏</VBtn>
+                    <VBtn color="primary"
+                          @click="">书籍详情
+                    </VBtn>
+                    <VBtn variant="outlined"
+                          @click="message.success('收藏成功！')">加入收藏
+                    </VBtn>
                   </div>
                 </div>
               </div>

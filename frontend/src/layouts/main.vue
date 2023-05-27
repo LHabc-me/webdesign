@@ -45,30 +45,28 @@
       </template>
     </VAppBar>
 
-    <keep-alive>
-      <VNavigationDrawer v-model="showMenu"
-                         :temporary="true">
-        <VList :mandatory="true">
-          <div v-for="(list, list_index) in lists" :key="list_index">
-            <VDivider v-if="list_index !== 0"/>
-            <VListSubheader v-if="list.title">{{ list.title }}</VListSubheader>
-            <VListItem v-for="(item, item_index) in list.items"
-                       :key="item_index"
-                       color="primary"
-                       variant="flat"
-                       :active="$route.path === item.to"
-                       @click="$router.push(item.to)">
-              <template #prepend>
-                <VIcon :icon="item.icon"></VIcon>
-              </template>
-              <VListItemTitle>{{ item.text }}</VListItemTitle>
-            </VListItem>
-          </div>
-        </VList>
-      </VNavigationDrawer>
-    </keep-alive>
+    <VNavigationDrawer v-model="showMenu"
+                       :temporary="true">
+      <VList :mandatory="true">
+        <div v-for="(list, list_index) in lists" :key="list_index">
+          <VDivider v-if="list_index !== 0"/>
+          <VListSubheader v-if="list.title">{{ list.title }}</VListSubheader>
+          <VListItem v-for="(item, item_index) in list.items"
+                     :key="item_index"
+                     color="primary"
+                     variant="flat"
+                     :active="$route.path === item.to"
+                     @click="$router.push(item.to)">
+            <template #prepend>
+              <VIcon :icon="item.icon"></VIcon>
+            </template>
+            <VListItemTitle>{{ item.text }}</VListItemTitle>
+          </VListItem>
+        </div>
+      </VList>
+    </VNavigationDrawer>
     <VMain>
-      <router-view class="pa-10 pb-0"
+      <router-view class="pa-10"
                    v-slot="{Component}">
         <keep-alive>
           <component :is="Component"/>
