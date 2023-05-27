@@ -30,9 +30,9 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .pdf-dark {
-  filter: invert(98%);
+  filter: invert(93%);
 }
 </style>
 
