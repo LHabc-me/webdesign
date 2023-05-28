@@ -25,7 +25,7 @@ public class MyAuthenticationHandler implements AuthenticationSuccessHandler
         response.setContentType("application/json;charset=UTF-8");
         response.setCharacterEncoding("utf-8");
         if (request.getRequestURI().endsWith("/login"))
-            response.getWriter().write(JSONObject.toJSONString(RestBean.success(request.getSession().getAttribute("token"))));
+            response.getWriter().write(JSONObject.toJSONString(RestBean.success(request.getSession().getAttribute("token"), )));
         else if (request.getRequestURI().endsWith("/logout")) {
             request.getSession().removeAttribute("token");
             response.getWriter().write(JSONObject.toJSONString(RestBean.success("退出登录成功")));

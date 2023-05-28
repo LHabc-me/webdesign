@@ -8,4 +8,5 @@ public class Account {
     String email;
     String username;
     String password;
+    int coins;
 }

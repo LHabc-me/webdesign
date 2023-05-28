@@ -69,15 +69,6 @@ public class AuthorizeServiceImpl implements AuthorizeService {
             long expire = Optional.ofNullable(template.getExpire(key, TimeUnit.SECONDS)).orElse(0L);
             if (expire > 120) return ErrCode.ValidateCodeExpired;
         }
-//        Account account = mapper.findAccountByEmail(email);
-//        // 若为重置密码则验证此账户是否存在
-//        if (account == null) {
-//            return ErrCode.AccountNotExist;
-//        }
-//        // 若为注册则验证邮箱是否已经注册
-//        if (isRegister && account != null) {
-//            return ErrCode.EmailAlreadyRegistered;
-//        }
 
         Random random = new Random();
         int code = random.nextInt(899999) + 100000;

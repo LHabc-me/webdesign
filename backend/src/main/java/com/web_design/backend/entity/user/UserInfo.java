@@ -8,4 +8,5 @@ public class UserInfo {
     int id;
     String email;
     String username;
+    int coins;
 }

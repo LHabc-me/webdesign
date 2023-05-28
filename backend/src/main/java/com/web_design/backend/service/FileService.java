@@ -7,5 +7,9 @@ public interface FileService {
 
     FileInfo findFileByFileName(String filename);
 
-    FileInfo findFileByUploader(String uploader);
+    FileInfo[] findFileByUploader(String uploader);
+
+    FileInfo[] findFileByAuthor(String author);
+
+    int countFileNumber();
 }

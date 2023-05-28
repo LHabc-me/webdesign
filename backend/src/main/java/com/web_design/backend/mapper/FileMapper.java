@@ -16,5 +16,11 @@ public interface FileMapper {
     int insertFile(String filename, String uploader, String originalFilename, String author);
 
     @Select("select * from file where uploader=#{uploader}")
-    FileInfo findFileByUploader(String uploader);
+    FileInfo[] findFileByUploader(String uploader);
+
+    @Select("select * from file where author=#{author}")
+    FileInfo[] findFileByAuthor(String author);
+
+    @Select("select count(*) from file")
+    int countFileNumber();
 }

@@ -23,7 +23,15 @@ public class FileServiceImpl implements FileService {
         return mapper.findFileByFileName(filename);
     }
 
-    public FileInfo findFileByUploader(String uploader) {
+    public FileInfo[] findFileByUploader(String uploader) {
         return mapper.findFileByUploader(uploader);
+    }
+
+    public FileInfo[] findFileByAuthor(String author) {
+        return mapper.findFileByAuthor(author);
+    }
+
+    public int countFileNumber() {
+        return mapper.countFileNumber();
     }
 }

@@ -18,7 +18,7 @@ public class SearchController {
     }
 
     @RequestMapping("/search-by-uploader")
-    public FileInfo searchByUploader(String uploader) {
+    public FileInfo[] searchByUploader(String uploader) {
         return service.findFileByUploader(uploader);
     }
 }
