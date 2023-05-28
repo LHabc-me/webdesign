@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
-@RequestMapping("/")
+//@RequestMapping("/")
 public class AuthorizeController {
 
     private final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
@@ -38,17 +38,17 @@ public class AuthorizeController {
     public RestBean<String> registerUser(@RequestBody JSONObject userForm,
                                          HttpSession session) {
         @Pattern(regexp = USERNAME_REGEX) @Length(min = 2, max = 8)
-        String username = userForm.get("username").toString();
+        String username = userForm.getString("username");
         @Length(min = 6, max = 16)
-        String password = userForm.get("password").toString();
+        String password = userForm.getString("password");
         @Pattern(regexp = EMAIL_REGEX)
-        String email = userForm.get("email").toString();
+        String email = userForm.getString("email");
         @Length(min = 6, max = 6)
-        String verificationCode = userForm.get("verification-code").toString();
+        String verificationCode = userForm.getString("verification-code");
 
         ErrCode errCode = service.validateAndRegister(email, username, password, verificationCode, session.getId());
         if (errCode == ErrCode.Success)
-            return RestBean.success("success");
+            return RestBean.success("register success");
         else
             return RestBean.failure(400, errCode);
     }

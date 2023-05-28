@@ -1,8 +1,11 @@
 package com.web_design.backend.config.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web_design.backend.entity.user.UserInfo;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.boot.context.properties.bind.Name;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -49,12 +52,13 @@ public class MyAuthenticationFilter extends UsernamePasswordAuthenticationFilter
             }
             String username = loginData.get(getUsernameParameter());
             String password = loginData.get(getPasswordParameter());
-
+            // 将token放入session
+            request.getSession().setAttribute("token", username);
+//            System.out.println("token: " + username);
             // 创建 Authentication
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(username, password);
             setDetails(request, authentication);
-
             // 执行身份验证
             return this.getAuthenticationManager().authenticate(authentication);
         } else {

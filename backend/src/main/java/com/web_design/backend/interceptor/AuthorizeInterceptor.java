@@ -17,7 +17,7 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
 //        Authentication authentication = context.getAuthentication();
 //        UserInfo userInfo = (UserInfo) authentication.getPrincipal();
 //        System.out.println(userInfo.getEmail());
-        System.out.println(request.getSession().getAttribute("email"));
+//        System.out.println(request.getSession().getAttribute("email"));
         return true;
     }
 }

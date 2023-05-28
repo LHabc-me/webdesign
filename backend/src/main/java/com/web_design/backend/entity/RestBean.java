@@ -4,29 +4,29 @@ import lombok.Data;
 
 @Data
 public class RestBean<T> {
-    private int code;
-    private boolean success;
-    private T message;
-    private int err_code;
+    private int status;         // 状态码
+    private boolean success;    // 是否成功
+    private T token;            // 返回的数据
+    private int err_code;       // 错误码
 
-    private RestBean(int code, boolean success, T message) {
-        this.code = code;
+    private RestBean(int status, boolean success, T token) {
+        this.status = status;
         this.success = success;
-        this.message = message;
+        this.token = token;
     }
 
-    private RestBean(int code, boolean success, T message, int err_code) {
-        this.code = code;
+    private RestBean(int status, boolean success, T token, int err_code) {
+        this.status = status;
         this.success = success;
-        this.message = message;
+        this.token = token;
         this.err_code = err_code;
     }
 
     // 用了错误码枚举类的构造函数
-    private RestBean(int code, boolean success, T message, ErrCode err_code) {
-        this.code = code;
+    private RestBean(int status, boolean success, T token, ErrCode err_code) {
+        this.status = status;
         this.success = success;
-        this.message = message;
+        this.token = token;
         this.err_code = err_code.getCode();
     }
 

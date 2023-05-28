@@ -158,22 +158,4 @@ public class AuthorizeServiceImpl implements AuthorizeService {
         }
     }
 
-//    @Override
-//    public ErrCode validateAndLogin(String email, String password) {
-//        Account account = mapper.findAccountByEmail(email);
-//        if (account == null) {
-//            // 用户不存在
-//            return ErrCode.AccountNotExist;
-//        } else {
-//            if (encoder.matches(password, account.getPassword())) {
-//                // 登录成功
-//                return ErrCode.Success;
-//            } else {
-//                // 密码错误
-//                return ErrCode.PasswordNotMatch;
-//            }
-//        }
-//    }
-
-
 }

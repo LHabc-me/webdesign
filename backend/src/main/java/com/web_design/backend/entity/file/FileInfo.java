@@ -4,12 +4,8 @@ import lombok.Data;
 
 @Data
 public class FileInfo {
-    String id;
-    String name;
-    String url;
-    String type;
-    long size;
-    String uploadTime;
+    String filename;
+    String originalFilename;
     String uploader;
-    String description;
+    String author;
 }
