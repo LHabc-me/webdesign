@@ -68,11 +68,6 @@
 
               <div class="mt-1 mb-4"
                    layout="row">
-                <VCheckbox self="left"
-                           v-model="form.remember"
-                           :label="$t('remember-me')"
-                           color="primary"
-                />
                 <span self="right">
                 {{ $t('already-have-account') }}
                 <router-link self="right"
@@ -103,7 +98,7 @@
 
 <script setup>
 import {computed, ref} from "vue";
-import {get, post} from "@/net";
+import {post} from "@/net";
 import {useMessage} from "@/store/modules/message";
 import {i18n} from "@/i18n";
 import {useRouter} from "vue-router";
@@ -120,7 +115,6 @@ const form = ref({
   password: '',
   "repeat-password": '',
   "verification-code": '',
-  remember: false,
 })
 const isPasswordVisible = ref(false)
 const resendVerificationCodeInterval = ref(0)

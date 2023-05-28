@@ -54,8 +54,7 @@
                 type="submit"
                 @click="login"
                 color="primary"
-                :loading="loading"
-              >
+                :loading="loading">
                 {{ $t('login') }}
               </VBtn>
             </VCol>
@@ -81,7 +80,7 @@
 </style>
 
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {post} from "@/net";
 import {i18n} from "@/i18n";
 import {useUser} from "@/store/modules/user";
@@ -101,10 +100,16 @@ const form = ref({
   remember: false,
 })
 const isPasswordVisible = ref(false)
-
-
 const loading = ref(false)
 
+
+onMounted(() => {
+  if (localStorage.getItem('remember')) {
+    form.value.email = localStorage.getItem('email')
+    form.value.password = localStorage.getItem('password')
+    form.value.remember = true
+  }
+})
 
 function login() {
   console.log('login')
@@ -119,8 +124,19 @@ function login() {
   }).then(({data}) => {
     console.log(data)
     if (data.success) {
+      if (form.value.remember) {
+        localStorage.setItem('remember', 'true')
+        localStorage.setItem('email', form.value.email)
+        localStorage.setItem('password', form.value.password)
+      } else {
+        localStorage.removeItem('remember')
+        localStorage.removeItem('email')
+        localStorage.removeItem('password')
+      }
+
       user.type = data.type
       user.id = data.id
+      localStorage.setItem('token', data.token)
       message.success(i18n.global.t('login-success'))
       router.push('/')
     } else {

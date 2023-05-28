@@ -19,10 +19,43 @@
       </div>
     </div>
     <div class="h-50"
-         layout="row center-center">
-      <h1>这里放详细信息</h1>
+         layout="column top-center">
+      <h1>TODO：过滤搜索（根据类别、日期、名称、金额）</h1>
+      <v-table density="compact">
+        <thead>
+        <tr>
+          <th class="text-left">
+            类别
+          </th>
+          <th class="text-left">
+            日期
+          </th>
+          <th class="text-left">
+            名称
+          </th>
+          <th class="text-left">
+            金额
+          </th>
+          <th class="text-left">
+            详情
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="item in table"
+            :key="item.name">
+          <td>{{ item.type }}</td>
+          <td>{{ item.date }}</td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.cost }}</td>
+          <td>{{ item.detail }}</td>
+        </tr>
+        </tbody>
+      </v-table>
     </div>
   </div>
+
+
 </template>
 
 <script setup>
@@ -127,6 +160,67 @@ const optionYearPieChart = ref({
     },
   ],
 })
+
+
+const table = ref([
+  {
+    type: '收入',
+    date: '2021-01-01',
+    name: '工资',
+    cost: 10000,
+    detail: '工资'
+  },
+  {
+    type: '收入',
+    date: '2021-01-01',
+    name: '奖金',
+    cost: 1000,
+    detail: '奖金'
+  },
+  {
+    type: '支出',
+    date: '2021-01-01',
+    name: '房租',
+    cost: 2000,
+    detail: '房租'
+  },
+  {
+    type: '支出',
+    date: '2021-01-01',
+    name: '水电',
+    cost: 500,
+    detail: '水电'
+  },
+  {
+    type: '支出',
+    date: '2021-01-01',
+    name: '饮食',
+    cost: 1000,
+    detail: '饮食'
+  },
+  {
+    type: '支出',
+    date: '2021-01-01',
+    name: '交通',
+    cost: 500,
+    detail: '交通'
+  },
+  {
+    type: '支出',
+    date: '2021-01-01',
+    name: '娱乐',
+    cost: 1000,
+    detail: '娱乐'
+  },
+  {
+    type: '支出',
+    date: '2021-01-01',
+    name: '其他',
+    cost: 500,
+    detail: '其他'
+  },
+
+])
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,5 @@
 <template>
-  <h1>TODO：管理员通过选择预设活动/手动编写jquery管理活动</h1>
+  <h1>TODO：管理员调整图书热度、管理评论区、删除图书</h1>
 </template>
 <script setup>
 

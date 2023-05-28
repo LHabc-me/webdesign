@@ -7,7 +7,6 @@ import 'echarts'
 import '@/assets/css/global.scss'
 
 const app = createApp(App)
-
 registerPlugins(app)
 app.use(i18n).use(ToastPlugin)
 app.mount('#app')

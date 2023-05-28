@@ -15,34 +15,36 @@
         <input ref="uploadAvatarInput"
                type="file"
                class="d-none"
-               accept="image/*"/>
+               accept="image/*"
+               @change="onuploadAvatarInputChange"/>
+        <div>id：123456</div>
         <div>电子邮箱：lhabc.me@outlook.com</div>
         <div>用户名：LHabc <span class="link-color mouse-pointer">修改</span></div>
-        <div>id：123456</div>
         <div>书币余额：100 <span class="link-color mouse-pointer">充值</span></div>
-        <div>我的作品：暂无</div>
+        <div>书龄：20天</div>
+        <div>热度：33</div>
+        <div>作品：暂无</div>
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import {onMounted, ref} from 'vue'
+import {ref} from 'vue'
 import {post} from '@/net'
 
 const uploadAvatarInput = ref(null)
-onMounted(() => {
-  uploadAvatarInput.value.addEventListener('change', (event) => {
-    const form = new FormData()
-    form.append('file', event.target.files[0])
-    post('api/user/avatar', form, {}, {'Content-Type': 'multipart/form-data'})
-      .then(({data}) => {
-        console.log(data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  })
-})
+
+function onuploadAvatarInputChange(event) {
+  const form = new FormData()
+  form.append('file', event.target.files[0])
+  post('api/upload/user/avatar', form, {}, {'Content-Type': 'multipart/form-data'})
+    .then(({data}) => {
+      console.log(data)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
 </script>
 <style scoped lang="scss">
 

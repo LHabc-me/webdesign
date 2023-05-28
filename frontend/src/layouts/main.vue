@@ -121,12 +121,6 @@ const user = computed(() => {
         }
       },
       {
-        name: i18n.global.t('设置'),
-        icon: 'mdi-cog',
-        onClick: () => {
-        }
-      },
-      {
         name: i18n.global.t('logout'),
         icon: 'mdi-logout',
         onClick: () => {
@@ -186,11 +180,6 @@ const lists = [
         icon: 'mdi-pencil',
         to: '/author/upload'
       },
-      {
-        text: '作者中心',
-        icon: 'mdi-flag',
-        to: '/author/center'
-      }
     ]
   },
   {
@@ -206,9 +195,9 @@ const lists = [
         to: '/admin/activity'
       },
       {
-        text: '热度管理',
+        text: '图书管理',
         icon: 'mdi-fire',
-        to: '/admin/hot'
+        to: '/admin/book'
       },
       {
         text: '用户管理',
