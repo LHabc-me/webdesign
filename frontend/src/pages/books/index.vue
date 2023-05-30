@@ -48,18 +48,12 @@
                  layout="column cneter-center">
               <h1>作者简介</h1>
               <VAvatar size="100"
-                       class="mouse-pointer"
-                       @click="uploadAvatarInput.click()">
+                       class="mouse-pointer">
                 <VImg ref="img"
                       src="avatar">
                 </VImg>
               </VAvatar>
               <div>
-                <input ref="uploadAvatarInput"
-                       type="file"
-                       class="d-none"
-                       accept="image/*"
-                       @change="onuploadAvatarInputChange"/>
                 <div>id：123456</div>
                 <div>用户名：LHabc</div>
                 <div>书龄：20天</div>

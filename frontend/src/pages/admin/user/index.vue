@@ -4,6 +4,8 @@
 
 <template>
   <div>
+    <h1>TODO：管理员修改用户密码、余额、热度、用户名</h1>
+
     <VRow>
       <VCol cols="5"
             class="mx-auto">
@@ -19,7 +21,6 @@
                     append-inner-icon="mdi-magnify"
                     :clearable="true"></VTextField>
       </VCol>
-      <h1>TODO：管理员修改用户密码、余额、热度、用户名</h1>
     </VRow>
   </div>
 </template>
