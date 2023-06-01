@@ -1,7 +1,9 @@
 package com.web_design.backend.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,10 +14,11 @@ import java.net.URLEncoder;
 public class SendFileToFrontController {
 
     @PostMapping("/book/send")
-    public String sendFileToFront(@RequestParam("bookId") String bookId, HttpServletResponse response) {
+    public String sendFileToFront(@RequestBody JSONObject info, HttpServletResponse response) {
         try {
             // path是指想要下载的文件的路径
             String path = "/home/kiakiana_423/UploadTest/";
+            String bookId = info.getString("bookId");
             File file = new File(path + bookId);
             // 获取文件名
             String filename = file.getName();
