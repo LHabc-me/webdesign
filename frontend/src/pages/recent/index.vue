@@ -26,6 +26,7 @@ onActivated(() => {
   const form = new FormData()
   form.append('bookID', route.query.bookID)
   post('api/book/send', form).then(({data}) => {
+    console.log(data)
     pdfSrc.value = data
     const loadingTask = createLoadingTask(pdfSrc.value)
     loadingTask.promise.then(pdf => {
