@@ -11,19 +11,30 @@
               src="avatar">
         </VImg>
       </VAvatar>
-      <div>
+      <div class="w-100" layout="row center-center">
         <input ref="uploadAvatarInput"
                type="file"
                class="d-none"
                accept="image/*"
                @change="onuploadAvatarInputChange"/>
-        <div>id：123456</div>
-        <div>电子邮箱：lhabc.me@outlook.com</div>
-        <div>用户名：LHabc <span class="link-color mouse-pointer">修改</span></div>
-        <div>书币余额：100 <span class="link-color mouse-pointer">充值</span></div>
-        <div>书龄：20天</div>
-        <div>热度：33</div>
-        <div>作品：暂无</div>
+        <div layout="row center-center">
+          <div class="w-33">
+            <div>ID</div>
+            <div>电子邮箱</div>
+            <div>用户名</div>
+            <div>书币余额</div>
+            <div>热度</div>
+            <div>作品</div>
+          </div>
+          <div class="w-66 text-light-blue">
+            <div>123456</div>
+            <div>lhabc.me@outlook.com</div>
+            <div>LHabc <span class="link-color mouse-pointer">修改</span></div>
+            <div>100 <span class="link-color mouse-pointer">充值</span></div>
+            <div>33</div>
+            <div>暂无</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

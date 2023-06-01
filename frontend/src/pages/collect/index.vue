@@ -1,7 +1,12 @@
 <template>
   <div class="w-75 mx-auto">
-    <h1>TODO：用户删除图书</h1>
-    <VBtn color="primary" @click="showBadge = !showBadge">管理图书</VBtn>
+    <div class="w-50 mx-auto mb-10">
+      <VBtn :color="showBadge ? 'error' : 'primary'"
+            @click="showBadge = !showBadge"
+            :block="true">
+        {{ showBadge ? '确定删除' : '管理图书' }}
+      </VBtn>
+    </div>
     <VRow v-for="(books, i) in booksList"
           :key="i">
       <VCol v-for="(book, j) in books"
@@ -11,10 +16,11 @@
 
         <VBadge class="mouse-pointer" :model-value="showBadge">
           <template #badge>
-            <VIcon icon="mdi-close"></VIcon>
+            <VIcon icon="mdi-close" @click="deleteBook(i, j)"></VIcon>
           </template>
           <div style="width: 110px;height: 145px;"
-               class="mouse-normal">
+               :class="{'mouse-normal': showBadge}"
+               @click="$router.push({path: 'books', query: {bookId: 1}})">
             <VImg src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
                   class="h-100"
                   :cover="true">
@@ -53,6 +59,7 @@ const booksList = computed(() => {
   }
   return list
 })
+
 </script>
 <style scoped lang="scss">
 //* {

@@ -23,7 +23,7 @@
           </VCarousel>
         </VRow>
         <VRow>
-          <VCol style="margin-top: 50px;">
+          <VCol style="margin-top: 50px">
             <div>
               <div>高级搜索</div>
               <VDivider></VDivider>
@@ -75,11 +75,11 @@
 
         <div>
           <VList>
-            <VListItem v-for="(item, index) in [1, 2, 3, 4]"
+            <VListItem v-for="(book, index) in [1, 2, 3, 4]"
                        :key="index">
               <VDivider v-if="index !== 0" class="mb-2"></VDivider>
               <div layout="row"
-                   style="height: 145px;"
+                   style="height: 145px"
                    @click="()=>{}">
                 <VImg src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
                       class="h-100"
@@ -88,7 +88,10 @@
                       :cover="true"></VImg>
                 <VCard class="h-100 elevation-0">
                   <VCardTitle>
-                    <span class="primary-color-hover mouse-pointer">书名</span>
+                    <span class="primary-color-hover mouse-pointer"
+                          @click="showBookDetail(book.id)">
+                      书名
+                    </span>
                   </VCardTitle>
                   <VCardSubtitle layout="row">
                     <span class="primary-color-hover mouse-pointer" @click="$router.push({path: '/user/profile', query: { id: 1 }})">作者</span>
@@ -106,18 +109,19 @@
                      style="width: 210px">
                   <div class="h-50">
                     <span class="float-end">
-                      <VIcon icon="mdi-fire"></VIcon>
+                      <VIcon icon="mdi-fire" color="red"></VIcon>
                       <span class="text-center">热度100</span>
                     </span>
                   </div>
                   <div class="h-50"
                        layout="row bottom-justify">
                     <VBtn color="primary"
-                          @click="$router.push({path: '/books', query: { id: 1 }})">
+                          @click="showBookDetail(book.id)">
                       书籍详情
                     </VBtn>
                     <VBtn variant="outlined"
-                          @click="message.success('收藏成功！')">加入收藏
+                          @click="message.success('收藏成功！')">
+                      加入收藏
                     </VBtn>
                   </div>
                 </div>
@@ -152,16 +156,34 @@
 </template>
 
 <script setup>
-import {useMessage} from "@/store/modules/message";
-import {useUser} from "@/store/modules/user";
-import {ref} from "vue";
+import {useMessage} from "@/store/modules/message"
+import {useUser} from "@/store/modules/user"
+import {ref, watch} from "vue"
+import {get} from "@/net"
+import {useRouter} from "vue-router"
 
 const message = useMessage()
 const user = useUser()
+const router = useRouter()
 
 const searchContent = ref('')
 const searchMenu = ref([])
 
+watch(searchContent, (val) => {
+  if (searchContent.value === '') {
+    searchMenu.value = []
+    return
+  }
+  get('api/search', {keyword: val}).then(
+    ({data}) => {
+      searchMenu.value = data.id
+    }
+  )
+})
+
+function showBookDetail(bookId) {
+  router.push({path: '/books', query: {bookId}})
+}
 </script>
 
 <style lang="scss" scoped>

@@ -81,7 +81,7 @@
 
 <script setup>
 import {onMounted, ref} from "vue";
-import {post} from "@/net";
+import {get, post} from "@/net";
 import {i18n} from "@/i18n";
 import {useUser} from "@/store/modules/user";
 import {useMessage} from "@/store/modules/message";
@@ -134,10 +134,15 @@ function login() {
         localStorage.removeItem('password')
       }
 
-      user.type = data.type
-      user.id = data.id
       localStorage.setItem('token', data.token)
       message.success(i18n.global.t('login-success'))
+      get('api/user/me').then(({data}) => {
+        user.id = data.id
+        user.name = data.name
+        user.email = data.email
+        user.type = data.type
+        user.coins = data.coins
+      })
       router.push('/')
     } else {
       message.error(i18n.global.t('login-failed'))

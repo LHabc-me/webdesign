@@ -11,20 +11,26 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue'
+import {onActivated, onMounted, ref, watch} from 'vue'
 import {VuePdf, createLoadingTask} from 'vue3-pdfjs/esm'
 import {useTheme} from "@/store/modules/theme"
+import {useRoute} from "vue-router"
+import {post} from "@/net";
 
+const route = useRoute()
 const pdfSrc = ref('https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf')
 const numOfPages = ref(0)
 const theme = useTheme()
 
-onMounted(() => {
-  const loadingTask = createLoadingTask(pdfSrc.value)
-  loadingTask.promise.then(pdf => {
-    numOfPages.value = pdf.numPages
-
-
+onActivated(() => {
+  const form = new FormData()
+  form.append('bookID', route.query.bookID)
+  post('api/book/send', form).then(({data}) => {
+    pdfSrc.value = data
+    const loadingTask = createLoadingTask(pdfSrc.value)
+    loadingTask.promise.then(pdf => {
+      numOfPages.value = pdf.numPages
+    })
   })
 
 })

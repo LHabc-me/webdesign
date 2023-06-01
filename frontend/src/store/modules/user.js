@@ -6,6 +6,7 @@ export const useUser = defineStore('user', {
     name: '',
     email: '',
     isLogin: false,
+    coins: 0,//余额
 
     /**@type {''|'guest'|'user'|'author'|'admin'}*/
     type: '',

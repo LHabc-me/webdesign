@@ -6,8 +6,8 @@
         <VRadio label="是" :value="true"></VRadio>
         <VRadio label="否" :value="false"></VRadio>
       </VRadioGroup>
-      <VTextField label="原作者" v-model="form.writer" :disabled="form.isOrigin"></VTextField>
-      <VTextField label="分类" v-model="form.type"></VTextField>
+      <VTextField label="原作者" v-model="form.author" :disabled="form.isOrigin"></VTextField>
+      <VTextField label="分类" v-model="form.tag"></VTextField>
       <VTextField label="定价" v-model="form.price"></VTextField>
       <VTextarea label="简介" v-model="form.brief"></VTextarea>
       <VBtn type="submit"
@@ -23,12 +23,14 @@
 <script setup>
 import {ref} from "vue";
 import {post} from "@/net";
+import {useUser} from "@/store/modules/user"
 
+const user = useUser()
 const form = ref({
   file: null,
   isOrigin: true,
-  writer: null,
-  type: null,
+  author: null,//原作者
+  tag: null,
   price: null,
   brief: null,
 })
@@ -38,6 +40,7 @@ function upload() {
   for (const key in form.value) {
     form.append(key, form.value[key])
   }
+  form.append('uploaderId', user.id)
   post('api/upload/author/new-book', form, {}, {'Content-Type': 'multipart/form-data'})
     .then(({data}) => {
       console.log(data)
