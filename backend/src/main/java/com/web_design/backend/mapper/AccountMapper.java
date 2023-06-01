@@ -7,7 +7,9 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 @Mapper
-public interface UserMapper {
+public interface AccountMapper {
+    @Select("select * from user where id=#{id}")
+    Account findAccountById(int id);
 
     @Select("select * from user where email=#{text}")
     Account findAccountByEmail(String text);

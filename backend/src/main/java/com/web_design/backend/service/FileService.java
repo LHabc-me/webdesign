@@ -3,13 +3,30 @@ package com.web_design.backend.service;
 import com.web_design.backend.entity.file.FileInfo;
 
 public interface FileService {
-    String uploadFile(String filename, String uploader, String originalFilename, String author);
+    String uploadFile(String filename, int uploaderId, String originalFilename,
+                      String author, int price, boolean isOriginal, String description, String tag);
 
     FileInfo findFileByFileName(String filename);
 
-    FileInfo[] findFileByUploader(String uploader);
+    FileInfo[] findFileByMultiCondition(String keywords, String tag, boolean isOriginal, int lprice, int hprice);
+
+    FileInfo[] findFileByMultiConditionWithoutIsOriginal(String keywords, String tag, int lprice, int hprice);
+
+    FileInfo[] findFileByMultiConditionWithoutPrice(String keywords, String tag, boolean isOriginal);
+
+    FileInfo[] findFileByUploaderId(int uploader);
 
     FileInfo[] findFileByAuthor(String author);
 
     int countFileNumber();
+
+    boolean deleteFile(String filename);
+
+    boolean setFileHot(String filename, int hot);
+
+    boolean setFilePrice(String filename, int price);
+
+    boolean setFileDescription(String filename, String description);
+
+    boolean setFileTag(String filename, String tag);
 }

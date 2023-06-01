@@ -9,4 +9,6 @@ public class UserInfo {
     String email;
     String username;
     int coins;
+    int hot;
+    boolean roles;
 }

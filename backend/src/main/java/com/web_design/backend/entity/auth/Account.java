@@ -8,5 +8,7 @@ public class Account {
     String email;
     String username;
     String password;
-    int coins;
+    int coins = 0;
+    int hot = 0;
+    boolean roles;
 }

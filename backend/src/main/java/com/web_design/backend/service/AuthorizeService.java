@@ -1,9 +1,7 @@
 package com.web_design.backend.service;
 
 import com.web_design.backend.entity.ErrCode;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public interface AuthorizeService extends UserDetailsService {
 

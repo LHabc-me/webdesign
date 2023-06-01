@@ -2,7 +2,7 @@ package com.web_design.backend.service.impl;
 
 import com.web_design.backend.entity.auth.Account;
 import com.web_design.backend.entity.ErrCode;
-import com.web_design.backend.mapper.UserMapper;
+import com.web_design.backend.mapper.AccountMapper;
 import com.web_design.backend.service.AuthorizeService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +27,7 @@ public class AuthorizeServiceImpl implements AuthorizeService {
     String from;
 
     @Resource
-    UserMapper mapper;
+    AccountMapper mapper;
     @Resource
     MailSender mailSender;
 

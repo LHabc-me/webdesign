@@ -12,26 +12,72 @@ public class FileServiceImpl implements FileService {
     @Resource
     FileMapper mapper;
 
-    public String uploadFile(String filename, String uploader, String originalFilename, String author) {
-        if (mapper.insertFile(filename, uploader, originalFilename, author) > 0)
+    @Override
+    public String uploadFile(String filename, int uploaderId, String originalFilename,
+                             String author, int price, boolean isOriginal, String description, String tag) {
+        if (mapper.insertFile(filename, uploaderId, originalFilename, author, price, isOriginal, description, tag) > 0)
             return "upload file success";
         else
             return "upload file failed";
     }
 
+    @Override
     public FileInfo findFileByFileName(String filename) {
         return mapper.findFileByFileName(filename);
     }
 
-    public FileInfo[] findFileByUploader(String uploader) {
-        return mapper.findFileByUploader(uploader);
+    @Override
+    public FileInfo[] findFileByUploaderId(int uploaderId) {
+        return mapper.findFileByUploader(uploaderId);
     }
 
+    @Override
     public FileInfo[] findFileByAuthor(String author) {
         return mapper.findFileByAuthor(author);
     }
 
+    @Override
     public int countFileNumber() {
         return mapper.countFileNumber();
+    }
+
+    @Override
+    public boolean deleteFile(String filename) {
+        return mapper.deleteFile(filename) > 0;
+    }
+
+    @Override
+    public boolean setFileHot(String filename, int hot) {
+        return mapper.setHot(filename, hot) > 0;
+    }
+
+    @Override
+    public boolean setFilePrice(String filename, int price) {
+        return mapper.setPrice(filename, price) > 0;
+    }
+
+    @Override
+    public boolean setFileDescription(String filename, String description) {
+        return mapper.setDescription(filename, description) > 0;
+    }
+
+    @Override
+    public boolean setFileTag(String filename, String tag) {
+        return mapper.setTag(filename, tag) > 0;
+    }
+
+    @Override
+    public FileInfo[] findFileByMultiCondition(String keywords, String tag, boolean isOriginal, int lprice, int hprice) {
+        return mapper.findFileByMultiCondition(keywords, tag, isOriginal, lprice, hprice);
+    }
+
+    @Override
+    public FileInfo[] findFileByMultiConditionWithoutIsOriginal(String keywords, String tag, int lprice, int hprice) {
+        return mapper.findFileByMultiConditionWithoutIsOriginal(keywords, tag, lprice, hprice);
+    }
+
+    @Override
+    public FileInfo[] findFileByMultiConditionWithoutPrice(String keywords, String tag, boolean isOriginal) {
+        return mapper.findFileByMultiConditionWithoutPrice(keywords, tag, isOriginal);
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
-//@RequestMapping("/")
+@RequestMapping("/")
 public class AuthorizeController {
 
     private final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
@@ -26,7 +26,7 @@ public class AuthorizeController {
     public RestBean<String> validateRegisterEmail(@RequestBody JSONObject emailJSON,
                                                   HttpSession session) {
         @Pattern(regexp = EMAIL_REGEX)
-        String email = emailJSON.get("email").toString();
+        String email = emailJSON.getString("email");
         ErrCode errCode = service.sendValidateEmail(email, session.getId());
         if (errCode == ErrCode.Success)
             return RestBean.success("verification-code send success");
@@ -64,11 +64,11 @@ public class AuthorizeController {
 //        @Pattern(regexp = USERNAME_REGEX) @Length(min = 2, max = 8)
 //        String username = resetJSON.get("username").toString();
         @Length(min = 6, max = 16)
-        String password = resetJSON.get("password").toString();
+        String password = resetJSON.getString("password");
         @Pattern(regexp = EMAIL_REGEX)
-        String email = resetJSON.get("email").toString();
+        String email = resetJSON.getString("email");
         @Length(min = 6, max = 6)
-        String verificationCode = resetJSON.get("verification-code").toString();
+        String verificationCode = resetJSON.getString("verification-code");
 
         ErrCode errCode = service.validateAndResetPassword(email, password, verificationCode, session.getId());
         if (errCode == ErrCode.Success) {

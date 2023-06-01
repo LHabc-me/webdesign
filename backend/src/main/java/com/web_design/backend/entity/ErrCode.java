@@ -20,7 +20,12 @@ public enum ErrCode {
 
     // 重置密码相关
     ResetPasswordSqlFailed(31),     // 重置密码sql执行失败
-    ;
+
+    // 上传文件相关
+
+
+    // sql执行失败
+    SqlFail(100);
 
     private final int code;
 
