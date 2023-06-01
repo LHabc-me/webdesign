@@ -24,6 +24,10 @@ public interface FileService {
 
     boolean setFileHot(String filename, int hot);
 
+    boolean setFileAuthor(String filename, String author);
+
+    boolean setFileOriginal(String filename, boolean isOriginal);
+
     boolean setFilePrice(String filename, int price);
 
     boolean setFileDescription(String filename, String description);

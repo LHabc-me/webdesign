@@ -124,6 +124,26 @@ public class FileController {
     @ResponseBody
     public String deleteBook(@RequestBody JSONObject jsonParam) {
         String filename = jsonParam.getString("bookId");
-        return fileService.deleteFile(filename) && commentsService.deleteComment(filename) ? "delete success" : "delete failed";
+        return fileService.deleteFile(filename) && commentsService.deleteCommentByFilename(filename) ? "delete success" : "delete failed";
+    }
+
+    @PostMapping("/book/set-hot")
+    public boolean updateBookHot(String bookId, int hot) {
+        return fileService.setFileHot(bookId, hot);
+    }
+
+    @PostMapping("/book/set-author")
+    public boolean updateBookHot(String bookId, String author) {
+        return fileService.setFileAuthor(bookId, author);
+    }
+
+    @PostMapping("/book/set-price")
+    public boolean updateBookPrice(String bookId, int price) {
+        return fileService.setFilePrice(bookId, price);
+    }
+
+    @PostMapping("/book/set-original")
+    public boolean updateBookOriginal(String bookId, boolean isOriginal) {
+        return fileService.setFileOriginal(bookId, isOriginal);
     }
 }

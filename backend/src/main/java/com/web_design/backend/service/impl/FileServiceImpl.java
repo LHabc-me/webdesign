@@ -57,6 +57,16 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public boolean setFileAuthor(String filename, String author) {
+        return mapper.setAuthor(filename, author) > 0;
+    }
+
+    @Override
+    public boolean setFileOriginal(String filename, boolean isOriginal) {
+        return mapper.setOriginal(filename, isOriginal) > 0;
+    }
+
+    @Override
     public boolean setFileDescription(String filename, String description) {
         return mapper.setDescription(filename, description) > 0;
     }

@@ -11,6 +11,7 @@
     <groupId>com.web_design</groupId>
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>backend</name>
     <description>backend</description>
     <properties>
@@ -93,7 +94,15 @@
                 <!--                    </execution>-->
                 <!--                </executions>-->
             </plugin>
-
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-war-plugin</artifactId>-->
+            <!--                <configuration>-->
+            <!--                    <warSourceExcludes>src/main/resources/**</warSourceExcludes>-->
+            <!--                    <warName>springjsp</warName>-->
+            <!--                    <failOnMissingWebXml>false</failOnMissingWebXml>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 

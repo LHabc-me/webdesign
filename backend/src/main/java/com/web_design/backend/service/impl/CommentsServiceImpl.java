@@ -17,8 +17,8 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public boolean deleteComment(String filename) {
-        return mapper.deleteComment(filename) > 0;
+    public boolean deleteCommentByFilename(String filename) {
+        return mapper.deleteCommentByFilename(filename) > 0;
     }
 
     @Override

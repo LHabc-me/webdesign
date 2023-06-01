@@ -4,7 +4,7 @@ public interface CommentsService {
 
     boolean insertComment(String filename, int userId, String content);
 
-    boolean deleteComment(String filename);
+    boolean deleteCommentByFilename(String filename);
 
     String[] findCommentByFilename(String filename);
 

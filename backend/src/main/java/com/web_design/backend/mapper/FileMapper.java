@@ -29,6 +29,12 @@ public interface FileMapper {
     @Update("update file set price=#{price} where filename=#{filename} and flag=true")
     int setPrice(String filename, int price);
 
+    @Update("update file set author=#{author} where filename=#{filename} and flag=true")
+    int setAuthor(String filename, String author);
+
+    @Update("update file set isOriginal=#{isOriginal} where filename=#{filename} and flag=true")
+    int setOriginal(String filename, boolean isOriginal);
+
     @Update("update file set description=#{description} where filename=#{filename} and flag=true")
     int setDescription(String filename, String description);
 

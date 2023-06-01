@@ -29,7 +29,7 @@ public class CommentsController {
 //                : RestBean.failure(400, "insert failed");
 //    }
 
-    @PostMapping("/comments/find/uuid")
+    @PostMapping("/comments/find/bookId")
     public JSONObject findCommentByFilename(String filename) {
         return JSON.parseObject(JSONObject.toJSONString(commentsService.findCommentByFilename(filename)));
     }
@@ -38,4 +38,5 @@ public class CommentsController {
     public JSONObject findCommentByUserId(int userId) {
         return JSON.parseObject(JSONObject.toJSONString(commentsService.findCommentByUserId(userId)));
     }
+
 }
