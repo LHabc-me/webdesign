@@ -114,7 +114,7 @@ const message = useMessage()
 const tab = ref('1')
 
 function beginRead() {
-  localStorage.setItem('recentBookId', '9d05bb9e-6b56-485a-88dd-3f0d34f167a9.pdf')
+  localStorage.setItem('recentBookId', '38a09e68-9efb-4daa-a61b-48f461b8adca.pdf')
   router.push('/recent')
 }
 </script>

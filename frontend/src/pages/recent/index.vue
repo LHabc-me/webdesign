@@ -18,7 +18,7 @@ import {useRoute} from "vue-router"
 import {post} from "@/net";
 
 const route = useRoute()
-const pdfSrc = ref('https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf')
+const pdfSrc = ''
 const numOfPages = ref(0)
 const theme = useTheme()
 

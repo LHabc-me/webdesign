@@ -136,7 +136,7 @@ function login() {
 
       localStorage.setItem('token', data.token)
       message.success(i18n.global.t('login-success'))
-      get('api/user/me').then(({data}) => {
+      get('/api/user/me').then(({data}) => {
         user.id = data.id
         user.name = data.name
         user.email = data.email
