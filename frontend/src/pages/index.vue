@@ -42,9 +42,9 @@
               </div>
               <div>价格区间</div>
               <div layout="row center-spread" class="text-subtitle-1">
-                <VTextField density="default" variant="underlined"></VTextField>
+                <VTextField density="default" variant="underlined" color="primary"></VTextField>
                 至
-                <VTextField density="default" variant="underlined"></VTextField>
+                <VTextField density="default" variant="underlined" color="primary"></VTextField>
                 书币
               </div>
             </div>

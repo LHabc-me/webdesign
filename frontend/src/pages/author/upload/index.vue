@@ -40,8 +40,9 @@ function upload() {
   for (const key in form.value) {
     form.append(key, form.value[key])
   }
+  console.log(form.file)
   form.append('uploaderId', user.id)
-  post('api/upload/author/new-book', form, {}, {'Content-Type': 'multipart/form-data'})
+  post('/api/upload/author/new-book', form, {}, {'Content-Type': 'multipart/form-data'})
     .then(({data}) => {
       console.log(data)
     })

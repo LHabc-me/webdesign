@@ -10,7 +10,8 @@
               src="avatar">
         </VImg>
       </VAvatar>
-      <div layout="row center-center">
+      <div layout="row center-center"
+           class="mt-10">
         <div class="w-33">
           <div>ID</div>
           <div>用户名</div>
@@ -18,7 +19,7 @@
           <div>热度</div>
           <div>作品</div>
         </div>
-        <div class="w-66 text-light-blue">
+        <div class="w-33 text-light-blue">
           <div>123456</div>
           <div>LHabc</div>
           <div>100</div>
@@ -41,3 +42,12 @@
   border: red solid 1px;
 }
 </style>
+
+<!--@formatter:off-->
+<route lang="json5">
+{
+  meta: {
+    layout: 'main',
+  }
+}
+</route>

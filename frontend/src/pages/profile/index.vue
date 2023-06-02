@@ -11,7 +11,7 @@
               src="avatar">
         </VImg>
       </VAvatar>
-      <div class="w-100" layout="row center-center">
+      <div class="w-100 mt-10" layout="row center-center">
         <input ref="uploadAvatarInput"
                type="file"
                class="d-none"

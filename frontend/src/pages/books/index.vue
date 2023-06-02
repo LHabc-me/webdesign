@@ -17,7 +17,7 @@
                  self="right"
                  style="width: 210px;margin-right: 200px">
               <VBtn color="primary"
-                    @click="$router.push({path: 'recent', query: {bookId: '9d05bb9e-6b56-485a-88dd-3f0d34f167a9.pdf'}})">
+                    @click="beginRead()">
                 开始阅读
               </VBtn>
               <VBtn variant="outlined"
@@ -28,6 +28,7 @@
           </div>
         </div>
       </VRow>
+
       <VRow>
         <VCol cols="8">
           <div>
@@ -69,9 +70,9 @@
           </div>
         </VCol>
         <VCol cols="4">
-          <div class="h-100" layout="column center-center">
-            <div class="pa-10"
-                 style="height: 500px;"
+          <div class="h-100" layout="column top-center">
+            <div class="pa-10 elevation-2"
+                 style="height: 430px;"
                  layout="column cneter-center">
               <h1>作者简介</h1>
               <VAvatar size="100"
@@ -80,18 +81,16 @@
                       src="avatar">
                 </VImg>
               </VAvatar>
-              <div layout="row center-center">
-                <div class="w-50">
+              <div layout="row center-center" class="mt-10">
+                <div class="w-33 ml-5">
                   <div>ID</div>
                   <div>用户名</div>
-                  <div>书币余额</div>
                   <div>热度</div>
                   <div>作品</div>
                 </div>
-                <div class="w-50 text-light-blue">
+                <div class="w-33 text-light-blue">
                   <div>123456</div>
                   <div>LHabc</div>
-                  <div>100</div>
                   <div>33</div>
                   <div>暂无</div>
                 </div>
@@ -105,14 +104,19 @@
 </template>
 
 <script setup>
-import {useRoute} from 'vue-router'
+import {useRouter} from 'vue-router'
 import {useMessage} from "@/store/modules/message"
 import {ref} from "vue";
 
-const route = useRoute()
+const router = useRouter()
 const message = useMessage()
 
 const tab = ref('1')
+
+function beginRead() {
+  localStorage.setItem('recentBookId', '9d05bb9e-6b56-485a-88dd-3f0d34f167a9.pdf')
+  router.push('/recent')
+}
 </script>
 
 <style lang="scss" scoped>

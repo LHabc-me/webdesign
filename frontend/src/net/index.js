@@ -5,13 +5,12 @@ const instance = axios.create({
   timeout: 5000,
 })
 
-instance.interceptors.request.use(function (config) {
-  const token = window.localStorage.getItem("token")
-  config.headers.token = token;
-  return config;
+instance.interceptors.request.use(config => {
+  config.headers.token = window.localStorage.getItem('token');
+  return config
 }, function (error) {
-  return Promise.reject(error);
-});
+  return Promise.reject(error)
+})
 
 
 function post(url, data, params = {}, headers = {'Content-Type': 'application/json'}) {
