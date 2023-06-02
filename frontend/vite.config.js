@@ -42,9 +42,9 @@ export default defineConfig({
     cors: true,
     proxy: {
       '/api': {
-        target: 'http://www.kina0630.xyz:8080',
+        target: 'http://www.kina0630.xyz',
         changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, '')
+        // rewrite: path => path.replace(/^\/api/, '')
       },
       '/dev/api': {
         target: 'http://127.0.0.1:8080',

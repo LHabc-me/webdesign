@@ -120,8 +120,8 @@
                       书籍详情
                     </VBtn>
                     <VBtn variant="outlined"
-                          @click="message.success('收藏成功！')">
-                      加入收藏
+                          @click="message.success('购买成功！')">
+                      购买本书
                     </VBtn>
                   </div>
                 </div>

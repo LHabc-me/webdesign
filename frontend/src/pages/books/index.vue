@@ -10,19 +10,14 @@
                 width="110"
                 :cover="true">
           </VImg>
-          <div class="h-100 w-100" layout="column center-left">
+          <div class="h-100 w-100 ml-10" layout="column center-left">
             <div class="font-weight-bold text-grey-darken-3 text-md-h4">书名</div>
             <div>类别</div>
-            <div layout="row center-justify"
-                 self="right"
-                 style="width: 210px;margin-right: 200px">
+            <div self="right"
+                 style="margin-right: 100px">
               <VBtn color="primary"
-                    @click="beginRead()">
-                开始阅读
-              </VBtn>
-              <VBtn variant="outlined"
-                    @click="message.success('收藏成功！')">
-                加入收藏
+                    @click="beginRead();message.success('购买成功！')">
+                购买本书
               </VBtn>
             </div>
           </div>
@@ -77,8 +72,7 @@
               <h1>作者简介</h1>
               <VAvatar size="100"
                        class="mouse-pointer">
-                <VImg ref="img"
-                      src="avatar">
+                <VImg ref="img">
                 </VImg>
               </VAvatar>
               <div layout="row center-center" class="mt-10">
@@ -114,7 +108,7 @@ const message = useMessage()
 const tab = ref('1')
 
 function beginRead() {
-  localStorage.setItem('recentBookId', '38a09e68-9efb-4daa-a61b-48f461b8adca.pdf')
+  localStorage.setItem('recentBookId', 'efd66941-97f1-473b-a3ff-67590758adc0.pdf')
   router.push('/recent')
 }
 </script>

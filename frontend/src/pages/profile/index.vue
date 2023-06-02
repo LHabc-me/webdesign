@@ -7,8 +7,7 @@
       <VAvatar size="100"
                class="mouse-pointer"
                @click="uploadAvatarInput.click()">
-        <VImg ref="img"
-              src="avatar">
+        <VImg ref="img">
         </VImg>
       </VAvatar>
       <div class="w-100 mt-10" layout="row center-center">

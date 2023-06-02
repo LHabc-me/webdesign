@@ -2,7 +2,7 @@ import axios from "axios";
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API,
-  timeout: 5000,
+  timeout: 50000,
 })
 
 instance.interceptors.request.use(config => {
@@ -13,7 +13,7 @@ instance.interceptors.request.use(config => {
 })
 
 
-function post(url, data, params = {}, headers = {'Content-Type': 'application/json'}) {
+function post(url, data, params = {}, headers = {}) {
   return instance.post(url, data, {
     headers,
     withCredentials: true,

@@ -122,7 +122,6 @@ function login() {
     email: form.value.email,
     password: form.value.password
   }).then(({data}) => {
-    console.log(data)
     if (data.success) {
       if (form.value.remember) {
         localStorage.setItem('remember', 'true')

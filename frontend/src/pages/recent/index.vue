@@ -11,28 +11,25 @@
 </template>
 
 <script setup>
-import {onActivated, onMounted, ref, watch} from 'vue'
-import {VuePdf, createLoadingTask} from 'vue3-pdfjs/esm'
+import {onActivated, ref} from 'vue'
+import {VuePdf} from 'vue3-pdfjs/esm'
 import {useTheme} from "@/store/modules/theme"
-import {useRoute} from "vue-router"
 import {post} from "@/net";
+import {createLoadingTask} from "vue3-pdfjs"
 
-const route = useRoute()
-const pdfSrc = ''
+const pdfSrc = ref()
 const numOfPages = ref(0)
 const theme = useTheme()
 
 onActivated(() => {
-  const form = new FormData()
-  post('api/book/send', {bookId: localStorage.getItem('recentBookId')}).then(({data}) => {
-    console.log(data)
-    pdfSrc.value = data
-    const loadingTask = createLoadingTask(pdfSrc.value)
-    loadingTask.promise.then(pdf => {
-      numOfPages.value = pdf.numPages
+  post('/api/book/send', {bookId: localStorage.getItem('recentBookId')}, {}, {responseType: 'blob'})
+    .then(({data}) => {
+      pdfSrc.value = {data: window.atob(data)}
+      const loadingTask = createLoadingTask(pdfSrc.value)
+      loadingTask.promise.then(pdf => {
+        numOfPages.value = pdf.numPages
+      })
     })
-  })
-
 })
 </script>
 

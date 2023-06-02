@@ -6,8 +6,7 @@
          layout="column cneter-center">
       <VAvatar size="100"
                class="mouse-pointer">
-        <VImg ref="img"
-              src="avatar">
+        <VImg ref="img">
         </VImg>
       </VAvatar>
       <div layout="row center-center"
