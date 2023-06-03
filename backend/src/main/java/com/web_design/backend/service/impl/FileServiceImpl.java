@@ -23,7 +23,9 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public FileInfo findFileByFileName(String filename) {
-        return mapper.findFileByFileName(filename);
+        FileInfo fileInfo = mapper.findFileByFileName(filename);
+        System.out.println(fileInfo);
+        return fileInfo;
     }
 
     @Override
@@ -34,6 +36,11 @@ public class FileServiceImpl implements FileService {
     @Override
     public FileInfo[] findFileByAuthor(String author) {
         return mapper.findFileByAuthor(author);
+    }
+
+    @Override
+    public FileInfo[] findFileByKeywords(String keywords) {
+        return mapper.findFileByKeywords(keywords);
     }
 
     @Override
@@ -76,18 +83,18 @@ public class FileServiceImpl implements FileService {
         return mapper.setTag(filename, tag) > 0;
     }
 
-    @Override
-    public FileInfo[] findFileByMultiCondition(String keywords, String tag, boolean isOriginal, int lprice, int hprice) {
-        return mapper.findFileByMultiCondition(keywords, tag, isOriginal, lprice, hprice);
-    }
-
-    @Override
-    public FileInfo[] findFileByMultiConditionWithoutIsOriginal(String keywords, String tag, int lprice, int hprice) {
-        return mapper.findFileByMultiConditionWithoutIsOriginal(keywords, tag, lprice, hprice);
-    }
-
-    @Override
-    public FileInfo[] findFileByMultiConditionWithoutPrice(String keywords, String tag, boolean isOriginal) {
-        return mapper.findFileByMultiConditionWithoutPrice(keywords, tag, isOriginal);
-    }
+//    @Override
+//    public FileInfo[] findFileByMultiCondition(String keywords, String tag, boolean isOriginal, int lprice, int hprice) {
+//        return mapper.findFileByMultiCondition(keywords, tag, isOriginal, lprice, hprice);
+//    }
+//
+//    @Override
+//    public FileInfo[] findFileByMultiConditionWithoutIsOriginal(String keywords, String tag, int lprice, int hprice) {
+//        return mapper.findFileByMultiConditionWithoutIsOriginal(keywords, tag, lprice, hprice);
+//    }
+//
+//    @Override
+//    public FileInfo[] findFileByMultiConditionWithoutPrice(String keywords, String tag, boolean isOriginal) {
+//        return mapper.findFileByMultiConditionWithoutPrice(keywords, tag, isOriginal);
+//    }
 }

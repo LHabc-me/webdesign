@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class FileInfo {
-    String filename;
+    String bookId;
     String originalFilename;
     int uploaderId;
     String author;

@@ -5,6 +5,7 @@ import com.web_design.backend.service.CommentsService;
 import com.web_design.backend.service.FileService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,8 +24,12 @@ public class FileController {
     @Resource
     CommentsService commentsService;
 
+    @Value("${spring.servlet.multipart.location}")
+    private String uploadFolder;
+
     // 上传头像
-    @PostMapping("/upload/avatar")
+//    @PostMapping("/upload/avatar")
+    @PostMapping("/upload/user/avatar")
     @ResponseBody
     public String avatarUpload(MultipartFile file, HttpServletRequest request) {
         System.out.println("开始处理上传头像");
@@ -38,7 +43,8 @@ public class FileController {
                 // token为不带后缀的文件名，供前端读取作为头像使用
                 String token = request.getSession().getAttribute("token").toString();
                 // 生成存储到数据库中的文件名
-                String filePath = "/home/kiakiana_423/Avatar/";  // 上传文件保存的路径
+//                String filePath = "/home/" + System.getenv().get("USERNAME") + "/Avatar/";  // 上传文件保存的路径
+                String filePath = uploadFolder + "Avatar/";  // 上传文件保存的路径
 
                 // 把文件保存到path路径下
                 File temp = new File(filePath);
@@ -87,7 +93,8 @@ public class FileController {
                 }
                 // 生成服务器使用的文件名称
                 String newFileName = UUID.randomUUID() + ext;
-                String filePath = "/home/kiakiana_423/Books/";  // 上传文件保存的路径
+//                String filePath = "/home/kiakiana_423/Books/";  // 上传文件保存的路径
+                String filePath = uploadFolder + "Books/";  // 上传文件保存的路径
 
                 // 把文件保存到path路径下
                 File temp = new File(filePath);

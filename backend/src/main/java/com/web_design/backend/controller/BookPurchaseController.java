@@ -26,7 +26,7 @@ public class BookPurchaseController {
                 && (userInfoService.updateCoinsById(userId, coins) == ErrCode.Success);
     }
 
-    @PostMapping("/book/purchase/is-purchased")
+    @PostMapping("/book/is-purchased")
     public boolean isBookPurchased(@RequestBody JSONObject info) {
         String bookId = info.getString("bookId");
         int userId = info.getIntValue("userId");

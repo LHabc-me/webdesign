@@ -8,11 +8,13 @@ public interface FileService {
 
     FileInfo findFileByFileName(String filename);
 
-    FileInfo[] findFileByMultiCondition(String keywords, String tag, boolean isOriginal, int lprice, int hprice);
+//    FileInfo[] findFileByMultiCondition(String keywords, String tag, boolean isOriginal, int lprice, int hprice);
+//
+//    FileInfo[] findFileByMultiConditionWithoutIsOriginal(String keywords, String tag, int lprice, int hprice);
+//
+//    FileInfo[] findFileByMultiConditionWithoutPrice(String keywords, String tag, boolean isOriginal);
 
-    FileInfo[] findFileByMultiConditionWithoutIsOriginal(String keywords, String tag, int lprice, int hprice);
-
-    FileInfo[] findFileByMultiConditionWithoutPrice(String keywords, String tag, boolean isOriginal);
+    FileInfo[] findFileByKeywords(String keywords);
 
     FileInfo[] findFileByUploaderId(int uploader);
 

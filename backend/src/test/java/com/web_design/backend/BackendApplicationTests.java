@@ -9,7 +9,8 @@ class BackendApplicationTests {
 
     @Test
     void contextLoads() {
-
+        var user = System.getenv();
+        System.out.println(user.get("USERNAME"));
     }
 
 }
