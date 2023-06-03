@@ -40,8 +40,9 @@
                   <VRadio label="非原创" value="3"></VRadio>
                 </VRadioGroup>
               </div>
-              <div>价格区间</div>
-              <div layout="row center-spread" class="text-subtitle-1">
+              <div style="margin-top: -15px">价格区间</div>
+              <div layout="row center-spread" class="text-subtitle-1"
+                   style="margin-top: -20px">
                 <VTextField density="default" variant="underlined" color="primary"></VTextField>
                 至
                 <VTextField density="default" variant="underlined" color="primary"></VTextField>
@@ -73,15 +74,15 @@
           </VTextField>
         </VCol>
 
-        <div>
+        <div style="min-height: 654px">
           <VList>
-            <VListItem v-for="(book, index) in [1, 2, 3, 4]"
+            <VListItem v-for="(book, index) in bookListByPage"
                        :key="index">
               <VDivider v-if="index !== 0" class="mb-2"></VDivider>
               <div layout="row"
                    style="height: 145px"
                    @click="()=>{}">
-                <VImg src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+                <VImg src="https://store.sop.org/wp-content/uploads/2019/01/PDF_ICON.png"
                       class="h-100"
                       max-width="110"
                       width="110"
@@ -89,18 +90,24 @@
                 <VCard class="h-100 elevation-0">
                   <VCardTitle>
                     <span class="primary-color-hover mouse-pointer"
-                          @click="showBookDetail(book.id)">
-                      书名
+                          @click="showBookDetail(book)">
+                      {{ book.originalFilename }}
                     </span>
                   </VCardTitle>
                   <VCardSubtitle layout="row">
-                    <span class="primary-color-hover mouse-pointer" @click="$router.push({path: '/user/profile', query: { id: 1 }})">作者</span>
+                    <span class="primary-color-hover mouse-pointer" @click="$router.push({path: '/user/profile', query: { id: book.uploaderId }})">
+                      {{ book.author }}
+                    </span>
                     <VDivider :vertical="true" class="mx-1"></VDivider>
-                    <span>分类</span>
+                    <span>{{ book.tag }}</span>
                     <VDivider :vertical="true" class="mx-1"></VDivider>
-                    <span class="book-status">是否原创</span>
+                    <span class="book-status">
+                      {{ book.isOriginal ? '原创' : '非原创' }}
+                    </span>
+                    <VDivider :vertical="true" class="mx-1"></VDivider>
+                    <span>{{ book.price }}书币</span>
                   </VCardSubtitle>
-                  <VCardText>作品简介</VCardText>
+                  <VCardText>{{ description(book.description) }}</VCardText>
                 </VCard>
 
                 <div class="h-100"
@@ -110,13 +117,13 @@
                   <div class="h-50">
                     <span class="float-end">
                       <VIcon icon="mdi-fire" color="red"></VIcon>
-                      <span class="text-center">热度100</span>
+                      <span class="text-center">热度{{ book.hot }}</span>
                     </span>
                   </div>
                   <div class="h-50"
                        layout="row bottom-justify">
                     <VBtn color="primary"
-                          @click="showBookDetail(book.id)">
+                          @click="showBookDetail(book.bookId)">
                       书籍详情
                     </VBtn>
                     <VBtn variant="outlined"
@@ -129,7 +136,7 @@
             </VListItem>
           </VList>
         </div>
-        <VPagination :length="5"></VPagination>
+        <VPagination :length="paginationLength" v-model="page"></VPagination>
       </VCol>
       <VCol cols="2">
         <VCarousel :cycle="true"
@@ -158,31 +165,57 @@
 <script setup>
 import {useMessage} from "@/store/modules/message"
 import {useUser} from "@/store/modules/user"
-import {ref, watch} from "vue"
-import {get} from "@/net"
+import {computed, ref, watch} from "vue"
+import {get, post} from "@/net"
 import {useRouter} from "vue-router"
 
 const message = useMessage()
 const user = useUser()
 const router = useRouter()
 
+const page = ref(1)
+const bookNumOfPage = ref(4)
 const searchContent = ref('')
-const searchMenu = ref([])
 
-watch(searchContent, (val) => {
+const searchMenu = computed(() => {
+  return bookList.value.map(i => i.originalFilename)
+})
+
+const paginationLength = computed(() => {
+  return Math.ceil(bookList.value.length / bookNumOfPage.value)
+})
+
+const bookList = ref([1, 2, 3, 4, 5])
+const bookListByPage = computed(() => {
+  const start = (page.value - 1) * bookNumOfPage.value
+  const end = start + bookNumOfPage.value
+  return bookList.value.slice(start, end)
+})
+
+function description(val) {
+  if (!val) {
+    return '暂无简介'
+  }
+  if (val.length > 20) {
+    return val.slice(0, 20) + '...'
+  }
+  return val
+}
+
+watch(searchContent, val => {
   if (searchContent.value === '') {
     searchMenu.value = []
     return
   }
-  get('api/search', {keyword: val}).then(
+  post('/api/search/book/keywords', {keyword: val}).then(
     ({data}) => {
-      searchMenu.value = data.id
+      bookList.value = data.FileInfo
     }
   )
 })
 
-function showBookDetail(bookId) {
-  router.push({path: '/books', query: {bookId}})
+function showBookDetail(book) {
+  router.push({path: '/books', query: {book}})
 }
 </script>
 

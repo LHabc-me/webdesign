@@ -1,29 +1,123 @@
-<script setup>
-
-</script>
-
 <template>
   <div>
-    <h1>TODO：管理员修改用户密码、余额、热度、用户名</h1>
-
     <VRow>
       <VCol cols="5"
             class="mx-auto">
-        <VRadioGroup :inline="true" layout="row center-center">
-          <VRadio label="根据用户名搜索" value="1" color="primary"></VRadio>
-          <VRadio label="根据用户id搜索" value="2" color="primary"></VRadio>
-          <VRadio label="根据用户邮箱搜索" value="3" color="primary"></VRadio>
+        <VRadioGroup :inline="true" layout="row center-center" v-model="type">
+          <VRadio v-if="false" label="根据用户名搜索" value="name" color="primary"></VRadio>
+          <VRadio label="根据用户ID搜索" value="id" color="primary"></VRadio>
+          <VRadio label="根据用户邮箱搜索" value="email" color="primary"></VRadio>
         </VRadioGroup>
         <VTextField color="primary"
                     variant="outlined"
                     density="comfortable"
                     :label="$t('search-user')"
                     append-inner-icon="mdi-magnify"
-                    :clearable="true"></VTextField>
+                    :clearable="true"
+                    v-model="searchContent"></VTextField>
       </VCol>
     </VRow>
+    <VRow>
+      <VCol cols="8" class="mx-auto">
+        <VTable>
+          <thead>
+          <tr>
+            <th class="text-left">用户ID</th>
+            <th class="text-left">用户名</th>
+            <th class="text-left">用户邮箱</th>
+            <th class="text-left">用户余额</th>
+            <th class="text-left">用户热度</th>
+            <th class="text-left">操作</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="(user, index) in users" :key="index">
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.coins }}</td>
+            <td>{{ user.hot }}</td>
+            <td>
+              <VBtn color="primary"
+                    @click="showEdit(index)">修改
+              </VBtn>
+            </td>
+          </tr>
+          </tbody>
+        </VTable>
+      </VCol>
+    </VRow>
+    <VDialog v-model="edit"
+             :persistent="true"
+             width="550">
+      <v-card>
+        <VCardTitle>
+          <span class="text-h5">修改用户信息</span>
+        </VCardTitle>
+        <VCardText>
+          <VTextField label="余额" v-model="userInfoEdit.coins" color="primary"></VTextField>
+          <VTextField label="热度" v-model="userInfoEdit.hot" color="primary"></VTextField>
+        </VCardText>
+        <VCardActions>
+          <VSpacer></VSpacer>
+          <VBtn color="primary"
+                variant="flat"
+                @click="edit = false">
+            确定
+          </VBtn>
+          <VBtn
+            @click="edit = false">
+            取消
+          </VBtn>
+        </VCardActions>
+      </v-card>
+    </VDialog>
   </div>
+
 </template>
+
+<script setup>
+import {ref, watch} from 'vue'
+import {get} from "@/net";
+
+const edit = ref(false)
+const userInfoEdit = ref({hot: 0, coins: 0})
+
+function showEdit(index) {
+  userInfoEdit.value.hot = users.value[index].hot
+  userInfoEdit.value.coins = users.value[index].coins
+  edit.value = true
+}
+
+const users = ref([{
+  id: 1,
+  username: 'admin',
+  email: '213',
+  coins: 123,
+  hot: 123
+},
+  {
+    id: 2,
+    username: 'admin',
+    email: '213',
+    coins: 2324,
+    hot: 13124523
+  }])
+const type = ref('id')
+const searchContent = ref('')
+watch(searchContent, () => {
+  const obj = {}
+  obj[type.value] = searchContent.value
+  get(`/api/user/${type.value}`, obj)
+    .then(res => {
+      if (res.data instanceof Array) {
+        users.value = res.data
+      } else {
+        users.value = [res.data]
+      }
+    })
+})
+</script>
 
 <style scoped lang="scss">
 //* {
@@ -33,8 +127,8 @@
 <!--@formatter:off-->
 <route lang="json5">
 {
-meta: {
-layout: 'main',
-}
+  meta: {
+    layout: 'main',
+  }
 }
 </route>

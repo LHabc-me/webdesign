@@ -4,15 +4,18 @@
       <VRow>
         <div style="height: 145px;"
              layout="row center-left">
-          <VImg src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+          <VImg src="https://store.sop.org/wp-content/uploads/2019/01/PDF_ICON.png"
                 class="h-100"
                 max-width="110"
                 width="110"
                 :cover="true">
           </VImg>
           <div class="h-100 w-100 ml-10" layout="column center-left">
-            <div class="font-weight-bold text-grey-darken-3 text-md-h4">书名</div>
-            <div>类别</div>
+            <div class="font-weight-bold text-grey-darken-3 text-md-h4">
+              {{ $route.query.book?.name }}
+            </div>
+            <div>{{ $route.query.book?.originalFilename }}</div>
+            <div class="mt-3">{{ $route.query.book?.price }}书币</div>
             <div self="right"
                  style="margin-right: 100px">
               <VBtn color="primary"
@@ -33,7 +36,7 @@
             </VTabs>
             <VWindow v-model="tab">
               <VWindowItem value="1">
-                简介
+                {{ $route.query.book?.description ?? '暂无简介' }}
               </VWindowItem>
               <VWindowItem value="2">
                 <VTextarea label="发表评论"
@@ -44,7 +47,7 @@
                            :auto-grow="true">
                   <template #append-inner>
                     <VBtn color="primary"
-                          style="margin-top: 90px"
+                          style="margin-top: 95px"
                           @click.stop="()=>{}">
                       发表
                     </VBtn>
@@ -98,19 +101,25 @@
 </template>
 
 <script setup>
-import {useRouter} from 'vue-router'
+import {useRouter, useRoute} from 'vue-router'
 import {useMessage} from "@/store/modules/message"
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 
 const router = useRouter()
+const route = useRoute()
 const message = useMessage()
 
 const tab = ref('1')
 
+
 function beginRead() {
-  localStorage.setItem('recentBookId', 'efd66941-97f1-473b-a3ff-67590758adc0.pdf')
+  localStorage.setItem('recentBookId', route.query.book.bookId)
   router.push('/recent')
 }
+
+onMounted(() => {
+  const img = ref()
+})
 </script>
 
 <style lang="scss" scoped>

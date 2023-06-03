@@ -5,13 +5,14 @@
             :class="{'pdf-dark': theme.name === 'dark'}"
             :src="pdfSrc"
             :page="page"
-            :enable-text-selection="false"
-            :enable-annotations="false"/>
+            :enable-text-selection="true"
+            :enable-annotations="false"
+            :ref="pdfPages"/>
   </div>
 </template>
 
 <script setup>
-import {onActivated, ref} from 'vue'
+import {onActivated, onDeactivated, ref, watch} from 'vue'
 import {VuePdf} from 'vue3-pdfjs/esm'
 import {useTheme} from "@/store/modules/theme"
 import {post} from "@/net";
@@ -19,18 +20,41 @@ import {createLoadingTask} from "vue3-pdfjs"
 
 const pdfSrc = ref()
 const numOfPages = ref(0)
+const maxNumOfPages = ref(0)
 const theme = useTheme()
+const pdfPages = ref([])
 
+function scrollListener() {
+  localStorage.setItem('recentBookPage', window.scrollY.toString())
+}
+
+//当pdf加载完成后
+watch(pdfPages, () => {
+  console.log('pdfPages changed')
+})
 onActivated(() => {
   post('/api/book/send', {bookId: localStorage.getItem('recentBookId')}, {}, {responseType: 'blob'})
     .then(({data}) => {
       pdfSrc.value = {data: window.atob(data)}
       const loadingTask = createLoadingTask(pdfSrc.value)
       loadingTask.promise.then(pdf => {
-        numOfPages.value = pdf.numPages
+        numOfPages.value = Math.min(5, pdf.numPages)
+        setInterval(function increase() {
+          if (numOfPages.value < pdf.numPages) {
+            numOfPages.value += Math.min(20, pdf.numPages - numOfPages.value)
+          } else {
+            // window.addEventListener('scroll', scrollListener)
+            clearInterval(increase)
+          }
+        }, 0)
       })
     })
 })
+
+onDeactivated(() => {
+  // window.removeEventListener('scroll', scrollListener)
+})
+
 </script>
 
 <style lang="scss" scoped>

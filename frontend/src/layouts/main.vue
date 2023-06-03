@@ -197,7 +197,7 @@ const lists = [
       {
         text: '图书管理',
         icon: 'mdi-fire',
-        to: '/admin/book'
+        to: '/admin/books'
       },
       {
         text: '用户管理',
