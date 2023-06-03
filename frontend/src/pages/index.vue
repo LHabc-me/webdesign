@@ -202,12 +202,12 @@ function description(val) {
   return val
 }
 
-watch(searchContent, val => {
+watch(searchContent, () => {
   if (searchContent.value === '') {
     searchMenu.value = []
     return
   }
-  post('/api/search/book/keywords', {keyword: val}).then(
+  post('/api/book/search/keywords', {keywords: searchContent.value}).then(
     ({data}) => {
       bookList.value = data.FileInfo
     }
