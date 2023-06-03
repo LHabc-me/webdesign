@@ -1,6 +1,5 @@
 package com.web_design.backend.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.web_design.backend.entity.ErrCode;
 import com.web_design.backend.entity.RestBean;
@@ -18,24 +17,21 @@ public class UserInfoController {
     UserInfoService service;
 
     @GetMapping("/me")
-    public JSONObject getUserInfoByToken(HttpServletRequest request) {
+    public UserInfo getUserInfoByToken(HttpServletRequest request) {
         String token = request.getSession().getAttribute("token").toString();
-        UserInfo userInfo = service.getUserInfoByEmail(token);
-        return JSON.parseObject(JSON.toJSONString(userInfo));
+        return service.getUserInfoByEmail(token);
     }
 
     @GetMapping("/id")
-    public JSONObject getUserInfoById(@RequestBody JSONObject jsonParam) {
+    public UserInfo getUserInfoById(@RequestBody JSONObject jsonParam) {
         int id = jsonParam.getIntValue("id");
-        UserInfo userInfo = service.getUserInfoById(id);
-        return JSON.parseObject(JSON.toJSONString(userInfo));
+        return service.getUserInfoById(id);
     }
 
     @GetMapping("/email")
-    public JSONObject getUserInfoByEmail(@RequestBody JSONObject jsonParam) {
+    public UserInfo getUserInfoByEmail(@RequestBody JSONObject jsonParam) {
         String email = jsonParam.getString("email");
-        UserInfo userInfo = service.getUserInfoByEmail(email);
-        return JSON.parseObject(JSON.toJSONString(userInfo));
+        return service.getUserInfoByEmail(email);
     }
 
     @PostMapping("/recharge")
@@ -55,5 +51,5 @@ public class UserInfoController {
                 ? RestBean.success()
                 : RestBean.failure(400);
     }
-    
+
 }
