@@ -75,72 +75,72 @@
             </VMenu>
           </VTextField>
         </VCol>
-
-        <div style="min-height: 654px">
-          <VList>
-            <VListItem v-for="(book, index) in bookListByPage"
-                       :key="index">
-              <VDivider v-if="index !== 0" class="mb-2"></VDivider>
-              <div layout="row"
-                   style="height: 145px"
-                   @click="()=>{}">
-                <VImg :src="pdf"
-                      class="h-100"
-                      max-width="110"
-                      width="110"
-                      :cover="true"></VImg>
-                <VCard class="h-100 elevation-0">
-                  <VCardTitle>
+        <div v-if="paginationLength !== 0">
+          <div style="min-height: 654px">
+            <VList>
+              <VListItem v-for="(book, index) in bookListByPage"
+                         :key="index">
+                <VDivider v-if="index !== 0" class="mb-2"></VDivider>
+                <div layout="row"
+                     style="height: 145px"
+                     @click="()=>{}">
+                  <VImg :src="pdf"
+                        class="h-100"
+                        max-width="110"
+                        width="110"
+                        :cover="true"></VImg>
+                  <VCard class="h-100 elevation-0">
+                    <VCardTitle>
                     <span class="primary-color-hover mouse-pointer"
                           @click="showBookDetail(book)">
                       {{ book.originalFilename }}
                     </span>
-                  </VCardTitle>
-                  <VCardSubtitle layout="row">
+                    </VCardTitle>
+                    <VCardSubtitle layout="row">
                     <span class="primary-color-hover mouse-pointer" @click="$router.push({path: '/user/profile', query: { id: book.uploaderId }})">
                       {{ book.author }}
                     </span>
-                    <VDivider :vertical="true" class="mx-1"></VDivider>
-                    <span>{{ book.tag }}</span>
-                    <VDivider :vertical="true" class="mx-1"></VDivider>
-                    <span class="book-status">
+                      <VDivider :vertical="true" class="mx-1"></VDivider>
+                      <span>{{ book.tag }}</span>
+                      <VDivider :vertical="true" class="mx-1"></VDivider>
+                      <span class="book-status">
                       {{ book.isOriginal ? '原创' : '非原创' }}
                     </span>
-                    <VDivider :vertical="true" class="mx-1"></VDivider>
-                    <span>{{ book.price }}书币</span>
-                  </VCardSubtitle>
-                  <VCardText>{{ description(book.description) }}</VCardText>
-                </VCard>
+                      <VDivider :vertical="true" class="mx-1"></VDivider>
+                      <span>{{ book.price }}书币</span>
+                    </VCardSubtitle>
+                    <VCardText>{{ description(book.description) }}</VCardText>
+                  </VCard>
 
-                <div class="h-100"
-                     layout="column"
-                     self="right"
-                     style="width: 210px">
-                  <div class="h-50">
+                  <div class="h-100"
+                       layout="column"
+                       self="right"
+                       style="width: 210px">
+                    <div class="h-50">
                     <span class="float-end">
                       <VIcon icon="mdi-fire" color="red"></VIcon>
                       <span class="text-center">热度{{ book.hot }}</span>
                     </span>
-                  </div>
-                  <div class="h-50"
-                       layout="row bottom-justify">
-                    <VBtn color="primary"
-                          @click="showBookDetail(book)">
-                      书籍详情
-                    </VBtn>
-                    <VBtn variant="outlined"
-                          @click="message.success('购买成功！')">
-                      购买本书
-                    </VBtn>
+                    </div>
+                    <div class="h-50"
+                         layout="row bottom-justify">
+                      <VBtn color="primary"
+                            @click="showBookDetail(book)">
+                        书籍详情
+                      </VBtn>
+                      <VBtn variant="outlined"
+                            @click="message.success('购买成功！')">
+                        购买本书
+                      </VBtn>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </VListItem>
-          </VList>
+              </VListItem>
+            </VList>
+          </div>
+          <VPagination :length="paginationLength"
+                       v-model="page"></VPagination>
         </div>
-        <VPagination v-if="paginationLength !== 0"
-                     :length="paginationLength"
-                     v-model="page"></VPagination>
       </VCol>
       <VCol cols="2">
         <VCarousel :cycle="true"

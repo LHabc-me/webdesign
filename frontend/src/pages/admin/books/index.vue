@@ -15,7 +15,8 @@
                     :label="$t('search-book')"
                     append-inner-icon="mdi-magnify"
                     :clearable="true"
-                    v-model="searchContent"></VTextField>
+                    v-model="searchContent"
+                    @click="search"></VTextField>
       </VCol>
     </VRow>
     <VRow>
@@ -43,12 +44,12 @@
             <td>{{ user.username }}</td>
             <td>{{ user.email }}</td>
             <td>{{ book.bookId }}</td>
-            <td>{{ book.name }}</td>
-            <td>{{ book.isOriginal }}</td>
+            <td>{{ book.originalFilename }}</td>
+            <td>{{ book.isOriginal ? '是' : '否' }}</td>
             <td>{{ book.author }}</td>
             <td>{{ book.tag }}</td>
             <td>{{ book.price }}</td>
-            <td>{{ book.description?.length >= 10 ? book.description.slice(0, 10) + '...' : book.description }}</td>
+            <td>{{ book.description ? book.description.length >= 10 ? book.description.slice(0, 10) + '...' : book.description : '暂无简介' }}</td>
             <td>{{ book.hot }}</td>
             <td>
               <VBtn color="primary"
@@ -62,7 +63,6 @@
       </VCol>
     </VRow>
     <VDialog v-model="edit"
-             :persistent="true"
              width="550">
       <v-card>
         <VCardTitle>
@@ -93,7 +93,7 @@
 
 <script setup>
 import {ref, watch} from 'vue'
-import {get} from '@/net'
+import {get, post} from '@/net'
 
 const edit = ref(false)
 const bookInfoEdit = ref({hot: 0, price: 0, description: ''})
@@ -106,12 +106,7 @@ function showEdit(index) {
 }
 
 
-const info = [
-  {
-    user: {},
-    book: {},
-  }
-]
+const info = ref([])
 
 const type = ref('bookName')
 const searchContent = ref('')
@@ -119,7 +114,7 @@ const searchContent = ref('')
 
 async function getUserInfoById(userId) {
   let user = null
-  await get('/api/user/id', {id: userId})
+  await get('/api/user/id', {id: parseInt(userId)})
     .then(({data}) => {
       user = data
     })
@@ -135,9 +130,9 @@ async function getUserInfoByEmail(email) {
   return user
 }
 
-async function getBookInfoById(bookId) {
+async function getBookInfoByBookId(bookId) {
   let book = null
-  await get('/api/book/search/uuid', {bookId})
+  await post('/api/book/search/bookId', {bookId})
     .then(({data}) => {
       book = data
     })
@@ -146,14 +141,27 @@ async function getBookInfoById(bookId) {
 
 async function getBookInfoByName(bookName) {
   let book = null
-  await get('/api/book/search/keywords', {keywords: bookName})
+  await post('/api/book/search/keywords', {keywords: bookName})
     .then(({data}) => {
       book = data
     })
   return book
 }
 
-watch(searchContent, () => {
+async function getBookInfoByUploaderId(uploaderId) {
+  let book = null
+  await post('/api/book/search/uploaderId', {uploaderId})
+    .then(({data}) => {
+      book = data
+    })
+  return book
+}
+
+function search() {
+  if (!searchContent.value) {
+    info.value = []
+    return
+  }
   switch (type.value) {
     case 'bookName':
       getBookInfoByName(searchContent.value).then(books => {
@@ -166,7 +174,7 @@ watch(searchContent, () => {
       })
       break
     case 'bookId':
-      getBookInfoById(searchContent.value).then(book => {
+      getBookInfoByBookId(searchContent.value).then(book => {
         getUserInfoById(book.uploaderId).then(user => {
           info.value = [{user, book}]
         })
@@ -174,20 +182,29 @@ watch(searchContent, () => {
       break
     case 'userId':
       getUserInfoById(searchContent.value).then(user => {
-        getBookInfoById(user.bookId).then(book => {
-          info.value = [{user, book}]
+        getBookInfoByUploaderId(user.id).then(books => {
+          info.value = []
+          books.forEach(book => {
+            info.value.push({user, book})
+          })
         })
       })
       break
     case 'email':
       getUserInfoByEmail(searchContent.value).then(user => {
-        getBookInfoById(user.bookId).then(book => {
-          info.value = [{user, book}]
+        getBookInfoByUploaderId(user.id).then(books => {
+          info.value = []
+          books.forEach(book => {
+            info.value.push({user, book})
+          })
         })
       })
       break
   }
-})
+}
+
+watch(searchContent, search)
+watch(type, search)
 </script>
 
 <style scoped lang="scss">

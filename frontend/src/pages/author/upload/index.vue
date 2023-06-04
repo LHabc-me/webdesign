@@ -1,15 +1,15 @@
 <template>
   <div class="h-100" layout="column center-center">
     <div style="width: 600px;">
-      <VFileInput label="点击上传图书" v-model="form.files"></VFileInput>
+      <VFileInput label="点击上传图书" v-model="form.files" color="primary"></VFileInput>
       <VRadioGroup label="是否原创" v-model="form.isOriginal" color="primary">
         <VRadio label="是" :value="true"></VRadio>
         <VRadio label="否" :value="false"></VRadio>
       </VRadioGroup>
-      <VTextField label="原作者" v-model="form.author" :disabled="form.isOriginal"></VTextField>
-      <VTextField label="分类" v-model="form.tag"></VTextField>
-      <VTextField label="定价" v-model="form.price"></VTextField>
-      <VTextarea label="简介" v-model="form.brief"></VTextarea>
+      <VTextField label="原作者" v-model="form.author" :disabled="form.isOriginal" color="primary"></VTextField>
+      <VTextField label="分类" v-model="form.tag" color="primary"></VTextField>
+      <VTextField label="定价" v-model="form.price" color="primary"></VTextField>
+      <VTextarea label="简介" v-model="form.brief" color="primary"></VTextarea>
       <VBtn type="submit"
             color="primary"
             :block="true"

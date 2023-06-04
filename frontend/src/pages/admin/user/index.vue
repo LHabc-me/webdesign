@@ -49,7 +49,6 @@
       </VCol>
     </VRow>
     <VDialog v-model="edit"
-             :persistent="true"
              width="550">
       <v-card>
         <VCardTitle>
@@ -63,7 +62,7 @@
           <VSpacer></VSpacer>
           <VBtn color="primary"
                 variant="flat"
-                @click="edit = false">
+                @click="editInfo">
             确定
           </VBtn>
           <VBtn
@@ -79,23 +78,53 @@
 
 <script setup>
 import {ref, watch} from 'vue'
-import {get} from "@/net";
+import {get, post} from "@/net";
+import {useMessage} from "@/store/modules/message";
 
 const edit = ref(false)
-const userInfoEdit = ref({hot: 0, coins: 0})
+const userInfoEdit = ref({
+  id: '',
+  hot: '',
+  coins: ''
+})
+const message = useMessage()
 
 function showEdit(index) {
+  userInfoEdit.value.id = users.value[index].id
   userInfoEdit.value.hot = users.value[index].hot
   userInfoEdit.value.coins = users.value[index].coins
+  console.log(userInfoEdit.value)
   edit.value = true
 }
 
-const users = ref([])
+function editInfo() {
+  const hot = post('/api/admin/update/hot', {
+    userId: parseInt(userInfoEdit.value.id),
+    hot: parseInt(userInfoEdit.value.hot)
+  })
+
+  const coins = post('/api/admin/update/coins', {
+    userId: parseInt(userInfoEdit.value.id),
+    coins: parseInt(userInfoEdit.value.coins)
+  })
+
+  Promise.all([hot, coins]).then(() => {
+    message.success('修改成功')
+    search()
+  }).catch(() => {
+    message.error('修改失败')
+  }).finally(() => {
+    edit.value = false
+  })
+}
+
+const users = ref()
 const type = ref('id')
 const searchContent = ref('')
 
 function search() {
   if (!searchContent.value) {
+    users.value = []
     return
   }
   const obj = {}
@@ -111,6 +140,7 @@ function search() {
 }
 
 watch(searchContent, search)
+watch(type, search)
 </script>
 
 <style scoped lang="scss">

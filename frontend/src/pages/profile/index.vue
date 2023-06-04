@@ -26,23 +26,27 @@
             <div>作品</div>
           </div>
           <div class="w-66 text-light-blue">
-            <div>123456</div>
-            <div>lhabc.me@outlook.com</div>
-            <div>LHabc <span class="link-color mouse-pointer">修改</span></div>
-            <div>100 <span class="link-color mouse-pointer">充值</span></div>
-            <div>33</div>
+            <div>{{ user.id }}</div>
+            <div>{{ user.email }}</div>
+            <div>{{ user.name }} <span v-if="false" class="link-color mouse-pointer">修改</span></div>
+            <div>{{ user.coins }} <span class="link-color mouse-pointer" @click="topup">充值</span></div>
+            <div>{{ user.hot }}</div>
             <div>暂无</div>
           </div>
         </div>
       </div>
     </div>
+    <TopUp v-model="showTopup"></TopUp>
   </div>
 </template>
 <script setup>
 import {ref} from 'vue'
 import {post} from '@/net'
+import TopUp from '@/component/TopUp.vue'
+import {useUser} from '@/store/modules/user'
 
 const uploadAvatarInput = ref(null)
+const user = useUser()
 
 function onuploadAvatarInputChange(event) {
   const form = new FormData()
@@ -54,6 +58,12 @@ function onuploadAvatarInputChange(event) {
     .catch((error) => {
       console.log(error)
     })
+}
+
+const showTopup = ref(false)
+
+function topup() {
+  showTopup.value = true
 }
 </script>
 <style scoped lang="scss">

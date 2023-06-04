@@ -80,14 +80,15 @@
 </style>
 
 <script setup>
-import {onMounted, ref} from "vue";
-import {get, post} from "@/net";
-import {i18n} from "@/i18n";
-import {useUser} from "@/store/modules/user";
-import {useMessage} from "@/store/modules/message";
-import {useRouter} from "vue-router";
-import {rules} from "@/assets/script/rules";
-import {useTheme} from "vuetify";
+import {onMounted, ref} from 'vue'
+import {post} from '@/net'
+import {i18n} from '@/i18n'
+import {useUser} from '@/store/modules/user'
+import {useMessage} from '@/store/modules/message'
+import {useRouter} from 'vue-router'
+import {rules} from '@/assets/script/rules'
+import {useTheme} from 'vuetify'
+import {updateUserInfo} from '@/utils/updateUserInfo'
 
 const message = useMessage()
 const user = useUser()
@@ -135,15 +136,7 @@ function login() {
 
       localStorage.setItem('token', data.token)
       message.success(i18n.global.t('login-success'))
-      get('/api/user/me').then(({data}) => {
-        user.id = data.id
-        user.name = data.username
-        user.email = data.email
-        user.type = data.roles ? 'admin' : 'author'
-        user.coins = data.coins
-        user.hot = data.hot
-        user.isLogin = true
-      })
+      updateUserInfo()
       router.push('/')
     } else {
       message.error(i18n.global.t('login-failed'))
