@@ -14,7 +14,8 @@
                     :label="$t('search-user')"
                     append-inner-icon="mdi-magnify"
                     :clearable="true"
-                    v-model="searchContent"></VTextField>
+                    v-model="searchContent"
+                    @click="search"></VTextField>
       </VCol>
     </VRow>
     <VRow>
@@ -89,34 +90,27 @@ function showEdit(index) {
   edit.value = true
 }
 
-const users = ref([{
-  id: 1,
-  username: 'admin',
-  email: '213',
-  coins: 123,
-  hot: 123
-},
-  {
-    id: 2,
-    username: 'admin',
-    email: '213',
-    coins: 2324,
-    hot: 13124523
-  }])
+const users = ref([])
 const type = ref('id')
 const searchContent = ref('')
-watch(searchContent, () => {
+
+function search() {
+  if (!searchContent.value) {
+    return
+  }
   const obj = {}
   obj[type.value] = searchContent.value
   get(`/api/user/${type.value}`, obj)
-    .then(res => {
-      if (res.data instanceof Array) {
-        users.value = res.data
+    .then(({data}) => {
+      if (data instanceof Array) {
+        users.value = data
       } else {
-        users.value = [res.data]
+        users.value = [data]
       }
     })
-})
+}
+
+watch(searchContent, search)
 </script>
 
 <style scoped lang="scss">

@@ -2,7 +2,7 @@
 import vue from '@vitejs/plugin-vue'
 import vuetify, {transformAssetUrls} from 'vite-plugin-vuetify'
 import Pages from 'vite-plugin-pages'
-import Layouts from 'vite-plugin-vue-layouts';
+import Layouts from 'vite-plugin-vue-layouts'
 
 // Utilities
 import {defineConfig} from 'vite'

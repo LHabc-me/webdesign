@@ -21,9 +21,9 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
-import {post} from "@/net";
-import {useUser} from "@/store/modules/user"
+import {ref, watch, watchEffect} from 'vue'
+import {post} from '@/net'
+import {useUser} from '@/store/modules/user'
 
 const user = useUser()
 const form = ref({
@@ -33,6 +33,12 @@ const form = ref({
   tag: null,
   price: null,
   brief: null,
+})
+
+watchEffect(() => {
+  if (form.value.isOriginal) {
+    form.value.author = user.name
+  }
 })
 
 function upload() {

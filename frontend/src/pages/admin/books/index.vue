@@ -52,7 +52,8 @@
             <td>{{ book.hot }}</td>
             <td>
               <VBtn color="primary"
-                    @click="showEdit(index)">修改
+                    @click="showEdit(index)">
+                修改
               </VBtn>
             </td>
           </tr>
@@ -92,7 +93,7 @@
 
 <script setup>
 import {ref, watch} from 'vue'
-import {get} from "@/net";
+import {get} from '@/net'
 
 const edit = ref(false)
 const bookInfoEdit = ref({hot: 0, price: 0, description: ''})

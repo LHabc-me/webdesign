@@ -4,7 +4,7 @@
       <VRow>
         <div style="height: 145px;"
              layout="row center-left">
-          <VImg src="https://store.sop.org/wp-content/uploads/2019/01/PDF_ICON.png"
+          <VImg :src="pdf"
                 class="h-100"
                 max-width="110"
                 width="110"
@@ -12,10 +12,16 @@
           </VImg>
           <div class="h-100 w-100 ml-10" layout="column center-left">
             <div class="font-weight-bold text-grey-darken-3 text-md-h4">
-              {{ $route.query.book?.name }}
+              {{ bookParam.originalFilename }}
             </div>
-            <div>{{ $route.query.book?.originalFilename }}</div>
-            <div class="mt-3">{{ $route.query.book?.price }}书币</div>
+            <div>
+              <span>{{ bookParam.tag }}</span>
+              <VDivider :vertical="true" class="mx-1"></VDivider>
+              <span class="book-status">
+                {{ bookParam.isOriginal ? '原创' : '非原创' }}
+              </span>
+            </div>
+            <div class="mt-3">{{ bookParam.price }}书币</div>
             <div self="right"
                  style="margin-right: 100px">
               <VBtn color="primary"
@@ -29,14 +35,14 @@
 
       <VRow>
         <VCol cols="8">
-          <div>
+          <div class="elevation-2 pa-5">
             <VTabs v-model="tab">
               <VTab value="1">简介</VTab>
               <VTab value="2">评论区</VTab>
             </VTabs>
-            <VWindow v-model="tab">
+            <VWindow v-model="tab" style="min-height: 344px">
               <VWindowItem value="1">
-                {{ $route.query.book?.description ?? '暂无简介' }}
+                {{ bookParam.description ?? '暂无简介' }}
               </VWindowItem>
               <VWindowItem value="2">
                 <VTextarea label="发表评论"
@@ -55,12 +61,12 @@
                 </VTextarea>
                 <div class="mt-2"
                      layout="column"
-                     v-for="(item, index) in [1, 2, 3, 4]"
+                     v-for="(content, index) in contents"
                      :key="index">
                   <div layout="row center-justify">
-                    <div class="text-subtitle-1">用户名</div>
+                    <div class="text-subtitle-1">{{ content.username }}</div>
                   </div>
-                  <div class="text-subtitle-1">评论内容</div>
+                  <div class="text-subtitle-1">{{ content.content }}</div>
                   <VDivider></VDivider>
                 </div>
               </VWindowItem>
@@ -104,21 +110,47 @@
 import {useRouter, useRoute} from 'vue-router'
 import {useMessage} from "@/store/modules/message"
 import {onMounted, ref} from "vue";
+import {get, post} from "@/net";
+import {useUser} from "@/store/modules/user";
+import pdf from '@/assets/images/pdf.png'
 
-const router = useRouter()
 const route = useRoute()
+let bookParam = JSON.parse(decodeURIComponent(window.atob(route.query.book.toString())))
+
+
+const user = useUser()
+const router = useRouter()
 const message = useMessage()
 
-const tab = ref('1')
 
+const tab = ref('1')
+const contents = ref([])
 
 function beginRead() {
-  localStorage.setItem('recentBookId', route.query.book.bookId)
+  localStorage.setItem('recentBookId', bookParam.bookId.toString())
   router.push('/recent')
 }
 
+
+function review(content) {
+  if (!content) {
+    return
+  }
+  post('/api/comments/insert', {bookId: bookParam.bookId, userId: user.id, content})
+
+}
+
 onMounted(() => {
-  const img = ref()
+  post('/api/comments/find/uuid', {bookId: bookParam.bookId})
+    .then(({data1}) => {
+      //data:[{userId, content]
+      for (let i = 0; i < data1.length; i++) {
+        get('/api/user/id', {id: data1[i].userId})
+          .then(({data2}) => {
+            contents.value.push({username: data2.username, content: data1.content})
+          })
+      }
+    })
 })
 </script>
 

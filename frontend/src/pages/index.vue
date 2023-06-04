@@ -61,12 +61,14 @@
                       :label="$t('search-book')"
                       append-inner-icon="mdi-magnify"
                       v-model="searchContent"
-                      :clearable="true">
+                      :clearable="true"
+                      @click="search">
             <VMenu activator="parent">
               <VList>
                 <VListItem v-for="i in searchMenu"
                            :key="i"
-                           :value="i">
+                           :value="i"
+                           @click="searchContent = i">
                   <VListItemTitle>{{ i }}</VListItemTitle>
                 </VListItem>
               </VList>
@@ -82,7 +84,7 @@
               <div layout="row"
                    style="height: 145px"
                    @click="()=>{}">
-                <VImg src="https://store.sop.org/wp-content/uploads/2019/01/PDF_ICON.png"
+                <VImg :src="pdf"
                       class="h-100"
                       max-width="110"
                       width="110"
@@ -123,7 +125,7 @@
                   <div class="h-50"
                        layout="row bottom-justify">
                     <VBtn color="primary"
-                          @click="showBookDetail(book.bookId)">
+                          @click="showBookDetail(book)">
                       书籍详情
                     </VBtn>
                     <VBtn variant="outlined"
@@ -136,7 +138,9 @@
             </VListItem>
           </VList>
         </div>
-        <VPagination :length="paginationLength" v-model="page"></VPagination>
+        <VPagination v-if="paginationLength !== 0"
+                     :length="paginationLength"
+                     v-model="page"></VPagination>
       </VCol>
       <VCol cols="2">
         <VCarousel :cycle="true"
@@ -168,6 +172,7 @@ import {useUser} from "@/store/modules/user"
 import {computed, ref, watch} from "vue"
 import {get, post} from "@/net"
 import {useRouter} from "vue-router"
+import pdf from '@/assets/images/pdf.png'
 
 const message = useMessage()
 const user = useUser()
@@ -185,7 +190,7 @@ const paginationLength = computed(() => {
   return Math.ceil(bookList.value.length / bookNumOfPage.value)
 })
 
-const bookList = ref([1, 2, 3, 4, 5])
+const bookList = ref([])
 const bookListByPage = computed(() => {
   const start = (page.value - 1) * bookNumOfPage.value
   const end = start + bookNumOfPage.value
@@ -202,19 +207,23 @@ function description(val) {
   return val
 }
 
-watch(searchContent, () => {
+
+function search() {
   if (searchContent.value === '') {
-    searchMenu.value = []
+    bookList.value = []
     return
   }
   post('/api/book/search/keywords', {keywords: searchContent.value}).then(
     ({data}) => {
-      bookList.value = data.FileInfo
+      bookList.value = data
     }
   )
-})
+}
 
-function showBookDetail(book) {
+watch(searchContent, search)
+
+function showBookDetail(b) {
+  const book = window.btoa(encodeURIComponent(JSON.stringify(b)))
   router.push({path: '/books', query: {book}})
 }
 </script>

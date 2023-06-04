@@ -137,10 +137,12 @@ function login() {
       message.success(i18n.global.t('login-success'))
       get('/api/user/me').then(({data}) => {
         user.id = data.id
-        user.name = data.name
+        user.name = data.username
         user.email = data.email
-        user.type = data.type
+        user.type = data.roles ? 'admin' : 'author'
         user.coins = data.coins
+        user.hot = data.hot
+        user.isLogin = true
       })
       router.push('/')
     } else {

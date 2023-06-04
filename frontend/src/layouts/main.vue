@@ -111,7 +111,7 @@ const langs = [
 
 const user = computed(() => {
   let user = []
-  if (true || userStore.isLogin) {
+  if (userStore.isLogin) {
     user = [
       {
         name: i18n.global.t('profile'),
@@ -141,77 +141,85 @@ const user = computed(() => {
   return user
 })
 
-const lists = [
-  {
-    items: [{
-      text: i18n.global.t('home-page'),
-      icon: 'mdi-home',
-      to: '/'
-    }]
-  },
-  {
-    title: '读者专区', items: [
+const lists = computed(() => {
+  const res = [
+    {
+      items: [{
+        text: i18n.global.t('home-page'),
+        icon: 'mdi-home',
+        to: '/'
+      }]
+    },
+    {
+      title: '读者专区', items: [
+        {
+          text: i18n.global.t('recently-read'),
+          icon: 'mdi-clock',
+          to: '/recent'
+        },
+        {
+          text: i18n.global.t('my-collection'),
+          icon: 'mdi-star-box',
+          to: '/collect'
+        },
+        {
+          text: i18n.global.t('profile'),
+          icon: 'mdi-account',
+          to: '/profile'
+        },
+      ]
+    },
+    {
+      title: '作者专区', items: [
+        {
+          text: '管理作品',
+          icon: 'mdi-book-open-blank-variant',
+          to: '/author/workspace'
+        },
+        {
+          text: '上传作品',
+          icon: 'mdi-pencil',
+          to: '/author/upload'
+        },
+      ]
+    },
+  ]
+  if (userStore.type === 'admin') {
+    res.push(
       {
-        text: i18n.global.t('recently-read'),
-        icon: 'mdi-clock',
-        to: '/recent'
-      },
-      {
-        text: i18n.global.t('my-collection'),
-        icon: 'mdi-star-box',
-        to: '/collect'
-      },
-      {
-        text: i18n.global.t('profile'),
-        icon: 'mdi-account',
-        to: '/profile'
-      }
-    ]
-  },
-  {
-    title: '作者专区', items: [
-      {
-        text: '管理作品',
-        icon: 'mdi-book-open-blank-variant',
-        to: '/author/workspace'
-      },
-      {
-        text: '上传作品',
-        icon: 'mdi-pencil',
-        to: '/author/upload'
-      },
-    ]
-  },
-  {
-    title: '管理员专区', items: [
-      {
-        text: '收支情况',
-        icon: 'mdi-currency-usd',
-        to: '/admin/finance'
-      },
-      {
-        text: '活动管理',
-        icon: 'mdi-party-popper',
-        to: '/admin/activity'
-      },
-      {
-        text: '图书管理',
-        icon: 'mdi-fire',
-        to: '/admin/books'
-      },
-      {
-        text: '用户管理',
-        icon: 'mdi-account-multiple',
-        to: '/admin/user'
-      }
-    ]
-  },
-]
+        title: '管理员专区',
+        items: [
+          {
+            text: '收支情况',
+            icon: 'mdi-currency-usd',
+            to: '/admin/finance'
+          },
+          {
+            text: '活动管理',
+            icon: 'mdi-party-popper',
+            to: '/admin/activity'
+          },
+          {
+            text: '图书管理',
+            icon: 'mdi-fire',
+            to: '/admin/books'
+          },
+          {
+            text: '用户管理',
+            icon: 'mdi-account-multiple',
+            to: '/admin/user'
+          }
+        ]
+      })
+  }
+  return res
+})
+
 
 function menuBtnClick() {
   if (!userStore.isLogin) {
     message.info(i18n.global.t('login-first'))
-    // return
+    return
   }
   showMenu.value = !showMenu.value
 }
