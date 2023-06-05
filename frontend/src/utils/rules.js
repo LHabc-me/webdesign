@@ -8,7 +8,8 @@ const rules = {
     const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return pattern.test(value) || i18n.global.t('invalid-email')
   },
-  samePwd: target => value => value === target || i18n.global.t('two-passwords-not-match')
+  samePwd: target => value => value === target || i18n.global.t('two-passwords-not-match'),
+  integer: value => !isNaN(parseInt(value)) || i18n.global.t('should-be-integer'),
 }
 
 export {rules}

@@ -24,28 +24,28 @@
         <VTable>
           <thead>
           <tr>
-            <th class="text-left">上传者ID</th>
-            <th class="text-left">上传者用户名</th>
-            <th class="text-left">上传者邮箱</th>
-            <th class="text-left">图书ID</th>
-            <th class="text-left">图书名</th>
-            <th class="text-left">是否原创</th>
-            <th class="text-left">原作者</th>
-            <th class="text-left">图书分类</th>
-            <th class="text-left">图书价格</th>
-            <th class="text-left">图书简介</th>
-            <th class="text-left">热度</th>
-            <th class="text-left">操作</th>
+            <th class="text-center">上传者ID</th>
+            <th class="text-center">上传者用户名</th>
+            <th class="text-center">上传者邮箱</th>
+            <th class="text-center">图书ID</th>
+            <th class="text-center">图书名</th>
+            <th class="text-center">是否原创</th>
+            <th class="text-center">原作者</th>
+            <th class="text-center">图书分类</th>
+            <th class="text-center">图书价格</th>
+            <th class="text-center">图书简介</th>
+            <th class="text-center">热度</th>
+            <th class="text-center">操作</th>
           </tr>
           </thead>
           <tbody>
-          <tr v-for="({user, book}, index) in info" :key="index">
+          <tr v-for="({user, book}, index) in info" :key="index" class="text-center">
             <td>{{ user.id }}</td>
             <td>{{ user.username }}</td>
             <td>{{ user.email }}</td>
             <td>{{ book.bookId }}</td>
             <td>{{ book.originalFilename }}</td>
-            <td>{{ book.isOriginal ? '是' : '否' }}</td>
+            <td>{{ book.original ? '是' : '否' }}</td>
             <td>{{ book.author }}</td>
             <td>{{ book.tag }}</td>
             <td>{{ book.price }}</td>
@@ -77,7 +77,7 @@
           <VSpacer></VSpacer>
           <VBtn color="primary"
                 variant="flat"
-                @click="edit = false">
+                @click="submitEdit">
             确定
           </VBtn>
           <VBtn
@@ -94,17 +94,50 @@
 <script setup>
 import {ref, watch} from 'vue'
 import {get, post} from '@/net'
+import {useMessage} from "@/store/modules/message";
 
+const message = useMessage()
 const edit = ref(false)
-const bookInfoEdit = ref({hot: 0, price: 0, description: ''})
+const bookInfoEdit = ref({
+  bookId: '',
+  hot: '',
+  price: '',
+  description: '',
+})
 
 function showEdit(index) {
-  bookInfoEdit.value.hot = info[index].book.hot
-  bookInfoEdit.value.price = info[index].book.price
-  bookInfoEdit.value.description = info[index].book.description
+  bookInfoEdit.value.bookId = info.value[index].book.bookId
+  bookInfoEdit.value.hot = info.value[index].book.hot
+  bookInfoEdit.value.price = info.value[index].book.price
+  bookInfoEdit.value.description = info.value[index].book.description
   edit.value = true
 }
 
+function submitEdit() {
+  const bookId = bookInfoEdit.value.bookId.toString()
+  const hot = parseInt(bookInfoEdit.value.hot)
+  const price = parseInt(bookInfoEdit.value.price)
+  const description = bookInfoEdit.value.description.toString()
+
+  if (isNaN(hot) || isNaN(price)) {
+    message.error('输入不合法')
+    return
+  }
+
+  const hotWork = post('/api/book/set/hot', {bookId, hot})
+  const priceWork = post('/api/book/set/price', {bookId, price})
+  const descriptionWork = post('/api/book/set/description', {bookId, description})
+
+  Promise.all([hotWork, priceWork, descriptionWork])
+    .then(() => {
+      message.success('修改成功')
+      search()
+    }).catch(() => {
+    message.error('修改失败')
+  }).finally(() => {
+    edit.value = false
+  })
+}
 
 const info = ref([])
 
@@ -113,6 +146,9 @@ const searchContent = ref('')
 
 
 async function getUserInfoById(userId) {
+  if (!parseInt(userId)) {
+    return
+  }
   let user = null
   await get('/api/user/id', {id: parseInt(userId)})
     .then(({data}) => {
@@ -122,6 +158,9 @@ async function getUserInfoById(userId) {
 }
 
 async function getUserInfoByEmail(email) {
+  if (!email) {
+    return
+  }
   let user = null
   await get('/api/user/email', {email})
     .then(({data}) => {
@@ -131,6 +170,9 @@ async function getUserInfoByEmail(email) {
 }
 
 async function getBookInfoByBookId(bookId) {
+  if (!bookId) {
+    return
+  }
   let book = null
   await post('/api/book/search/bookId', {bookId})
     .then(({data}) => {
@@ -140,6 +182,9 @@ async function getBookInfoByBookId(bookId) {
 }
 
 async function getBookInfoByName(bookName) {
+  if (!bookName) {
+    return
+  }
   let book = null
   await post('/api/book/search/keywords', {keywords: bookName})
     .then(({data}) => {
@@ -165,11 +210,15 @@ function search() {
   switch (type.value) {
     case 'bookName':
       getBookInfoByName(searchContent.value).then(books => {
-        info.value = []
+        const tmp = []
+        const works = []
         books.forEach(book => {
-          getUserInfoById(book.uploaderId).then(user => {
-            info.value.push({user, book})
-          })
+          works.push(getUserInfoById(book.uploaderId).then(user => {
+            tmp.push({user, book})
+          }))
+        })
+        Promise.all(works).then(() => {
+          info.value = tmp
         })
       })
       break
@@ -183,20 +232,22 @@ function search() {
     case 'userId':
       getUserInfoById(searchContent.value).then(user => {
         getBookInfoByUploaderId(user.id).then(books => {
-          info.value = []
+          const tmp = []
           books.forEach(book => {
-            info.value.push({user, book})
+            tmp.push({user, book})
           })
+          info.value = tmp
         })
       })
       break
     case 'email':
       getUserInfoByEmail(searchContent.value).then(user => {
         getBookInfoByUploaderId(user.id).then(books => {
-          info.value = []
+          const tmp = []
           books.forEach(book => {
-            info.value.push({user, book})
+            tmp.push({user, book})
           })
+          info.value = tmp
         })
       })
       break

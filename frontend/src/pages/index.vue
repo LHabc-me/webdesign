@@ -23,29 +23,55 @@
           </VCarousel>
         </VRow>
         <VRow>
-          <VCol style="margin-top: 50px">
+          <VCol style="margin-top: 20px">
             <div>
               <div>高级搜索</div>
               <VDivider></VDivider>
-              <div class="mt-3">分类</div>
-              <div>
-                <VRadio model-value="1" label="编程读物" value="1" color="primary" density="compact"></VRadio>
-                <VRadio model-value="2" label="经典名著" value="2" color="primary" density="compact"></VRadio>
-              </div>
-              <div class="mt-3">是否原创</div>
-              <div>
-                <VRadioGroup model-value="1" color="primary" density="compact">
-                  <VRadio label="全部" value="1"></VRadio>
-                  <VRadio label="原创" value="2"></VRadio>
-                  <VRadio label="非原创" value="3"></VRadio>
+              <div class="mt-3">排序</div>
+              <div layout="row center-center">
+                <VSelect color="primary"
+                         :items="sortBy.name"
+                         variant="underlined"
+                         density="compact"
+                         v-model="sortBy.model"
+                         @update:model-value="sortUpdate"
+                         class="w-66"
+                ></VSelect>
+                <VRadioGroup v-model="sortBy.asc" color="primary" density="compact" class="w-33">
+                  <VRadio label="升序" :value="true"></VRadio>
+                  <VRadio label="降序" :value="false"></VRadio>
                 </VRadioGroup>
               </div>
-              <div style="margin-top: -15px">价格区间</div>
+              <VDivider></VDivider>
+              <div class="mt-3">分类</div>
+              <div>
+                <div class="py-1 pe-0">
+                  <VChip v-for="tag in tags"
+                         :key="tag"
+                         :closable="true"
+                         @click:close="onRemoveTag(tag)"
+                         color="primary"
+                         class="mb-2">
+                    {{ tag }}
+                  </VChip>
+                  <VTextField label="添加分类" v-model="addTag" @keyup.enter="onAddTag"
+                              color="primary" density="compact" variant="underlined"></VTextField>
+                </div>
+              </div>
+              <div>是否原创</div>
+              <div>
+                <VRadioGroup v-model="isOriginal" color="primary" density="compact">
+                  <VRadio label="全部" :value="null"></VRadio>
+                  <VRadio label="原创" :value="true"></VRadio>
+                  <VRadio label="非原创" :value="false"></VRadio>
+                </VRadioGroup>
+              </div>
+              <div>价格区间</div>
               <div layout="row center-spread" class="text-subtitle-1"
                    style="margin-top: -20px">
-                <VTextField density="default" variant="underlined" color="primary"></VTextField>
+                <VTextField density="default" variant="underlined" color="primary" v-model="priceFrom" class="centered-input"></VTextField>
                 至
-                <VTextField density="default" variant="underlined" color="primary"></VTextField>
+                <VTextField density="default" variant="underlined" color="primary" v-model="priceTo" class="centered-input"></VTextField>
                 书币
               </div>
             </div>
@@ -82,8 +108,7 @@
                          :key="index">
                 <VDivider v-if="index !== 0" class="mb-2"></VDivider>
                 <div layout="row"
-                     style="height: 145px"
-                     @click="()=>{}">
+                     style="height: 145px">
                   <VImg :src="pdf"
                         class="h-100"
                         max-width="110"
@@ -104,7 +129,7 @@
                       <span>{{ book.tag }}</span>
                       <VDivider :vertical="true" class="mx-1"></VDivider>
                       <span class="book-status">
-                      {{ book.isOriginal ? '原创' : '非原创' }}
+                      {{ book.original ? '原创' : '非原创' }}
                     </span>
                       <VDivider :vertical="true" class="mx-1"></VDivider>
                       <span>{{ book.price }}书币</span>
@@ -129,7 +154,7 @@
                         书籍详情
                       </VBtn>
                       <VBtn variant="outlined"
-                            @click="message.success('购买成功！')">
+                            @click="purchase({bookId: book.bookId, price: book.price})">
                         购买本书
                       </VBtn>
                     </div>
@@ -163,6 +188,7 @@
         </VCarousel>
       </VCol>
     </VRow>
+    <TopUp v-model="showTopup"></TopUp>
   </div>
 </template>
 
@@ -173,6 +199,7 @@ import {computed, ref, watch} from "vue"
 import {get, post} from "@/net"
 import {useRouter} from "vue-router"
 import pdf from '@/assets/images/pdf.png'
+import TopUp from "@/component/TopUp.vue";
 
 const message = useMessage()
 const user = useUser()
@@ -181,6 +208,41 @@ const router = useRouter()
 const page = ref(1)
 const bookNumOfPage = ref(4)
 const searchContent = ref('')
+const tags = ref([])
+const addTag = ref()
+const isOriginal = ref(null)
+const priceFrom = ref()
+const priceTo = ref()
+const sortBy = ref({
+  name: ['书名', '作者', '价格', '热度'],
+  value: ['originalFilename', 'author', 'price', 'hot'],
+  model: '书名',
+  resultValue: 'originalFilename',
+  //是否升序
+  asc: true
+})
+
+function sortUpdate() {
+  sortBy.value.resultValue = sortBy.value.value[sortBy.value.name.indexOf(sortBy.value.model)]
+  search()
+}
+
+
+watch([searchContent, tags, isOriginal, priceFrom, priceTo, sortBy], () => {
+  search()
+}, {deep: true})
+
+function onAddTag() {
+  if (!addTag.value || tags.value.includes(addTag.value)) {
+    return
+  }
+  tags.value.push(addTag.value)
+  addTag.value = ''
+}
+
+function onRemoveTag(tag) {
+  tags.value.splice(tags.value.indexOf(tag), 1)
+}
 
 const searchMenu = computed(() => {
   return bookList.value.map(i => i.originalFilename)
@@ -215,17 +277,80 @@ function search() {
   }
   post('/api/book/search/keywords', {keywords: searchContent.value}).then(
     ({data}) => {
-      bookList.value = data
+      // 根据高级搜索过滤
+      const tmp = []
+      data.forEach(book => {
+        if (tags.value.length !== 0 && !tags.value.includes(book.tag)) {
+          return
+        }
+        if (isOriginal.value !== null && book.original !== isOriginal.value) {
+          return
+        }
+        const floor = priceFrom.value ?? 0
+        const ceil = priceTo.value ?? Number.MAX_SAFE_INTEGER
+        if (!(book.price >= floor && book.price <= ceil)) {
+          return
+        }
+        tmp.push(book)
+      })
+      bookList.value = tmp.sort((a, b) => {
+        let result
+        if (sortBy.value.resultValue === 'originalFilename') {
+          result = a.originalFilename.localeCompare(b.originalFilename)
+        } else if (sortBy.value.resultValue === 'author') {
+          result = a.author.localeCompare(b.author)
+        } else if (sortBy.value.resultValue === 'price') {
+          result = a[sortBy.value.resultValue] - b[sortBy.value.resultValue]
+        }
+        return sortBy.value.asc ? result : -result
+      })
     }
   )
 }
 
-watch(searchContent, search)
+
+const showTopup = ref(false)
+
+function purchase(info) {
+  if (!user.isLogin) {
+    message.info('请先登录')
+    return
+  }
+  const {price, bookId} = info
+  post('/api/book/is-purchased', {bookId, userId: parseInt(user.id)})
+    .then(({data}) => {
+      if (data) {
+        message.error('您已购买过该书籍')
+        return
+      }
+
+      if (user.coins < price) {
+        message.error('您的书币不足，请充值')
+        showTopup.value = true
+        return
+      }
+
+      post('/api/book/purchase', {bookId, userId: user.id, coins: user.coins - price})
+        .then(({data}) => {
+          if (data) {
+            message.success('购买成功')
+            return
+          }
+          message.error('购买失败')
+        })
+    })
+}
 
 function showBookDetail(b) {
+  if (!user.isLogin) {
+    message.info('请先登录')
+    return
+  }
   const book = window.btoa(encodeURIComponent(JSON.stringify(b)))
   router.push({path: '/books', query: {book}})
 }
+
+
 </script>
 
 <style lang="scss" scoped>

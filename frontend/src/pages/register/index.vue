@@ -27,11 +27,13 @@
                           :label="$t('email')"
                           type="email"
                           :rules="[rules.required, rules.email]"
+                          color="primary"
               />
               <VTextField
                 v-model="form.username"
                 :label="$t('username')"
                 :rules="[rules.required, rules.userNameLength]"
+                color="primary"
               />
               <VTextField
                 v-model="form.password"
@@ -40,6 +42,7 @@
                 :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 :rules="[rules.required, rules.pwdLength]"
+                color="primary"
               />
               <VTextField
                 v-model="form['repeat-password']"
@@ -48,12 +51,14 @@
                 :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 :rules="[rules.required, rules.samePwd(form.password)]"
+                color="primary"
               />
               <VTextField
                 v-model="form['verification-code']"
                 :label="$t('verification-code')"
                 type="text"
                 :rules="[rules.required]"
+                color="primary"
               >
                 <template #append-inner>
                   <VBtn class="h-75"
@@ -103,7 +108,7 @@ import {useMessage} from "@/store/modules/message";
 import {i18n} from "@/i18n";
 import {useRouter} from "vue-router";
 import {useUser} from "@/store/modules/user";
-import {rules} from "@/assets/script/rules";
+import {rules} from "@/utils/rules";
 
 const message = useMessage()
 const router = useRouter()

@@ -13,7 +13,8 @@
       <VBtn type="submit"
             color="primary"
             :block="true"
-            @click.prevent="upload">
+            @click.prevent="upload"
+            :loading="loading">
         上传
       </VBtn>
     </div>
@@ -24,15 +25,17 @@
 import {ref, watch, watchEffect} from 'vue'
 import {post} from '@/net'
 import {useUser} from '@/store/modules/user'
+import {useMessage} from '@/store/modules/message'
 
 const user = useUser()
+const message = useMessage()
 const form = ref({
   files: null,
   isOriginal: true,
   author: null,//原作者
   tag: null,
-  price: null,
-  brief: null,
+  price: 0,
+  brief: '',
 })
 
 watchEffect(() => {
@@ -41,10 +44,10 @@ watchEffect(() => {
   }
 })
 
+const loading = ref(false)
+
 function upload() {
-  console.log(form.value.files[0])
-
-
+  loading.value = true
   const formUpload = new FormData()
   formUpload.append('file', form.value.files[0])
   formUpload.append('isOriginal', form.value.isOriginal)
@@ -54,11 +57,22 @@ function upload() {
   formUpload.append('description', form.value.brief)
   formUpload.append('uploaderId', parseInt(user.id))
   post('/api/upload/book', formUpload, {}, {'Content-Type': 'multipart/form-data'})
-    .then(({data}) => {
-      console.log(data)
+    .then(() => {
+      message.success('上传成功')
+      form.value = {
+        files: null,
+        isOriginal: true,
+        author: null,
+        tag: null,
+        price: 0,
+        brief: '',
+      }
     })
-    .catch((error) => {
-      console.log(error)
+    .catch(() => {
+      message.error('上传失败')
+    })
+    .finally(() => {
+      loading.value = false
     })
 }
 </script>

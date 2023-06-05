@@ -1,7 +1,7 @@
 <template>
   <div class="h-100">
-    <div class="h-50"
-         layout="row top-justify">
+    <div layout="row top-justify"
+         style="height: 45vh">
       <div class="w-33 h-100">
         <v-chart :option="optionMonthPieChart"
                  :theme="theme.name"
@@ -20,30 +20,31 @@
     </div>
     <div class="h-50"
          layout="column top-center">
-      <h1>TODO：过滤搜索（根据类别、日期、名称、金额）</h1>
+      <!--      <h1>TODO：过滤搜索（根据类别、日期、名称、金额）</h1>-->
       <v-table density="compact">
         <thead>
         <tr>
-          <th class="text-left">
+          <th class="text-center">
             类别
           </th>
-          <th class="text-left">
+          <th class="text-center">
             日期
           </th>
-          <th class="text-left">
+          <th class="text-center">
             名称
           </th>
-          <th class="text-left">
+          <th class="text-center">
             金额
           </th>
-          <th class="text-left">
+          <th class="text-center">
             详情
           </th>
         </tr>
         </thead>
         <tbody>
         <tr v-for="item in table"
-            :key="item.name">
+            :key="item.name"
+            class="text-center">
           <td>{{ item.type }}</td>
           <td>{{ item.date }}</td>
           <td>{{ item.name }}</td>
@@ -60,8 +61,9 @@
 
 <script setup>
 import VChart from 'vue-echarts'
-import {ref} from 'vue'
+import {onActivated, ref} from 'vue'
 import {useTheme} from "@/store/modules/theme"
+import {post} from "@/net";
 
 const theme = useTheme()
 
@@ -161,7 +163,7 @@ const optionYearPieChart = ref({
   ],
 })
 
-
+// 会员费、广告费、人工成本、服务器租赁
 const table = ref([
   {
     type: '收入',
@@ -221,6 +223,23 @@ const table = ref([
   },
 
 ])
+
+
+onActivated(() => {
+  post('/api/admin/cost/info')
+    .then(({data}) => {
+      data.forEach(item => {
+        table.value.push(
+          {
+            type: '收入',
+            date: item.time,
+            name: '出售图书',
+            cost: item.cost,
+            detail: `用户 ${item.userId} 购买图书 ${item.bookId}`
+          })
+      })
+    })
+})
 </script>
 
 <style lang="scss" scoped>

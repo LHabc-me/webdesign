@@ -22,17 +22,17 @@
       <VCol cols="8" class="mx-auto">
         <VTable>
           <thead>
-          <tr>
-            <th class="text-left">用户ID</th>
-            <th class="text-left">用户名</th>
-            <th class="text-left">用户邮箱</th>
-            <th class="text-left">用户余额</th>
-            <th class="text-left">用户热度</th>
-            <th class="text-left">操作</th>
+          <tr class="text-center">
+            <th class="text-center">用户ID</th>
+            <th class="text-center">用户名</th>
+            <th class="text-center">用户邮箱</th>
+            <th class="text-center">用户余额</th>
+            <th class="text-center">用户热度</th>
+            <th class="text-center">操作</th>
           </tr>
           </thead>
           <tbody>
-          <tr v-for="(user, index) in users" :key="index">
+          <tr v-for="(user, index) in users" :key="index" class="text-center">
             <td>{{ user.id }}</td>
             <td>{{ user.username }}</td>
             <td>{{ user.email }}</td>
@@ -62,7 +62,7 @@
           <VSpacer></VSpacer>
           <VBtn color="primary"
                 variant="flat"
-                @click="editInfo">
+                @click="submitEdit">
             确定
           </VBtn>
           <VBtn
@@ -97,18 +97,27 @@ function showEdit(index) {
   edit.value = true
 }
 
-function editInfo() {
-  const hot = post('/api/admin/update/hot', {
-    userId: parseInt(userInfoEdit.value.id),
-    hot: parseInt(userInfoEdit.value.hot)
+function submitEdit() {
+  const id = parseInt(userInfoEdit.value.id)
+  const hot = parseInt(userInfoEdit.value.hot)
+  const coins = parseInt(userInfoEdit.value.coins)
+
+  if (isNaN(id) || isNaN(hot) || isNaN(coins)) {
+    message.error('输入不合法')
+    return
+  }
+
+  const hotWork = post('/api/admin/update/hot', {
+    id,
+    hot
   })
 
-  const coins = post('/api/admin/update/coins', {
-    userId: parseInt(userInfoEdit.value.id),
-    coins: parseInt(userInfoEdit.value.coins)
+  const coinsWork = post('/api/admin/update/coins', {
+    id,
+    coins
   })
 
-  Promise.all([hot, coins]).then(() => {
+  Promise.all([hotWork, coinsWork]).then(() => {
     message.success('修改成功')
     search()
   }).catch(() => {

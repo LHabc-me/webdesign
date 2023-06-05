@@ -12,7 +12,7 @@ instance.interceptors.request.use(config => {
   return Promise.reject(err)
 })
 
-function post(url, data, params = {}, headers = {}) {
+function post(url, data = {}, params = {}, headers = {}) {
   return instance.post(url, data, {
     headers,
     withCredentials: true,

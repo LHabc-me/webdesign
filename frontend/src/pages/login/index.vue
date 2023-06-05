@@ -27,13 +27,15 @@
                           :label="$t('email')"
                           type="email"
                           :rules="[rules.required, rules.email]"
+                          color="primary"
               />
               <VTextField v-model="form.password"
                           :label="$t('password')"
                           :type="isPasswordVisible ? 'text' : 'password'"
                           :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
                           @click:append-inner="isPasswordVisible = !isPasswordVisible"
-                          :rules="[rules.required, rules.pwdLength]"/>
+                          :rules="[rules.required, rules.pwdLength]"
+                          color="primary"/>
 
               <div class="mt-1 mb-4"
                    layout="row">
@@ -86,7 +88,7 @@ import {i18n} from '@/i18n'
 import {useUser} from '@/store/modules/user'
 import {useMessage} from '@/store/modules/message'
 import {useRouter} from 'vue-router'
-import {rules} from '@/assets/script/rules'
+import {rules} from '@/utils/rules'
 import {useTheme} from 'vuetify'
 import {updateUserInfo} from '@/utils/updateUserInfo'
 

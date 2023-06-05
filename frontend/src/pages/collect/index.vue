@@ -8,44 +8,48 @@
       </VBtn>
     </div>
     <VRow v-for="(books, i) in booksList"
-          :key="i">
+          :key="i"
+          class="mx-auto">
       <VCol v-for="(book, j) in books"
             :key="j"
             cols="2"
-            layout="column center-center">
-
-        <VBadge class="mouse-pointer" :model-value="showBadge">
+            class="mb-5 mx-auto"
+            layout="row cneter-center">
+        <VBadge class="mouse-pointer" :model-value="showBadge" v-if="!book.fake">
           <template #badge>
             <VIcon icon="mdi-close" @click="deleteBook(i, j)"></VIcon>
           </template>
           <div style="width: 110px;height: 145px;"
                :class="{'mouse-normal': showBadge}"
-               @click="$router.push({path: 'books', query: {bookId: 1}})">
-            <VImg src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+               @click="showBookDetail(book)">
+            <VImg :src="pdf"
                   class="h-100"
                   :cover="true">
             </VImg>
+            <!--            <div>{{ book.originalFilename }}</div>-->
+            <div class="text-center font-weight-bold">书名</div>
           </div>
         </VBadge>
+        <div v-else style="width: 110px;height: 145px;">
+        </div>
       </VCol>
     </VRow>
   </div>
 </template>
 <script setup>
-import {ref, computed} from 'vue'
+import {ref, computed, onActivated} from 'vue'
+import {post} from "@/net"
+import {useUser} from "@/store/modules/user"
+import pdf from '@/assets/images/pdf.png'
+import {useMessage} from "@/store/modules/message";
+import {useRouter} from "vue-router";
 
 const showBadge = ref(false)
-const bookNumEachRow = 6
+const bookNumEachRow = 5
+const user = useUser()
+const router = useRouter()
 
-const books = ref([
-  {name: '1'},
-  {name: '2'},
-  {name: '3'},
-  {name: '4'},
-  {name: '5'},
-  {name: '6'},
-  {name: '7'},
-]);
+const books = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, {fake: true}])
 
 function deleteBook(i, j) {
   books.value.splice(i * bookNumEachRow + j, 1)
@@ -57,8 +61,29 @@ const booksList = computed(() => {
   for (let i = 0; i < books.value.length; i += bookNumEachRow) {
     list.push(books.value.slice(i, i + bookNumEachRow))
   }
+  while (list[list.length - 1].length < bookNumEachRow) {
+    list[list.length - 1].push({fake: true})
+  }
   return list
 })
+
+onActivated(() => {
+  post('/api/book/purchase/search', {userId: parseInt(user.id)})
+    .then(({bookList}) => {
+      books.value = bookList
+    })
+})
+
+function showBookDetail(b) {
+  const message = useMessage()
+  const user = useUser()
+  if (!user.isLogin) {
+    message.info('请先登录')
+    return
+  }
+  const book = window.btoa(encodeURIComponent(JSON.stringify(b)))
+  router.push({path: '/books', query: {book}})
+}
 
 </script>
 <style scoped lang="scss">
