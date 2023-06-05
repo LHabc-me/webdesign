@@ -140,7 +140,7 @@
                   <div class="h-100"
                        layout="column"
                        self="right"
-                       style="width: 210px">
+                       style="min-width: 210px;width: 210px">
                     <div class="h-50">
                     <span class="float-end">
                       <VIcon icon="mdi-fire" color="red"></VIcon>
@@ -154,7 +154,7 @@
                         书籍详情
                       </VBtn>
                       <VBtn variant="outlined"
-                            @click="purchase({bookId: book.bookId, price: book.price})">
+                            @click="purchase(book)">
                         购买本书
                       </VBtn>
                     </div>
@@ -195,36 +195,49 @@
 <script setup>
 import {useMessage} from "@/store/modules/message"
 import {useUser} from "@/store/modules/user"
-import {computed, ref, watch} from "vue"
+import {computed, onActivated, ref, watch} from "vue"
 import {get, post} from "@/net"
 import {useRouter} from "vue-router"
 import pdf from '@/assets/images/pdf.png'
-import TopUp from "@/component/TopUp.vue";
+import TopUp from "@/component/TopUp.vue"
+import {useRoute} from "vue-router"
 
 const message = useMessage()
 const user = useUser()
 const router = useRouter()
+const route = useRoute()
 
-const page = ref(1)
+
+const page = ref(parseInt(route.query.page?.toString() ?? 1))
 const bookNumOfPage = ref(4)
-const searchContent = ref('')
-const tags = ref([])
+const searchContent = ref(`${route.query.q ?? ''}`)
+const tags = ref(route.query.tags?.toString().split(',') ?? [])
 const addTag = ref()
-const isOriginal = ref(null)
-const priceFrom = ref()
-const priceTo = ref()
+
+function original() {
+  if (route.query.original === undefined || route.query.original === null) {
+    return null
+  }
+  return route.query.original === 'true'
+}
+
+const isOriginal = ref(original())
+const priceFrom = ref(isNaN(route.query.priceFrom) ? null : route.query.priceFrom)
+const priceTo = ref(isNaN(route.query.priceTo) ? null : route.query.priceTo)
 const sortBy = ref({
   name: ['书名', '作者', '价格', '热度'],
   value: ['originalFilename', 'author', 'price', 'hot'],
   model: '书名',
-  resultValue: 'originalFilename',
+  resultValue: route.query.sort ?? 'originalFilename',
   //是否升序
-  asc: true
+  asc: (() => {
+    return route.query.asc?.toString() !== 'false'
+  })()
 })
 
 function sortUpdate() {
   sortBy.value.resultValue = sortBy.value.value[sortBy.value.name.indexOf(sortBy.value.model)]
-  search()
+  updateQuery()
 }
 
 
@@ -232,8 +245,30 @@ watch([searchContent, tags, isOriginal, priceFrom, priceTo, sortBy], () => {
   search()
 }, {deep: true})
 
+watch(page, () => {
+  updateQuery()
+})
+
+function updateQuery() {
+  const query = {
+    page: page.value,
+    q: searchContent.value,
+    sort: sortBy.value.resultValue,
+    tags: tags.value.join(','),
+    asc: sortBy.value.asc,
+    original: isOriginal.value,
+    priceFrom: priceFrom.value,
+    priceTo: priceTo.value
+  }
+  router.push({path: `${route.path}`, query})
+}
+
 function onAddTag() {
   if (!addTag.value || tags.value.includes(addTag.value)) {
+    return
+  }
+  if (addTag.value.includes(',')) {
+    message.error('标签不能包含逗号')
     return
   }
   tags.value.push(addTag.value)
@@ -263,18 +298,25 @@ function description(val) {
   if (!val) {
     return '暂无简介'
   }
-  if (val.length > 20) {
-    return val.slice(0, 20) + '...'
+  if (val.length > 120) {
+    return val.slice(0, 120) + '...'
   }
   return val
 }
 
+onActivated(() => {
+  search()
+})
 
 function search() {
   if (searchContent.value === '') {
     bookList.value = []
     return
   }
+  updateQuery()
+
+  const p = page.value
+
   post('/api/book/search/keywords', {keywords: searchContent.value}).then(
     ({data}) => {
       // 根据高级搜索过滤
@@ -293,17 +335,23 @@ function search() {
         }
         tmp.push(book)
       })
-      bookList.value = tmp.sort((a, b) => {
+      tmp.sort((a, b) => {
         let result
         if (sortBy.value.resultValue === 'originalFilename') {
           result = a.originalFilename.localeCompare(b.originalFilename)
         } else if (sortBy.value.resultValue === 'author') {
           result = a.author.localeCompare(b.author)
         } else if (sortBy.value.resultValue === 'price') {
-          result = a[sortBy.value.resultValue] - b[sortBy.value.resultValue]
+          result = a.price - b.price
+        } else if (sortBy.value.resultValue === 'hot') {
+          result = a.hot - b.hot
         }
         return sortBy.value.asc ? result : -result
       })
+      if (page.value !== p) {
+        page.value = 1
+      }
+      bookList.value = tmp
     }
   )
 }
@@ -311,12 +359,12 @@ function search() {
 
 const showTopup = ref(false)
 
-function purchase(info) {
+function purchase(book) {
   if (!user.isLogin) {
     message.info('请先登录')
     return
   }
-  const {price, bookId} = info
+  const {price, bookId, hot} = book
   post('/api/book/is-purchased', {bookId, userId: parseInt(user.id)})
     .then(({data}) => {
       if (data) {
@@ -333,6 +381,8 @@ function purchase(info) {
       post('/api/book/purchase', {bookId, userId: user.id, coins: user.coins - price})
         .then(({data}) => {
           if (data) {
+            post('/api/book/set/hot', {bookId, hot: parseInt(hot) + 5})
+              .then(search)
             message.success('购买成功')
             return
           }

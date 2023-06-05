@@ -79,20 +79,19 @@ const optionMonthPieChart = ref({
   legend: {
     orient: 'vertical',
     left: 'left',
-    data: ['Direct', 'Email', 'Ad Networks', 'Video Ads', 'Search Engines'],
+    data: ['利润', '广告费', '人工成本', '服务器租赁'],
   },
   series: [
     {
-      name: 'Traffic Sources',
+      name: '年度收支',
       type: 'pie',
       radius: '55%',
       center: ['50%', '60%'],
       data: [
-        {value: 335, name: 'Direct'},
-        {value: 310, name: 'Email'},
-        {value: 234, name: 'Ad Networks'},
-        {value: 135, name: 'Video Ads'},
-        {value: 1548, name: 'Search Engines'},
+        {value: 3100, name: '服务器租赁'},
+        {value: 2340, name: '广告费'},
+        {value: 6448, name: '人工成本'},
+        {value: 15048, name: '利润'},
       ],
       emphasis: {
         itemStyle: {
@@ -107,7 +106,7 @@ const optionMonthPieChart = ref({
 
 const optionYearLineChart = ref({
   title: {
-    text: '年度收支',
+    text: '年度利润',
     left: 'center',
   },
   xAxis: {
@@ -119,7 +118,7 @@ const optionYearLineChart = ref({
   },
   series: [
     {
-      data: [150, 230, 224, 218, 135, 147, 260, 110, 130, 120, 130, 140],
+      data: [1560, 6230, 2264, 2168, 3365, 6147, 2606, 3180, 5830, 8120, 4130, 6140],
       type: 'line'
     }
   ]
@@ -137,20 +136,19 @@ const optionYearPieChart = ref({
   legend: {
     orient: 'vertical',
     left: 'left',
-    data: ['Direct', 'Email', 'Ad Networks', 'Video Ads', 'Search Engines'],
+    data: ['利润', '广告费', '人工成本', '服务器租赁'],
   },
   series: [
     {
-      name: 'Traffic Sources',
+      name: '年度收支',
       type: 'pie',
       radius: '55%',
       center: ['50%', '60%'],
       data: [
-        {value: 335, name: 'Direct'},
-        {value: 310, name: 'Email'},
-        {value: 234, name: 'Ad Networks'},
-        {value: 135, name: 'Video Ads'},
-        {value: 1548, name: 'Search Engines'},
+        {value: 13120, name: '服务器租赁'},
+        {value: 25344, name: '广告费'},
+        {value: 133500, name: '人工成本'},
+        {value: 173227, name: '利润'},
       ],
       emphasis: {
         itemStyle: {
@@ -163,63 +161,63 @@ const optionYearPieChart = ref({
   ],
 })
 
-// 会员费、广告费、人工成本、服务器租赁
+// 利润、广告费、人工成本、服务器租赁
 const table = ref([
   {
-    type: '收入',
+    type: '支出',
     date: '2021-01-01',
-    name: '工资',
+    name: '人工成本',
     cost: 10000,
     detail: '工资'
   },
   {
-    type: '收入',
+    type: '支出',
     date: '2021-01-01',
-    name: '奖金',
+    name: '人工成本',
     cost: 1000,
     detail: '奖金'
   },
   {
     type: '支出',
     date: '2021-01-01',
-    name: '房租',
+    name: '人工成本',
     cost: 2000,
-    detail: '房租'
+    detail: '工资'
   },
   {
     type: '支出',
     date: '2021-01-01',
-    name: '水电',
+    name: '服务器租赁',
     cost: 500,
-    detail: '水电'
+    detail: '服务器租赁'
   },
   {
     type: '支出',
     date: '2021-01-01',
-    name: '饮食',
+    name: '广告费',
     cost: 1000,
-    detail: '饮食'
+    detail: '广告费'
   },
   {
     type: '支出',
     date: '2021-01-01',
-    name: '交通',
+    name: '广告费',
     cost: 500,
-    detail: '交通'
+    detail: '广告费'
   },
   {
     type: '支出',
     date: '2021-01-01',
-    name: '娱乐',
+    name: '服务器租赁',
     cost: 1000,
-    detail: '娱乐'
+    detail: '服务器租赁'
   },
   {
     type: '支出',
     date: '2021-01-01',
-    name: '其他',
+    name: '人工成本',
     cost: 500,
-    detail: '其他'
+    detail: '奖金'
   },
 
 ])

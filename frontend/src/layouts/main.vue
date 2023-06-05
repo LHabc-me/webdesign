@@ -194,11 +194,11 @@ const lists = computed(() => {
             icon: 'mdi-currency-usd',
             to: '/admin/finance'
           },
-          {
-            text: '活动管理',
-            icon: 'mdi-party-popper',
-            to: '/admin/activity'
-          },
+          // {
+          //   text: '活动管理',
+          //   icon: 'mdi-party-popper',
+          //   to: '/admin/activity'
+          // },
           {
             text: '图书管理',
             icon: 'mdi-fire',

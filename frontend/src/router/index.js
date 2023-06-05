@@ -12,7 +12,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-  nProgress.start()
+  if (!(from.path === '/' && to.path === '/')) {
+    nProgress.start()
+  }
 
   if (to.meta.redirect) {
     return to.meta.redirect
@@ -29,7 +31,9 @@ router.beforeEach((to, from) => {
   }
 })
 
-router.afterEach(() => {
-  nProgress.done()
+router.afterEach((to, from) => {
+  if (!(from.path === '/' && to.path === '/')) {
+    nProgress.done()
+  }
 })
 export default router

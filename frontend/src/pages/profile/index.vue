@@ -1,12 +1,11 @@
 <template>
   <div class="h-100" layout="column center-center">
-    <div class="elevation-4 pa-10"
-         style="width: 336px; height: 500px;"
+    <div class="pa-10"
          layout="column cneter-center">
-      <h1>个人资料</h1>
-      <VAvatar size="100"
+      <VAvatar size="200"
                class="mouse-pointer"
-               @click="uploadAvatarInput.click()">
+               @click="uploadAvatarInput.click()"
+      >
         <VImg :src="imgSrc">
         </VImg>
       </VAvatar>
@@ -16,20 +15,24 @@
                class="d-none"
                accept="image/*"
                @change="onuploadAvatarInputChange"/>
-        <div layout="row top-left">
-          <div class="w-33">
-            <div>ID</div>
-            <div>电子邮箱</div>
-            <div>用户名</div>
-            <div>书币余额</div>
-            <div>热度</div>
-            <div>作品</div>
+        <div layout="row top-center" class="text-h5">
+          <div style="width: 520px;" layout="column top-right">
+            <div>
+              <div>ID</div>
+              <div>电子邮箱</div>
+              <div>用户名</div>
+              <div>书币余额</div>
+              <div>热度</div>
+              <div>作品</div>
+            </div>
           </div>
-          <div class="w-66" :style="{color: 'rgba(var(--v-theme-primary), 0.8)'}">
+          <div style="width: 50px"></div>
+          <div :style="{color: 'rgba(var(--v-theme-primary), 0.8)'}"
+               style="width: 600px">
             <div>{{ user.id }}</div>
             <div>{{ user.email }}</div>
             <div>{{ user.name }} <span v-if="false" class="link-color mouse-pointer">修改</span></div>
-            <div>{{ user.coins }} <span class="link-color mouse-pointer" @click="topup">充值</span></div>
+            <div>{{ user.coins }} <span class="text-green-darken-2 mouse-pointer" @click="topup">充值</span></div>
             <div>{{ user.hot }}</div>
             <div v-for="book in bookList" @click="showBookDetail(book)"
                  class="primary-color-hover mouse-pointer">
@@ -48,7 +51,9 @@ import {get, post} from '@/net'
 import TopUp from '@/component/TopUp.vue'
 import {useUser} from '@/store/modules/user'
 import {useMessage} from "@/store/modules/message";
-import {useRouter} from "vue-router";
+import {useRouter} from "vue-router"
+import avatar from '@/assets/images/avatar.png'
+import {updateUserInfo} from "@/utils/updateUserInfo";
 
 const uploadAvatarInput = ref(null)
 const user = useUser()
@@ -59,12 +64,7 @@ function onuploadAvatarInputChange(event) {
   const form = new FormData()
   form.append('file', event.target.files[0])
   post('api/upload/user/avatar', form, {}, {'Content-Type': 'multipart/form-data'})
-    .then(({data}) => {
-      getAvatar()
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+    .then(getAvatar)
 }
 
 const showTopup = ref(false)
@@ -75,6 +75,7 @@ function topup() {
 
 const imgSrc = ref('')
 onActivated(() => {
+  updateUserInfo()
   post('/api/book/search/uploaderId', {uploaderId: parseInt(user.id)})
     .then(({data}) => bookList.value = data)
   getAvatar()
@@ -85,21 +86,20 @@ function getAvatar() {
     .then(({data}) => {
       imgSrc.value = `data:image/png;base64,${data}`
     })
+    .catch(() => {
+      imgSrc.value = avatar
+    })
 }
 
 function showBookDetail(b) {
-  const message = useMessage()
-  const user = useUser()
-  if (!user.isLogin) {
-    message.info('请先登录')
-    return
-  }
   const book = window.btoa(encodeURIComponent(JSON.stringify(b)))
   router.push({path: '/books', query: {book}})
 }
 </script>
 <style scoped lang="scss">
-
+//* {
+//  border: red solid 1px;
+//}
 </style>
 <!--@formatter:off-->
 <route lang="json5">

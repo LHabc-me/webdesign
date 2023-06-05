@@ -63,7 +63,8 @@
                   <template #append-inner>
                     <VBtn color="primary"
                           style="margin-top: 95px"
-                          @click.stop="review">
+                          @click.stop="review"
+                          :loading="loading">
                       发表
                     </VBtn>
                   </template>
@@ -92,7 +93,7 @@
               <h1>作者简介</h1>
               <VAvatar size="100"
                        class="mouse-pointer">
-                <VImg :src="`avatar/${user.email}`">
+                <VImg :src="imgSrc">
                 </VImg>
               </VAvatar>
               <div layout="row top-left" class="mt-10">
@@ -129,6 +130,7 @@ import {get, post} from "@/net";
 import {useUser} from "@/store/modules/user";
 import pdf from '@/assets/images/pdf.png'
 import TopUp from "@/component/TopUp.vue";
+import avatar from "@/assets/images/avatar.png";
 
 const route = useRoute()
 const bookParam = ref({});
@@ -144,6 +146,7 @@ const contents = ref([])
 
 const author = ref({})
 const showTopup = ref(false)
+const imgSrc = ref()
 
 function showBookDetail(b) {
   const book = window.btoa(encodeURIComponent(JSON.stringify(b)))
@@ -164,17 +167,31 @@ function beginRead() {
 }
 
 const reviewContent = ref('')
+const loading = ref(false)
 
 function review() {
+  loading.value = true
   if (!reviewContent.value) {
     return
   }
   post('/api/comments/insert',
     {bookId: bookParam.value.bookId, userId: parseInt(user.id), content: reviewContent.value})
     .then(() => {
-      message.success('评论成功')
+      message.success('评论成功，热度+1')
       reviewContent.value = ''
-      getComments()
+    })
+    .then(() => {
+      post('/api/admin/update/hot', {userId: parseInt(author.value.id), hot: parseInt(author.value.hot) + 1})
+    })
+    .then(() => {
+      post('/api/admin/update/hot', {userId: parseInt(user.id), hot: parseInt(user.hot) + 1})
+    })
+    .then(() => {
+      post('/api/book/set/hot', {bookId: bookParam.value.bookId, hot: parseInt(bookParam.value.hot) + 1})
+    })
+    .then(reload)
+    .finally(() => {
+      loading.value = false
     })
 }
 
@@ -209,10 +226,20 @@ function reload() {
   bookParam.value = JSON.parse(decodeURIComponent(window.atob(route.query.book.toString())))
   get('/api/user/id', {id: parseInt(bookParam.value.uploaderId)})
     .then(({data}) => author.value = data)
+    .then(() => post('/api/book/search/uploaderId', {uploaderId: parseInt(bookParam.value.uploaderId)})
+      .then(({data}) => author.value.bookList = data))
+    .then(getAvatar)
+    .then(getComments)
+}
 
-  post('/api/book/search/uploaderId', {uploaderId: parseInt(bookParam.value.uploaderId)})
-    .then(({data}) => author.value.bookList = data)
-  getComments()
+function getAvatar() {
+  get(`/api/avatar/${author.value.email}`)
+    .then(({data}) => {
+      imgSrc.value = `data:image/png;base64,${data}`
+    })
+    .catch(() => {
+      imgSrc.value = avatar
+    })
 }
 
 function purchase() {
@@ -234,6 +261,7 @@ function purchase() {
         .then(({data}) => {
           if (data) {
             message.success('购买成功')
+            post('/api/book/set/hot', {bookId: bookParam.value.bookId, hot: parseInt(bookParam.value.hot) + 5})
             return
           }
           message.error('购买失败')

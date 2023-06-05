@@ -13,7 +13,8 @@
         <VSpacer></VSpacer>
         <VBtn color="primary"
               variant="flat"
-              @click="$emit('update:modelValue', false)">
+              @click="topup"
+              :loading="loading">
           确定
         </VBtn>
         <VBtn @click="$emit('update:modelValue', false)">
@@ -27,12 +28,32 @@
 <script setup>
 
 import {ref} from 'vue'
+import {updateUserInfo} from "@/utils/updateUserInfo";
+import {useUser} from "@/store/modules/user";
+import {post} from "@/net";
+import {useMessage} from "@/store/modules/message";
 
+const user = useUser()
+const message = useMessage()
 const props = defineProps({
   modelValue: Boolean,
 })
 const emit = defineEmits(['update:modelValue'])
-const topUpInfoEdit = ref({coins: 0})
+const topUpInfoEdit = ref({})
+
+const loading = ref(false)
+
+function topup() {
+  loading.value = true
+  post('/api/user/recharge', {coins: parseInt(topUpInfoEdit.value.coins) + parseInt(user.coins)})
+    .then(() => {
+      message.success('充值成功')
+      emit('update:modelValue', false)
+      updateUserInfo()
+    }).finally(() => {
+    loading.value = false
+  })
+}
 </script>
 
 

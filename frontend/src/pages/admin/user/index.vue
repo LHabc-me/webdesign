@@ -62,7 +62,8 @@
           <VSpacer></VSpacer>
           <VBtn color="primary"
                 variant="flat"
-                @click="submitEdit">
+                @click="submitEdit"
+                :loading="loading">
             确定
           </VBtn>
           <VBtn
@@ -97,7 +98,10 @@ function showEdit(index) {
   edit.value = true
 }
 
+const loading = ref(false)
+
 function submitEdit() {
+  loading.value = true
   const id = parseInt(userInfoEdit.value.id)
   const hot = parseInt(userInfoEdit.value.hot)
   const coins = parseInt(userInfoEdit.value.coins)
@@ -123,6 +127,7 @@ function submitEdit() {
   }).catch(() => {
     message.error('修改失败')
   }).finally(() => {
+    loading.value = false
     edit.value = false
   })
 }

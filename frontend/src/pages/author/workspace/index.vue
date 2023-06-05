@@ -5,19 +5,19 @@
         <VTable>
           <thead>
           <tr>
-            <th class="text-left">图书ID</th>
-            <th class="text-left">图书名</th>
-            <th class="text-left">是否原创</th>
-            <th class="text-left">原作者</th>
-            <th class="text-left">图书分类</th>
-            <th class="text-left">图书价格</th>
-            <th class="text-left">图书简介</th>
-            <th class="text-left">热度</th>
-            <th class="text-left">操作</th>
+            <th class="text-center">图书ID</th>
+            <th class="text-center">图书名</th>
+            <th class="text-center">是否原创</th>
+            <th class="text-center">原作者</th>
+            <th class="text-center">图书分类</th>
+            <th class="text-center">图书价格</th>
+            <th class="text-center">图书简介</th>
+            <th class="text-center">热度</th>
+            <th class="text-center">操作</th>
           </tr>
           </thead>
           <tbody>
-          <tr v-for="(book, index) in books" :key="index">
+          <tr v-for="(book, index) in books" :key="index" class="text-center">
             <td>{{ book.bookId }}</td>
             <td>{{ book.originalFilename }}</td>
             <td>{{ book.original ? '是' : '否' }}</td>
@@ -51,7 +51,8 @@
           <VSpacer></VSpacer>
           <VBtn color="primary"
                 variant="flat"
-                @click="submitEdit">
+                @click="submitEdit"
+                :loading="loading">
             确定
           </VBtn>
           <VBtn
@@ -89,7 +90,10 @@ function showEdit(index) {
   edit.value = true
 }
 
+const loading = ref(false)
+
 function submitEdit() {
+  loading.value = true
   const bookId = bookInfoEdit.value.bookId.toString()
   const price = parseInt(bookInfoEdit.value.price)
   const description = bookInfoEdit.value.description.toString()
@@ -109,6 +113,7 @@ function submitEdit() {
     }).catch(() => {
     message.error('修改失败')
   }).finally(() => {
+    loading.value = false
     edit.value = false
   })
 }
