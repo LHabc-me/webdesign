@@ -182,10 +182,10 @@ function review() {
       reviewContent.value = ''
     })
     .then(() => {
-      post('/api/admin/update/hot', {userId: parseInt(author.value.id), hot: parseInt(author.value.hot) + 1})
+      post('/api/admin/update/hot', {id: parseInt(author.value.id), hot: parseInt(author.value.hot) + 1})
     })
     .then(() => {
-      post('/api/admin/update/hot', {userId: parseInt(user.id), hot: parseInt(user.hot.toString()) + 1})
+      post('/api/admin/update/hot', {id: parseInt(user.id), hot: parseInt(user.hot.toString()) + 1})
     })
     .then(() => {
       post('/api/book/set/hot', {bookId: bookParam.value.bookId, hot: parseInt(bookParam.value.hot) + 1})
