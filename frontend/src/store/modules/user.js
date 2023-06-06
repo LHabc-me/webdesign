@@ -14,11 +14,11 @@ export const useUser = defineStore('user', {
   }),
   getters: {},
   actions: {},
-  persist: {
-    enabled: true,
-    strategies: [{
-      key: 'user',
-      storage: localStorage,
-    }],
-  }
+  // persist: {
+  //   enabled: true,
+  //   strategies: [{
+  //     key: 'user',
+  //     storage: localStorage,
+  //   }],
+  // }
 })
