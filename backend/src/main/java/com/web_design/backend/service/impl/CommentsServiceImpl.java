@@ -1,5 +1,6 @@
 package com.web_design.backend.service.impl;
 
+import com.web_design.backend.entity.Comment;
 import com.web_design.backend.mapper.CommentsMapper;
 import com.web_design.backend.service.CommentsService;
 import jakarta.annotation.Resource;
@@ -22,12 +23,12 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public String[] findCommentByFilename(String filename) {
+    public Comment[] findCommentByFilename(String filename) {
         return mapper.findCommentByFilename(filename);
     }
 
     @Override
-    public String[] findCommentByUserId(int userId) {
+    public Comment[] findCommentByUserId(int userId) {
         return mapper.findCommentByUserId(userId);
     }
 }

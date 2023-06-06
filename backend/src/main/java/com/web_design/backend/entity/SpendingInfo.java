@@ -3,9 +3,9 @@ package com.web_design.backend.entity;
 import lombok.Data;
 
 @Data
-public class Comment {
-    int id;
+public class SpendingInfo {
     String bookId;
-    String userId;
-    String content;
+    String time;
+    int cost;
+    int userId;
 }

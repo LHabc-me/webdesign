@@ -1,20 +1,21 @@
 package com.web_design.backend.mapper;
 
-import com.web_design.backend.entity.ErrCode;
-import com.web_design.backend.entity.auth.Account;
-import com.web_design.backend.entity.user.UserInfo;
-import org.apache.ibatis.annotations.Insert;
+import com.web_design.backend.entity.SpendingInfo;
+import com.web_design.backend.entity.UserInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface UserInfoMapper {
-    @Select("select id,email,username,coins from user where id=#{id}")
+    @Select("select * from user where id=#{id}")
     UserInfo findUserInfoById(int id);
 
-    @Select("select id,email,username,coins from user where email=#{text}")
+    @Select("select * from user where email=#{text}")
     UserInfo findUserInfoByEmail(String text);
+
+    @Select("select * from bookPurchase")
+    SpendingInfo[] getALlSpendingInfo();
 
     @Update("update user set password=#{password} where id=#{id}")
     int updatePasswordById(int id, String password);

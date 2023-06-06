@@ -1,15 +1,11 @@
 package com.web_design.backend.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import io.netty.handler.codec.base64.Base64Encoder;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.Base64;
 
 @RestController
@@ -26,9 +22,7 @@ public class SendFileToFrontController {
             String bookId = info.getString("bookId");
             File file = new File(path + bookId);
             // 获取文件名
-            String filename = file.getName();
             // 获取文件后缀名
-            String ext = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
 
             // 将文件写入输入流
             FileInputStream fileInputStream = new FileInputStream(file);
@@ -59,5 +53,22 @@ public class SendFileToFrontController {
 //            return "send failed";
         }
 //        return response.toString();
+    }
+
+    @GetMapping("/avatar/{email}")
+    public void getAvatar(@PathVariable("email") String email, HttpServletResponse response) throws IOException {
+        String avatarPath = uploadFolder + "Avatar/" + email;
+        File avatar = new File(avatarPath);
+        FileInputStream fis = new FileInputStream(avatar);
+        InputStream is = new BufferedInputStream(fis);
+        byte[] buffer = new byte[is.available()];
+
+        is.read(buffer);
+
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("image/png");
+        response.getOutputStream().write(Base64.getEncoder().encodeToString(buffer).getBytes());
+
+        is.close();
     }
 }

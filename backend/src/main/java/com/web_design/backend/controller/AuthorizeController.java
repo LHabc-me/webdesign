@@ -6,11 +6,13 @@ import com.web_design.backend.entity.RestBean;
 import com.web_design.backend.service.AuthorizeService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController

@@ -1,12 +1,14 @@
 package com.web_design.backend.service;
 
+import com.web_design.backend.entity.Comment;
+
 public interface CommentsService {
 
     boolean insertComment(String filename, int userId, String content);
 
     boolean deleteCommentByFilename(String filename);
 
-    String[] findCommentByFilename(String filename);
+    Comment[] findCommentByFilename(String filename);
 
-    String[] findCommentByUserId(int userId);
+    Comment[] findCommentByUserId(int userId);
 }

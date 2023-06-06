@@ -1,6 +1,6 @@
 package com.web_design.backend.service.impl;
 
-import com.web_design.backend.entity.file.FileInfo;
+import com.web_design.backend.entity.FileInfo;
 import com.web_design.backend.mapper.FileMapper;
 import com.web_design.backend.service.FileService;
 import jakarta.annotation.Resource;

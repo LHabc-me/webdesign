@@ -1,6 +1,6 @@
 package com.web_design.backend.mapper;
 
-import com.web_design.backend.entity.auth.Account;
+import com.web_design.backend.entity.Account;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

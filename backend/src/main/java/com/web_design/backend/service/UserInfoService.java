@@ -1,7 +1,7 @@
 package com.web_design.backend.service;
 
-import com.web_design.backend.entity.ErrCode;
-import com.web_design.backend.entity.user.UserInfo;
+import com.web_design.backend.entity.SpendingInfo;
+import com.web_design.backend.entity.UserInfo;
 
 // 获取用户信息相关
 public interface UserInfoService {
@@ -9,19 +9,21 @@ public interface UserInfoService {
 
     UserInfo getUserInfoById(int id);
 
-    ErrCode updatePasswordById(int id, String password);
+    SpendingInfo[] getALlSpendingInfo();
 
-    ErrCode updatePasswordByEmail(String email, String password);
+    boolean updatePasswordById(int id, String password);
 
-    ErrCode updateUsernameById(int id, String username);
+    boolean updatePasswordByEmail(String email, String password);
 
-    ErrCode updateUsernameByEmail(String email, String username);
+    boolean updateUsernameById(int id, String username);
 
-    ErrCode updateCoinsByEmail(String email, int coins);
+    boolean updateUsernameByEmail(String email, String username);
 
-    ErrCode updateCoinsById(int id, int coins);
+    boolean updateCoinsByEmail(String email, int coins);
 
-    ErrCode updateHotByEmail(String email, int hot);
+    boolean updateCoinsById(int id, int coins);
 
-    ErrCode updateHotById(int id, int hot);
+    boolean updateHotByEmail(String email, int hot);
+
+    boolean updateHotById(int id, int hot);
 }

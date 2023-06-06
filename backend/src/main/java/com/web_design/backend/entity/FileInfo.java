@@ -1,17 +1,17 @@
-package com.web_design.backend.entity.file;
+package com.web_design.backend.entity;
 
 import lombok.Data;
 
 @Data
 public class FileInfo {
     String bookId;
-    String originalFilename;
     int uploaderId;
+    String originalFilename;
     String author;
-    int price = 0;
     boolean flag = true;    // 表示是否被删除
+    int price = 0;
     boolean isOriginal;     // 表示是否为原创
-    String description;
+    String description = "";
     int hot = 0;
     String tag;
 }

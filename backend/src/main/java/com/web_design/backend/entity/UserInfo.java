@@ -1,4 +1,4 @@
-package com.web_design.backend.entity.user;
+package com.web_design.backend.entity;
 
 import lombok.Data;
 

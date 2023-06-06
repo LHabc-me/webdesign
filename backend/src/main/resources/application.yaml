@@ -12,11 +12,11 @@ spring:
   #        - admin
 
   datasource:
-    url: jdbc:mysql://localhost:3306/backend?Unicode=true&characterEncoding=UTF-8
-    #    url: jdbc:mysql://www.kina0630.xyz:3306/backend?Unicode=true&characterEncoding=UTF-8
+    #    url: jdbc:mysql://localhost:3306/backend?Unicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://www.kina0630.xyz:3306/backend?Unicode=true&characterEncoding=UTF-8
     username: root
-    password: '030701'
-    #    password: '323xZJQ030701'
+    #    password: '030701'
+    password: '323xZJQ030701'
     driver-class-name: com.mysql.cj.jdbc.Driver
   mail:
     host: smtp.163.com

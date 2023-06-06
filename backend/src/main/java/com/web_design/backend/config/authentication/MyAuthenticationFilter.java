@@ -1,11 +1,8 @@
 package com.web_design.backend.config.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.web_design.backend.entity.user.UserInfo;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.boot.context.properties.bind.Name;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;

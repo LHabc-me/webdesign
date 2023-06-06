@@ -1,6 +1,6 @@
 package com.web_design.backend.service.impl;
 
-import com.web_design.backend.entity.auth.Account;
+import com.web_design.backend.entity.Account;
 import com.web_design.backend.entity.ErrCode;
 import com.web_design.backend.mapper.AccountMapper;
 import com.web_design.backend.service.AuthorizeService;

@@ -1,12 +1,12 @@
 package com.web_design.backend.mapper;
 
-import com.web_design.backend.entity.file.FileInfo;
+import com.web_design.backend.entity.FileInfo;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface FileMapper {
 
-    @Insert("insert into file(bookId, uploaderId, original_filename, author, price, is_original, description, tag) " +
+    @Insert("insert into file(bookId, uploaderId, originalFilename, author, price, isOriginal, description, tag) " +
             "values(#{filename}, #{uploaderId}, #{originalFilename}, #{author}, #{price}, #{isOriginal}, #{description}, #{tag})")
     int insertFile(String filename, int uploaderId, String originalFilename,
                    String author, int price, boolean isOriginal, String description, String tag);
@@ -14,7 +14,7 @@ public interface FileMapper {
     @Select("select * from file where bookId=#{filename} and flag=true")
     FileInfo findFileByFileName(String filename);
 
-    @Select("select * from file where original_filename like #{keywords} and flag=true")
+    @Select("select * from file where originalFilename like #{keywords} and flag=true")
     FileInfo[] findFileByKeywords(String keywords);
 
     @Select("select * from file where uploaderId=#{uploaderId} and flag=true")

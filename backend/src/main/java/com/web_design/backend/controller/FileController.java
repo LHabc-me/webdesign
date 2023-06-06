@@ -113,6 +113,8 @@ public class FileController {
                 info.put("是否原创", isOriginal);
                 info.put("介绍", description);
 
+//                if (description.isEmpty())
+
                 // 上传文件信息到数据库
                 System.out.println("info: " + info);
                 return fileService.uploadFile(newFileName, uploader, originalFilename,
@@ -129,28 +131,36 @@ public class FileController {
 
     @PostMapping("/book/delete")
     @ResponseBody
-    public String deleteBook(@RequestBody JSONObject jsonParam) {
-        String filename = jsonParam.getString("bookId");
+    public String deleteBook(@RequestBody JSONObject info) {
+        String filename = info.getString("bookId");
         return fileService.deleteFile(filename) && commentsService.deleteCommentByFilename(filename) ? "delete success" : "delete failed";
     }
 
-    @PostMapping("/book/set-hot")
-    public boolean updateBookHot(String bookId, int hot) {
+    @PostMapping("/book/set/hot")
+    public boolean updateBookHot(@RequestBody JSONObject info) {
+        String bookId = info.getString("bookId");
+        int hot = info.getIntValue("hot");
         return fileService.setFileHot(bookId, hot);
     }
 
-    @PostMapping("/book/set-author")
-    public boolean updateBookHot(String bookId, String author) {
+    @PostMapping("/book/set/author")
+    public boolean updateBookAuthor(@RequestBody JSONObject info) {
+        String bookId = info.getString("bookId");
+        String author = info.getString("author");
         return fileService.setFileAuthor(bookId, author);
     }
 
-    @PostMapping("/book/set-price")
-    public boolean updateBookPrice(String bookId, int price) {
+    @PostMapping("/book/set/price")
+    public boolean updateBookPrice(@RequestBody JSONObject info) {
+        String bookId = info.getString("bookId");
+        int price = info.getIntValue("price");
         return fileService.setFilePrice(bookId, price);
     }
 
-    @PostMapping("/book/set-original")
-    public boolean updateBookOriginal(String bookId, boolean isOriginal) {
-        return fileService.setFileOriginal(bookId, isOriginal);
+    @PostMapping("/book/set/description")
+    public boolean updateBookDescription(@RequestBody JSONObject info) {
+        String bookId = info.getString("bookId");
+        String description = info.getString("description");
+        return fileService.setFileDescription(bookId, description);
     }
 }

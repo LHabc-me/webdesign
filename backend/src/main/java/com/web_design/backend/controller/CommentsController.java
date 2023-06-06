@@ -1,11 +1,12 @@
 package com.web_design.backend.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.web_design.backend.entity.Comment;
 import com.web_design.backend.entity.RestBean;
 import com.web_design.backend.service.CommentsService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -16,7 +17,10 @@ public class CommentsController {
     CommentsService commentsService;
 
     @PostMapping("/comments/insert")
-    public RestBean insertComment(String filename, int userId, String content) {
+    public RestBean insertComment(@RequestBody JSONObject info) {
+        String filename = info.getString("bookId");
+        int userId = info.getIntValue("userId");
+        String content = info.getString("content");
         return commentsService.insertComment(filename, userId, content)
                 ? RestBean.success("insert success")
                 : RestBean.failure(400, "insert failed");
@@ -30,13 +34,15 @@ public class CommentsController {
 //    }
 
     @PostMapping("/comments/find/bookId")
-    public JSONObject findCommentByFilename(String filename) {
-        return JSON.parseObject(JSONObject.toJSONString(commentsService.findCommentByFilename(filename)));
+    public Comment[] findCommentByFilename(@RequestBody JSONObject info) {
+        String bookId = info.getString("bookId");
+        return commentsService.findCommentByFilename(bookId);
     }
 
     @PostMapping("/comments/find/userid")
-    public JSONObject findCommentByUserId(int userId) {
-        return JSON.parseObject(JSONObject.toJSONString(commentsService.findCommentByUserId(userId)));
+    public Comment[] findCommentByUserId(@RequestBody JSONObject info) {
+        int userId = info.getIntValue("userId");
+        return commentsService.findCommentByUserId(userId);
     }
 
 }
