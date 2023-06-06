@@ -180,7 +180,7 @@
       <VCol cols="2">
         <div @click="goURL('https://delete-cloud.github.io')" class="w-100"
              style="height: 700px">
-          <VImg class="h-100" src="images/handwriting.gif"
+          <VImg class="h-100" src="/images/handwriting.gif"
                 :class="{'dark': theme.name === 'dark'}">
           </VImg>
         </div>
@@ -210,10 +210,10 @@ const theme = useTheme()
 
 
 const imgLeft = ref([
-  'images/book1.jpg',
-  'images/book2.jpg',
-  'images/book3.jpg',
-  'images/book4.jpg'])
+  '/images/book1.jpg',
+  '/images/book2.jpg',
+  '/images/book3.jpg',
+  '/images/book4.jpg'])
 
 const page = ref(parseInt(route.query.page?.toString() ?? 1))
 const bookNumOfPage = ref(4)
