@@ -14,7 +14,7 @@ public interface UserInfoMapper {
     @Select("select * from user where email=#{text}")
     UserInfo findUserInfoByEmail(String text);
 
-    @Select("select * from bookPurchase")
+    @Select("select * from bookPurchase order by time asc")
     SpendingInfo[] getALlSpendingInfo();
 
     @Update("update user set password=#{password} where id=#{id}")

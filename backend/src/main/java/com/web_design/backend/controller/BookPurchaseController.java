@@ -37,7 +37,7 @@ public class BookPurchaseController {
         java.util.Date date = new java.util.Date();
         String time = dateFormat.format(date);
         return service.insertBookPurchase(bookId, userId, cost, time)
-                && (userInfoService.updateCoinsById(userId, coins));
+                && userInfoService.updateCoinsById(userId, coins);
     }
 
     @PostMapping("/book/is-purchased")
