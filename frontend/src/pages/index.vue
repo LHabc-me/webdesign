@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'h-100': true, 'pb-0': i18n.global.locale.value === 'zh'}">
+  <div class="h-100">
     <VRow>
       <VCol cols="2">
         <VRow>
@@ -162,7 +162,9 @@
             </VList>
           </div>
           <VPagination :length="paginationLength"
-                       v-model="page"></VPagination>
+                       v-model="page"
+                       class="mt-2">
+          </VPagination>
         </div>
         <div v-if="searching"></div>
         <div v-else-if="searchContent && bookList.length === 0"
