@@ -6,7 +6,6 @@
 * {
   margin: 0;
   border: 0;
-  //border: red solid 1px;
 }
 
 .link-color {
@@ -42,4 +41,12 @@ a {
 
 .centered-input input {
   text-align: center
+}
+
+.dark {
+  filter: invert(93%);
+}
+
+.profile {
+
 }

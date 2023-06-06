@@ -5,22 +5,22 @@
         <VTable>
           <thead>
           <tr>
-            <th class="text-center">图书ID</th>
-            <th class="text-center">图书名</th>
-            <th class="text-center">是否原创</th>
-            <th class="text-center">原作者</th>
-            <th class="text-center">图书分类</th>
-            <th class="text-center">图书价格</th>
-            <th class="text-center">图书简介</th>
-            <th class="text-center">热度</th>
-            <th class="text-center">操作</th>
+            <th class="text-center">{{ i18n.global.t('book-id') }}</th>
+            <th class="text-center">{{ i18n.global.t('book-name') }}</th>
+            <th class="text-center">{{ i18n.global.t('is-original') }}</th>
+            <th class="text-center">{{ i18n.global.t('original-author') }}</th>
+            <th class="text-center">{{ i18n.global.t('book-tags') }}</th>
+            <th class="text-center">{{ i18n.global.t('book-price') }}</th>
+            <th class="text-center">{{ i18n.global.t('book-description') }}</th>
+            <th class="text-center">{{ i18n.global.t('hot') }}</th>
+            <th class="text-center">{{ i18n.global.t('operation') }}</th>
           </tr>
           </thead>
           <tbody>
           <tr v-for="(book, index) in books" :key="index" class="text-center">
             <td>{{ book.bookId }}</td>
             <td>{{ book.originalFilename }}</td>
-            <td>{{ book.original ? '是' : '否' }}</td>
+            <td>{{ book.original ? i18n.global.t('yes') : i18n.global.t('no') }}</td>
             <td>{{ book.author }}</td>
             <td>{{ book.tag }}</td>
             <td>{{ book.price }}</td>
@@ -29,7 +29,7 @@
             <td>
               <VBtn color="primary"
                     @click="showEdit(index)">
-                修改
+                {{ i18n.global.t('modify') }}
               </VBtn>
             </td>
           </tr>
@@ -41,11 +41,11 @@
              width="550">
       <v-card>
         <VCardTitle>
-          <span class="text-h5">修改图书信息</span>
+          <span class="text-h5">{{ i18n.global.t('modify-book-info') }}</span>
         </VCardTitle>
         <VCardText>
-          <VTextField label="价格" v-model="bookInfoEdit.price" color="primary"></VTextField>
-          <VTextarea label="简介" v-model="bookInfoEdit.description" color="primary"></VTextarea>
+          <VTextField :label="$t('price')" v-model="bookInfoEdit.price" color="primary"></VTextField>
+          <VTextarea :label="$t('description')" v-model="bookInfoEdit.description" color="primary"></VTextarea>
         </VCardText>
         <VCardActions>
           <VSpacer></VSpacer>
@@ -53,11 +53,11 @@
                 variant="flat"
                 @click="submitEdit"
                 :loading="loading">
-            确定
+            {{ i18n.global.t('confirm') }}
           </VBtn>
           <VBtn
             @click="edit = false">
-            取消
+            {{ i18n.global.t('cancel') }}
           </VBtn>
         </VCardActions>
       </v-card>
@@ -71,6 +71,7 @@ import {onActivated, ref} from 'vue'
 import {post} from '@/net'
 import {useMessage} from '@/store/modules/message'
 import {useUser} from '@/store/modules/user'
+import {i18n} from '@/i18n'
 
 
 const message = useMessage()
@@ -99,7 +100,8 @@ function submitEdit() {
   const description = bookInfoEdit.value.description.toString()
 
   if (isNaN(price)) {
-    message.error('输入不合法')
+    message.error(i18n.global.t('invalid-input'))
+    loading.value = false
     return
   }
 
@@ -108,10 +110,10 @@ function submitEdit() {
 
   Promise.all([priceWork, descriptionWork])
     .then(() => {
-      message.success('修改成功')
+      message.success(i18n.global.t('modify-success'))
       search()
     }).catch(() => {
-    message.error('修改失败')
+    message.error(i18n.global.t('modify-fail'))
   }).finally(() => {
     loading.value = false
     edit.value = false
@@ -129,16 +131,12 @@ function search() {
 }
 </script>
 
-<style scoped lang="scss">
-//* {
-//  border: red solid 1px;
-//}
-</style>
 <!--@formatter:off-->
 <route lang="json5">
 {
-meta: {
-layout: 'main',
-}
+  meta: {
+  layout: 'main',
+    requireLogin: true,
+  }
 }
 </route>

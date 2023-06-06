@@ -1,7 +1,7 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
 import routes from '~pages'
 import {setupLayouts} from 'virtual:generated-layouts'
-import {useUser} from "@/store/modules/user";
+import {useUser} from '@/store/modules/user'
 import nProgress from 'nprogress'
 
 const router = createRouter({

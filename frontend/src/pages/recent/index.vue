@@ -2,7 +2,7 @@
   <div>
     <VuePdf v-for="page in numOfPages"
             :key="page"
-            :class="{'pdf-dark': theme.name === 'dark'}"
+            :class="{'dark': theme.name === 'dark'}"
             :src="pdfSrc"
             :page="page"
             :enable-text-selection="true"
@@ -12,21 +12,17 @@
 </template>
 
 <script setup>
-import {onActivated, onDeactivated, ref, watch} from 'vue'
+import {onActivated, ref, watch} from 'vue'
 import {VuePdf} from 'vue3-pdfjs/esm'
-import {useTheme} from "@/store/modules/theme"
-import {post} from "@/net";
-import {createLoadingTask} from "vue3-pdfjs"
+import {useTheme} from '@/store/modules/theme'
+import {post} from '@/net'
+import {createLoadingTask} from 'vue3-pdfjs'
 
 const pdfSrc = ref()
 const numOfPages = ref(0)
-const maxNumOfPages = ref(0)
 const theme = useTheme()
 const pdfPages = ref([])
 
-function scrollListener() {
-  localStorage.setItem('recentBookPage', window.scrollY.toString())
-}
 
 //当pdf加载完成后
 watch(pdfPages, () => {
@@ -43,31 +39,20 @@ onActivated(() => {
           if (numOfPages.value < pdf.numPages) {
             numOfPages.value += Math.min(20, pdf.numPages - numOfPages.value)
           } else {
-            // window.addEventListener('scroll', scrollListener)
             clearInterval(increase)
           }
         }, 0)
       })
     })
 })
-
-onDeactivated(() => {
-  // window.removeEventListener('scroll', scrollListener)
-})
-
 </script>
-
-<style lang="scss" scoped>
-.pdf-dark {
-  filter: invert(93%);
-}
-</style>
 
 <!--@formatter:off-->
 <route lang="json5">
 {
   meta: {
     layout: 'main',
+    requireLogin: true,
   }
 }
 </route>

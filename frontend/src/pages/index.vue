@@ -1,49 +1,46 @@
 <template>
-  <div class="h-100 pb-0">
+  <div :class="{'h-100': true, 'pb-0': i18n.global.locale.value === 'zh'}">
     <VRow>
       <VCol cols="2">
         <VRow>
-          <VCarousel :cycle="true"
-                     interval="3000"
-                     :show-arrows="false"
-                     :hide-delimiters="true"
-                     height="300">
-            <VCarouselItem
-              src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-              :cover="true"
-            ></VCarouselItem>
-            <VCarouselItem
-              src="https://cdn.vuetifyjs.com/images/cards/hotel.jpg"
-              :cover="true"
-            ></VCarouselItem>
-            <VCarouselItem
-              src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-              :cover="true"
-            ></VCarouselItem>
-          </VCarousel>
+          <div @click="goURL('https://lhabc-me.github.io')" class="w-100">
+            <VCarousel :cycle="true"
+                       interval="3000"
+                       :show-arrows="false"
+                       :hide-delimiters="true"
+                       height="300"
+                       class="w-100">
+              <VCarouselItem v-for="(url, index) in imgLeft"
+                             :src="url"
+                             :key="index"
+                             class="mouse-pointer">
+              </VCarouselItem>
+            </VCarousel>
+          </div>
         </VRow>
         <VRow>
           <VCol style="margin-top: 20px">
             <div>
-              <div>高级搜索</div>
+              <div>{{ i18n.global.t('advanced-search') }}</div>
               <VDivider></VDivider>
-              <div class="mt-3">排序</div>
+              <div class="mt-3">{{ i18n.global.t('sort') }}</div>
               <div layout="row center-center">
                 <VSelect color="primary"
-                         :items="sortBy.name"
+                         :items="selectItems"
                          variant="underlined"
                          density="compact"
-                         v-model="sortBy.model"
                          @update:model-value="sortUpdate"
                          class="w-66"
-                ></VSelect>
+                         :model-value="selectModelValue"
+                         return-object>
+                </VSelect>
                 <VRadioGroup v-model="sortBy.asc" color="primary" density="compact" class="w-33">
-                  <VRadio label="升序" :value="true"></VRadio>
-                  <VRadio label="降序" :value="false"></VRadio>
+                  <VRadio :label="$t('ascending')" :value="true"></VRadio>
+                  <VRadio :label="$t('descending')" :value="false"></VRadio>
                 </VRadioGroup>
               </div>
               <VDivider></VDivider>
-              <div class="mt-3">分类</div>
+              <div class="mt-3">{{ i18n.global.t('type') }}</div>
               <div>
                 <div class="py-1 pe-0">
                   <VChip v-for="tag in tags"
@@ -54,25 +51,25 @@
                          class="mb-2">
                     {{ tag }}
                   </VChip>
-                  <VTextField label="添加分类" v-model="addTag" @keyup.enter="onAddTag"
+                  <VTextField :label="$t('add-tag')" v-model="addTag" @keyup.enter="onAddTag"
                               color="primary" density="compact" variant="underlined"></VTextField>
                 </div>
               </div>
-              <div>是否原创</div>
+              <div>{{ i18n.global.t('is-original') }}</div>
               <div>
                 <VRadioGroup v-model="isOriginal" color="primary" density="compact">
-                  <VRadio label="全部" :value="null"></VRadio>
-                  <VRadio label="原创" :value="true"></VRadio>
-                  <VRadio label="非原创" :value="false"></VRadio>
+                  <VRadio :label="$t('all')" :value="null"></VRadio>
+                  <VRadio :label="$t('original')" :value="true"></VRadio>
+                  <VRadio :label="$t('not-original')" :value="false"></VRadio>
                 </VRadioGroup>
               </div>
-              <div>价格区间</div>
+              <div>{{ i18n.global.t('price-range') }}</div>
               <div layout="row center-spread" class="text-subtitle-1"
                    style="margin-top: -20px">
                 <VTextField density="default" variant="underlined" color="primary" v-model="priceFrom" class="centered-input"></VTextField>
-                至
+                {{ i18n.global.t('to') }}
                 <VTextField density="default" variant="underlined" color="primary" v-model="priceTo" class="centered-input"></VTextField>
-                书币
+                {{ i18n.global.t('book-coins') }}
               </div>
             </div>
           </VCol>
@@ -129,33 +126,34 @@
                       <span>{{ book.tag }}</span>
                       <VDivider :vertical="true" class="mx-1"></VDivider>
                       <span class="book-status">
-                      {{ book.original ? '原创' : '非原创' }}
+                      {{ book.original ? i18n.global.t('original') : i18n.global.t('not-original') }}
                     </span>
                       <VDivider :vertical="true" class="mx-1"></VDivider>
-                      <span>{{ book.price }}书币</span>
+                      <span>{{ book.price }}{{ i18n.global.t('book-coins') }}</span>
                     </VCardSubtitle>
                     <VCardText>{{ description(book.description) }}</VCardText>
                   </VCard>
 
-                  <div class="h-100"
+                  <div class="h-100 w-33"
                        layout="column"
                        self="right"
-                       style="min-width: 210px;width: 210px">
+                       style="width: 210px">
                     <div class="h-50">
                     <span class="float-end">
                       <VIcon icon="mdi-fire" color="red"></VIcon>
-                      <span class="text-center">热度{{ book.hot }}</span>
+                      <span class="text-center">{{ i18n.global.t('hot') }}{{ book.hot }}</span>
                     </span>
                     </div>
                     <div class="h-50"
-                         layout="row bottom-justify">
+                         layout="row bottom-right">
                       <VBtn color="primary"
-                            @click="showBookDetail(book)">
-                        书籍详情
+                            @click="showBookDetail(book)"
+                            class="mr-5">
+                        {{ i18n.global.t('book-detail') }}
                       </VBtn>
                       <VBtn variant="outlined"
                             @click="purchase(book)">
-                        购买本书
+                        {{ i18n.global.t('purchase-this-book') }}
                       </VBtn>
                     </div>
                   </div>
@@ -166,26 +164,24 @@
           <VPagination :length="paginationLength"
                        v-model="page"></VPagination>
         </div>
+        <div v-if="searching"></div>
+        <div v-else-if="searchContent && bookList.length === 0"
+             layout="row center-center"
+             class="h-50">
+          <div style="color: rgb(var(--v-theme-primary))"
+               class="text-h4 font-weight-bold">
+            {{ i18n.global.t('no-matching-books-found') }}(◞‸◟)
+          </div>
+        </div>
+        <div v-else></div>
       </VCol>
       <VCol cols="2">
-        <VCarousel :cycle="true"
-                   interval="3000"
-                   :show-arrows="false"
-                   :hide-delimiters="true"
-                   height="300">
-          <VCarouselItem
-            src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-            :cover="true"
-          ></VCarouselItem>
-          <VCarouselItem
-            src="https://cdn.vuetifyjs.com/images/cards/hotel.jpg"
-            :cover="true"
-          ></VCarouselItem>
-          <VCarouselItem
-            src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-            :cover="true"
-          ></VCarouselItem>
-        </VCarousel>
+        <div @click="goURL('https://delete-cloud.github.io')" class="w-100"
+             style="height: 700px">
+          <VImg class="h-100" src="images/handwriting.gif"
+                :class="{'dark': theme.name === 'dark'}">
+          </VImg>
+        </div>
       </VCol>
     </VRow>
     <TopUp v-model="showTopup"></TopUp>
@@ -196,47 +192,71 @@
 import {useMessage} from "@/store/modules/message"
 import {useUser} from "@/store/modules/user"
 import {computed, onActivated, ref, watch} from "vue"
-import {get, post} from "@/net"
+import {useTheme} from "@/store/modules/theme"
+import {post} from "@/net"
 import {useRouter} from "vue-router"
 import pdf from '@/assets/images/pdf.png'
 import TopUp from "@/component/TopUp.vue"
 import {useRoute} from "vue-router"
+import {i18n} from "@/i18n";
 
 const message = useMessage()
 const user = useUser()
 const router = useRouter()
 const route = useRoute()
+const theme = useTheme()
 
+
+const imgLeft = ref([
+  'images/book1.jpg',
+  'images/book2.jpg',
+  'images/book3.jpg',
+  'images/book4.jpg'])
 
 const page = ref(parseInt(route.query.page?.toString() ?? 1))
 const bookNumOfPage = ref(4)
 const searchContent = ref(`${route.query.q ?? ''}`)
-const tags = ref(route.query.tags?.toString().split(',') ?? [])
+const tags = ref((() => {
+  const result = route.query.tags?.toString().split(',')
+  if (!result || (result.length === 1 && result[0] === '')) {
+    return []
+  }
+  return result
+})())
 const addTag = ref()
 
-function original() {
+const isOriginal = ref((() => {
   if (route.query.original === undefined || route.query.original === null) {
     return null
   }
   return route.query.original === 'true'
-}
-
-const isOriginal = ref(original())
+})())
 const priceFrom = ref(isNaN(route.query.priceFrom) ? null : route.query.priceFrom)
 const priceTo = ref(isNaN(route.query.priceTo) ? null : route.query.priceTo)
 const sortBy = ref({
-  name: ['书名', '作者', '价格', '热度'],
-  value: ['originalFilename', 'author', 'price', 'hot'],
-  model: '书名',
-  resultValue: route.query.sort ?? 'originalFilename',
+  value: route.query.sort ?? 'originalFilename',
   //是否升序
   asc: (() => {
     return route.query.asc?.toString() !== 'false'
   })()
 })
 
-function sortUpdate() {
-  sortBy.value.resultValue = sortBy.value.value[sortBy.value.name.indexOf(sortBy.value.model)]
+
+const selectItems = computed(() => {
+  return [
+    {title: i18n.global.t('book-name'), value: 'originalFilename'},
+    {title: i18n.global.t('author'), value: 'author'},
+    {title: i18n.global.t('price'), value: 'price'},
+    {title: i18n.global.t('hot'), value: 'hot'}
+  ]
+})
+
+const selectModelValue = computed(() => {
+  return selectItems.value.find(item => item.value === sortBy.value.value)
+})
+
+function sortUpdate(obj) {
+  sortBy.value.value = obj.value
   updateQuery()
 }
 
@@ -253,14 +273,14 @@ function updateQuery() {
   const query = {
     page: page.value,
     q: searchContent.value,
-    sort: sortBy.value.resultValue,
+    sort: sortBy.value.value,
     tags: tags.value.join(','),
     asc: sortBy.value.asc,
     original: isOriginal.value,
     priceFrom: priceFrom.value,
     priceTo: priceTo.value
   }
-  router.push({path: `${route.path}`, query})
+  return router.push({path: `${route.path}`, query})
 }
 
 function onAddTag() {
@@ -268,7 +288,7 @@ function onAddTag() {
     return
   }
   if (addTag.value.includes(',')) {
-    message.error('标签不能包含逗号')
+    message.error(i18n.global.t('tags-cant-contain-comma'))
     return
   }
   tags.value.push(addTag.value)
@@ -296,7 +316,7 @@ const bookListByPage = computed(() => {
 
 function description(val) {
   if (!val) {
-    return '暂无简介'
+    return i18n.global.t('no-description')
   }
   if (val.length > 120) {
     return val.slice(0, 120) + '...'
@@ -308,14 +328,13 @@ onActivated(() => {
   search()
 })
 
+const searching = ref(false)
+
 function search() {
-  if (searchContent.value === '') {
-    bookList.value = []
-    return
-  }
   updateQuery()
 
   const p = page.value
+  searching.value = true
 
   post('/api/book/search/keywords', {keywords: searchContent.value}).then(
     ({data}) => {
@@ -337,13 +356,13 @@ function search() {
       })
       tmp.sort((a, b) => {
         let result
-        if (sortBy.value.resultValue === 'originalFilename') {
+        if (sortBy.value.value === 'originalFilename') {
           result = a.originalFilename.localeCompare(b.originalFilename)
-        } else if (sortBy.value.resultValue === 'author') {
+        } else if (sortBy.value.value === 'author') {
           result = a.author.localeCompare(b.author)
-        } else if (sortBy.value.resultValue === 'price') {
+        } else if (sortBy.value.value === 'price') {
           result = a.price - b.price
-        } else if (sortBy.value.resultValue === 'hot') {
+        } else if (sortBy.value.value === 'hot') {
           result = a.hot - b.hot
         }
         return sortBy.value.asc ? result : -result
@@ -354,6 +373,9 @@ function search() {
       bookList.value = tmp
     }
   )
+    .finally(() => {
+      searching.value = false
+    })
 }
 
 
@@ -361,19 +383,19 @@ const showTopup = ref(false)
 
 function purchase(book) {
   if (!user.isLogin) {
-    message.info('请先登录')
+    message.info(i18n.global.t('login-first'))
     return
   }
   const {price, bookId, hot} = book
   post('/api/book/is-purchased', {bookId, userId: parseInt(user.id)})
     .then(({data}) => {
       if (data) {
-        message.error('您已购买过该书籍')
+        message.error(i18n.global.t('you-have-already-purchased-the-book'))
         return
       }
 
       if (user.coins < price) {
-        message.error('您的书币不足，请充值')
+        message.error(i18n.global.t('your-book-coins-are-not-enough-please-top-up'))
         showTopup.value = true
         return
       }
@@ -383,38 +405,34 @@ function purchase(book) {
           if (data) {
             post('/api/book/set/hot', {bookId, hot: parseInt(hot) + 5})
               .then(search)
-            message.success('购买成功')
+            message.success(i18n.global.t('purchase-success'))
             return
           }
-          message.error('购买失败')
+          message.error(i18n.global.t('purchase-fail'))
         })
     })
 }
 
 function showBookDetail(b) {
   if (!user.isLogin) {
-    message.info('请先登录')
+    message.info(i18n.global.t('login-first'))
     return
   }
-  const book = window.btoa(encodeURIComponent(JSON.stringify(b)))
-  router.push({path: '/books', query: {book}})
+  router.push({path: '/books', query: {book: b.bookId}})
 }
 
+function goURL(url) {
+  window.open(url)
+}
 
 </script>
-
-<style lang="scss" scoped>
-//* {
-//  border: red 1px solid;
-//}
-</style>
 
 <!--@formatter:off-->
 <route lang="json5">
 {
   meta: {
     layout: 'main',
-    //requireLogin: true,
+    requireLogin: true,
     allowGuest: true,
   }
 }

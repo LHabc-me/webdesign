@@ -4,9 +4,8 @@
       <VCol cols="5"
             class="mx-auto">
         <VRadioGroup :inline="true" layout="row center-center" v-model="type">
-          <VRadio v-if="false" label="根据用户名搜索" value="name" color="primary"></VRadio>
-          <VRadio label="根据用户ID搜索" value="id" color="primary"></VRadio>
-          <VRadio label="根据用户邮箱搜索" value="email" color="primary"></VRadio>
+          <VRadio :label="$t('search-by-user-id')" value="id" color="primary"></VRadio>
+          <VRadio :label="$t('search-by-user-email')" value="email" color="primary"></VRadio>
         </VRadioGroup>
         <VTextField color="primary"
                     variant="outlined"
@@ -23,12 +22,12 @@
         <VTable>
           <thead>
           <tr class="text-center">
-            <th class="text-center">用户ID</th>
-            <th class="text-center">用户名</th>
-            <th class="text-center">用户邮箱</th>
-            <th class="text-center">用户余额</th>
-            <th class="text-center">用户热度</th>
-            <th class="text-center">操作</th>
+            <th class="text-center">{{ $t('user-id') }}</th>
+            <th class="text-center">{{ $t('user-name') }}</th>
+            <th class="text-center">{{ $t('user-email') }}</th>
+            <th class="text-center">{{ $t('user-balance') }}</th>
+            <th class="text-center">{{ $t('user-hot') }}</th>
+            <th class="text-center">{{ $t('operation') }}</th>
           </tr>
           </thead>
           <tbody>
@@ -40,7 +39,8 @@
             <td>{{ user.hot }}</td>
             <td>
               <VBtn color="primary"
-                    @click="showEdit(index)">修改
+                    @click="showEdit(index)">
+                {{ $t('modify') }}
               </VBtn>
             </td>
           </tr>
@@ -52,11 +52,11 @@
              width="550">
       <v-card>
         <VCardTitle>
-          <span class="text-h5">修改用户信息</span>
+          <span class="text-h5">{{ $t('modify-user-info') }}</span>
         </VCardTitle>
         <VCardText>
-          <VTextField label="余额" v-model="userInfoEdit.coins" color="primary"></VTextField>
-          <VTextField label="热度" v-model="userInfoEdit.hot" color="primary"></VTextField>
+          <VTextField :label="$t('balance')" v-model="userInfoEdit.coins" color="primary"></VTextField>
+          <VTextField :label="$t('hot')" v-model="userInfoEdit.hot" color="primary"></VTextField>
         </VCardText>
         <VCardActions>
           <VSpacer></VSpacer>
@@ -64,11 +64,11 @@
                 variant="flat"
                 @click="submitEdit"
                 :loading="loading">
-            确定
+            {{ $t('confirm') }}
           </VBtn>
           <VBtn
             @click="edit = false">
-            取消
+            {{ $t('cancel') }}
           </VBtn>
         </VCardActions>
       </v-card>
@@ -79,8 +79,9 @@
 
 <script setup>
 import {ref, watch} from 'vue'
-import {get, post} from "@/net";
-import {useMessage} from "@/store/modules/message";
+import {get, post} from '@/net'
+import {useMessage} from '@/store/modules/message'
+import {i18n} from '@/i18n'
 
 const edit = ref(false)
 const userInfoEdit = ref({
@@ -107,7 +108,8 @@ function submitEdit() {
   const coins = parseInt(userInfoEdit.value.coins)
 
   if (isNaN(id) || isNaN(hot) || isNaN(coins)) {
-    message.error('输入不合法')
+    message.error(i18n.global.t('invalid-input'))
+    loading.value = false
     return
   }
 
@@ -122,10 +124,10 @@ function submitEdit() {
   })
 
   Promise.all([hotWork, coinsWork]).then(() => {
-    message.success('修改成功')
+    message.success(i18n.global.t('modify-success'))
     search()
   }).catch(() => {
-    message.error('修改失败')
+    message.error(i18n.global.t('modify-fail'))
   }).finally(() => {
     loading.value = false
     edit.value = false
@@ -157,16 +159,12 @@ watch(searchContent, search)
 watch(type, search)
 </script>
 
-<style scoped lang="scss">
-//* {
-//  border: red solid 1px;
-//}
-</style>
 <!--@formatter:off-->
 <route lang="json5">
 {
   meta: {
     layout: 'main',
+    requireLogin: true,
   }
 }
 </route>

@@ -1,5 +1,5 @@
 <template>
-  <div class="h-100" layout="column top-center">
+  <div class="h-100" layout="column top-center" v-if="loaded">
     <VCol cols="8">
       <VRow>
         <div style="height: 145px;"
@@ -18,10 +18,10 @@
               <span>{{ bookParam.tag }}</span>
               <VDivider :vertical="true" class="mx-1"></VDivider>
               <span class="book-status">
-                {{ bookParam.original ? '原创' : '非原创' }}
+                {{ bookParam.original ? i18n.global.t('original') : i18n.global.t('not-original') }}
               </span>
             </div>
-            <div class="mt-3">{{ bookParam.price }}书币</div>
+            <div class="mt-3">{{ bookParam.price }}{{ i18n.global.t('book-coins') }}</div>
 
           </div>
         </div>
@@ -32,11 +32,11 @@
             <VBtn color="primary"
                   @click="purchase"
                   class="w-33">
-              购买本书
+              {{ i18n.global.t('purchase-this-book') }}
             </VBtn>
             <VBtn color="primary"
                   @click="beginRead" class="w-33">
-              开始阅读
+              {{ i18n.global.t('begin-reading') }}
             </VBtn>
           </div>
         </VCol>
@@ -45,15 +45,15 @@
         <VCol cols="8">
           <div class="elevation-2 pa-5">
             <VTabs v-model="tab" color="primary">
-              <VTab value="1">简介</VTab>
-              <VTab value="2">评论区</VTab>
+              <VTab value="1">{{ i18n.global.t('description') }}</VTab>
+              <VTab value="2">{{ i18n.global.t('comment-area') }}</VTab>
             </VTabs>
             <VWindow v-model="tab" style="min-height: 344px">
               <VWindowItem value="1">
-                {{ bookParam.description ?? '暂无简介' }}
+                {{ bookParam.description || i18n.global.t('no-description') }}
               </VWindowItem>
               <VWindowItem value="2">
-                <VTextarea label="发表评论"
+                <VTextarea :label="$t('post-comment')"
                            class="mt-2"
                            variant="outlined"
                            color="primary"
@@ -65,7 +65,7 @@
                           style="margin-top: 95px"
                           @click.stop="review"
                           :loading="loading">
-                      发表
+                      {{ i18n.global.t('post') }}
                     </VBtn>
                   </template>
                 </VTextarea>
@@ -90,7 +90,7 @@
             <div class="pa-10 elevation-2"
                  style="min-height: 430px;"
                  layout="column top-center">
-              <h1>作者简介</h1>
+              <h1>{{ i18n.global.t('author-description') }}</h1>
               <VAvatar size="100"
                        class="mouse-pointer">
                 <VImg :src="imgSrc">
@@ -99,9 +99,9 @@
               <div layout="row top-left" class="mt-10">
                 <div class="w-33 ml-5">
                   <div>ID</div>
-                  <div>用户名</div>
-                  <div>热度</div>
-                  <div>作品</div>
+                  <div>{{ i18n.global.t('user-name') }}</div>
+                  <div>{{ i18n.global.t('hot') }}</div>
+                  <div>{{ i18n.global.t('articles') }}</div>
                 </div>
                 <div class="w-66" :style="{color: 'rgba(var(--v-theme-primary), 0.8)'}">
                   <div>{{ author.id }}</div>
@@ -124,13 +124,14 @@
 
 <script setup>
 import {useRouter, useRoute} from 'vue-router'
-import {useMessage} from "@/store/modules/message"
-import {onActivated, ref} from "vue";
-import {get, post} from "@/net";
-import {useUser} from "@/store/modules/user";
+import {useMessage} from '@/store/modules/message'
+import {onActivated, ref} from 'vue'
+import {get, post} from '@/net'
+import {useUser} from '@/store/modules/user'
 import pdf from '@/assets/images/pdf.png'
-import TopUp from "@/component/TopUp.vue";
-import avatar from "@/assets/images/avatar.png";
+import TopUp from '@/component/TopUp.vue'
+import avatar from '@/assets/images/avatar.png'
+import {i18n} from "@/i18n"
 
 const route = useRoute()
 const bookParam = ref({});
@@ -149,8 +150,8 @@ const showTopup = ref(false)
 const imgSrc = ref()
 
 function showBookDetail(b) {
-  const book = window.btoa(encodeURIComponent(JSON.stringify(b)))
-  router.push({path: '/books', query: {book}})
+  loaded.value = false
+  router.push({path: '/books', query: {book: b.bookId}})
     .then(() => router.go(0))
 }
 
@@ -161,7 +162,7 @@ function beginRead() {
         localStorage.setItem('recentBookId', bookParam.value.bookId.toString())
         router.push('/recent')
       } else {
-        message.error('请先购买本书')
+        message.error(i18n.global.t('please-purchase-this-book-first'))
       }
     })
 }
@@ -177,14 +178,14 @@ function review() {
   post('/api/comments/insert',
     {bookId: bookParam.value.bookId, userId: parseInt(user.id), content: reviewContent.value})
     .then(() => {
-      message.success('评论成功，热度+1')
+      message.success(i18n.global.t('commit-success-and-hot-increase-1'))
       reviewContent.value = ''
     })
     .then(() => {
       post('/api/admin/update/hot', {userId: parseInt(author.value.id), hot: parseInt(author.value.hot) + 1})
     })
     .then(() => {
-      post('/api/admin/update/hot', {userId: parseInt(user.id), hot: parseInt(user.hot) + 1})
+      post('/api/admin/update/hot', {userId: parseInt(user.id), hot: parseInt(user.hot.toString()) + 1})
     })
     .then(() => {
       post('/api/book/set/hot', {bookId: bookParam.value.bookId, hot: parseInt(bookParam.value.hot) + 1})
@@ -218,18 +219,27 @@ function getComments() {
     })
 }
 
+const loaded = ref(false)
 onActivated(() => {
   reload()
 })
 
 function reload() {
-  bookParam.value = JSON.parse(decodeURIComponent(window.atob(route.query.book.toString())))
-  get('/api/user/id', {id: parseInt(bookParam.value.uploaderId)})
-    .then(({data}) => author.value = data)
-    .then(() => post('/api/book/search/uploaderId', {uploaderId: parseInt(bookParam.value.uploaderId)})
-      .then(({data}) => author.value.bookList = data))
-    .then(getAvatar)
-    .then(getComments)
+  post('/api/book/search/bookId', {bookId: route.query.book})
+    .then(({data}) => {
+      bookParam.value = data
+    })
+    .then(() => {
+      get('/api/user/id', {id: parseInt(bookParam.value.uploaderId)})
+        .then(({data}) => author.value = data)
+        .then(() => post('/api/book/search/uploaderId', {uploaderId: parseInt(bookParam.value.uploaderId)})
+          .then(({data}) => author.value.bookList = data))
+        .then(getAvatar)
+        .then(getComments)
+        .finally(() => {
+          loaded.value = true
+        })
+    })
 }
 
 function getAvatar() {
@@ -247,12 +257,12 @@ function purchase() {
   post('/api/book/is-purchased', {bookId, userId: parseInt(user.id)})
     .then(({data}) => {
       if (data) {
-        message.error('您已购买过该书籍')
+        message.error(i18n.global.t('you-have-already-purchased-the-book'))
         return
       }
 
       if (user.coins < price) {
-        message.error('您的书币不足，请充值')
+        message.error(i18n.global.t('your-book-coins-are-not-enough-please-top-up'))
         showTopup.value = true
         return
       }
@@ -260,27 +270,22 @@ function purchase() {
       post('/api/book/purchase', {bookId, userId: user.id, coins: user.coins - price})
         .then(({data}) => {
           if (data) {
-            message.success('购买成功')
+            message.success(i18n.global.t('purchase-success'))
             post('/api/book/set/hot', {bookId: bookParam.value.bookId, hot: parseInt(bookParam.value.hot) + 5})
             return
           }
-          message.error('购买失败')
+          message.error(i18n.global.t('purchase-fail'))
         })
     })
 }
 </script>
-
-<style lang="scss" scoped>
-//* {
-//  border: red solid 1px
-//}
-</style>
 
 <!--@formatter:off-->
 <route lang="json5">
 {
   meta: {
     layout: 'main',
+    requireLogin: true,
   }
 }
 </route>

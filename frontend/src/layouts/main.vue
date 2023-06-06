@@ -67,7 +67,8 @@
     </VNavigationDrawer>
     <VMain>
       <router-view class="pa-10"
-                   v-slot="{Component}">
+                   v-slot="{Component}"
+                   :key="routerViewKey">
         <keep-alive>
           <component :is="Component"/>
         </keep-alive>
@@ -77,13 +78,13 @@
 </template>
 
 <script setup>
-import {ref, computed} from "vue"
-import {useTheme} from "@/store/modules/theme"
-import {useI18n} from "@/store/modules/i18n"
-import {i18n} from "@/i18n";
-import {useUser} from "@/store/modules/user";
-import {useMessage} from "@/store/modules/message";
-import {useRouter} from "vue-router";
+import {ref, computed} from 'vue'
+import {useTheme} from '@/store/modules/theme'
+import {useI18n} from '@/store/modules/i18n'
+import {i18n} from '@/i18n'
+import {useUser} from '@/store/modules/user'
+import {useMessage} from '@/store/modules/message'
+import {useRouter} from 'vue-router'
 
 const theme = useTheme()
 const i18nStore = useI18n()
@@ -92,6 +93,13 @@ const userStore = useUser()
 const message = useMessage()
 
 const showMenu = ref(false)
+
+const routerViewKey = computed(() => {
+  if (router.currentRoute.value.path === '/') {
+    return '/'
+  }
+  return router.currentRoute.value.fullPath
+})
 
 const langs = [
   {
@@ -102,10 +110,18 @@ const langs = [
     name: 'English',
     code: 'en'
   },
-  // {
-  //   name: '日本語',
-  //   code: 'ja'
-  // },
+  {
+    name: '日本語',
+    code: 'ja'
+  },
+  {
+    name: 'Deutsch',
+    code: 'de'
+  },
+  {
+    name: 'Русский',
+    code: 'ru'
+  },
 ]
 
 
@@ -151,7 +167,7 @@ const lists = computed(() => {
       }]
     },
     {
-      title: '读者专区', items: [
+      title: i18n.global.t('user-page'), items: [
         {
           text: i18n.global.t('recently-read'),
           icon: 'mdi-clock',
@@ -170,14 +186,14 @@ const lists = computed(() => {
       ]
     },
     {
-      title: '作者专区', items: [
+      title: i18n.global.t('author-page'), items: [
         {
-          text: '管理作品',
+          text: i18n.global.t('book-manage'),
           icon: 'mdi-book-open-blank-variant',
           to: '/author/workspace'
         },
         {
-          text: '上传作品',
+          text: i18n.global.t('upload-book'),
           icon: 'mdi-pencil',
           to: '/author/upload'
         },
@@ -187,25 +203,20 @@ const lists = computed(() => {
   if (userStore.type === 'admin') {
     res.push(
       {
-        title: '管理员专区',
+        title: i18n.global.t('admin-page'),
         items: [
           {
-            text: '收支情况',
+            text: i18n.global.t('income-and-expenditure'),
             icon: 'mdi-currency-usd',
             to: '/admin/finance'
           },
-          // {
-          //   text: '活动管理',
-          //   icon: 'mdi-party-popper',
-          //   to: '/admin/activity'
-          // },
           {
-            text: '图书管理',
+            text: i18n.global.t('book-manage'),
             icon: 'mdi-fire',
             to: '/admin/books'
           },
           {
-            text: '用户管理',
+            text: i18n.global.t('user-manage'),
             icon: 'mdi-account-multiple',
             to: '/admin/user'
           }

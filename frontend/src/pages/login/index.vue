@@ -139,6 +139,7 @@ function login() {
       localStorage.setItem('token', data.token)
       message.success(i18n.global.t('login-success'))
       updateUserInfo()
+      user.isLogin = true
       router.push('/')
     } else {
       message.error(i18n.global.t('login-failed'))

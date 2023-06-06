@@ -12,6 +12,7 @@
 import {useTheme} from "@/store/modules/theme"
 
 const theme = useTheme()
+
 </script>
 
 <style lang="less">

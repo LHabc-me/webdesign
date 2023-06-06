@@ -4,7 +4,7 @@
       <VBtn :color="showBadge ? 'error' : 'primary'"
             @click="showBadge = !showBadge"
             :block="true">
-        {{ showBadge ? '确定删除' : '管理图书' }}
+        {{ showBadge ? i18n.global.t('confirm-delete') : i18n.global.t('manage-books') }}
       </VBtn>
     </div>
     <VRow v-for="(books, i) in booksList"
@@ -26,8 +26,7 @@
                   class="h-100"
                   :cover="true">
             </VImg>
-            <!--            <div>{{ book.originalFilename }}</div>-->
-            <div class="text-center font-weight-bold">书名</div>
+            <div class="text-center font-weight-bold">{{ book.originalFilename }}</div>
           </div>
         </VBadge>
         <div v-else style="width: 110px;height: 145px;">
@@ -41,15 +40,15 @@ import {ref, computed, onActivated} from 'vue'
 import {post} from "@/net"
 import {useUser} from "@/store/modules/user"
 import pdf from '@/assets/images/pdf.png'
-import {useMessage} from "@/store/modules/message";
-import {useRouter} from "vue-router";
+import {useRouter} from "vue-router"
+import {i18n} from "@/i18n";
 
 const showBadge = ref(false)
 const bookNumEachRow = 5
 const user = useUser()
 const router = useRouter()
 
-const books = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, {fake: true}])
+const books = ref([])
 
 function deleteBook(i, j) {
   books.value.splice(i * bookNumEachRow + j, 1)
@@ -57,6 +56,9 @@ function deleteBook(i, j) {
 
 //转为二维数组，每个数组长度为6
 const booksList = computed(() => {
+  if (!books.value || books.value.length === 0) {
+    return []
+  }
   const list = []
   for (let i = 0; i < books.value.length; i += bookNumEachRow) {
     list.push(books.value.slice(i, i + bookNumEachRow))
@@ -69,33 +71,23 @@ const booksList = computed(() => {
 
 onActivated(() => {
   post('/api/book/purchase/search', {userId: parseInt(user.id)})
-    .then(({bookList}) => {
-      books.value = bookList
+    .then(({data}) => {
+      books.value = data
     })
 })
 
 function showBookDetail(b) {
-  const message = useMessage()
-  const user = useUser()
-  if (!user.isLogin) {
-    message.info('请先登录')
-    return
-  }
-  const book = window.btoa(encodeURIComponent(JSON.stringify(b)))
-  router.push({path: '/books', query: {book}})
+  router.push({path: '/books', query: {book: b.bookId}})
 }
 
 </script>
-<style scoped lang="scss">
-//* {
-//  border: red 1px solid;
-//}
-</style>
+
 <!--@formatter:off-->
 <route lang="json5">
 {
   meta: {
     layout: 'main',
+    requireLogin: true,
   }
 }
 </route>

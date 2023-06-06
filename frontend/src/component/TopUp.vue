@@ -32,6 +32,7 @@ import {updateUserInfo} from "@/utils/updateUserInfo";
 import {useUser} from "@/store/modules/user";
 import {post} from "@/net";
 import {useMessage} from "@/store/modules/message";
+import {i18n} from "@/i18n"
 
 const user = useUser()
 const message = useMessage()
@@ -47,12 +48,16 @@ function topup() {
   loading.value = true
   post('/api/user/recharge', {coins: parseInt(topUpInfoEdit.value.coins) + parseInt(user.coins)})
     .then(() => {
-      message.success('充值成功')
+      message.success(i18n.global.t('topup-success'))
       emit('update:modelValue', false)
       updateUserInfo()
-    }).finally(() => {
-    loading.value = false
-  })
+    })
+    .catch(() => {
+      message.error(i18n.global.t('topup-fail'))
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
 </script>
 

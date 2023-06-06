@@ -1,31 +1,35 @@
 <template>
   <div class="h-100" layout="column center-center">
     <div style="width: 600px;">
-      <VFileInput label="点击上传图书" v-model="form.files" color="primary"></VFileInput>
-      <VRadioGroup label="是否原创" v-model="form.isOriginal" color="primary">
-        <VRadio label="是" :value="true"></VRadio>
-        <VRadio label="否" :value="false"></VRadio>
+      <VFileInput :label="$t('click-to-upload-book')"
+                  accept="application/pdf"
+                  v-model="form.files"
+                  color="primary"></VFileInput>
+      <VRadioGroup :label="$t('is-original')" v-model="form.isOriginal" color="primary">
+        <VRadio :label="$t('yes')" :value="true"></VRadio>
+        <VRadio :label="$t('no')" :value="false"></VRadio>
       </VRadioGroup>
-      <VTextField label="原作者" v-model="form.author" :disabled="form.isOriginal" color="primary"></VTextField>
-      <VTextField label="分类" v-model="form.tag" color="primary"></VTextField>
-      <VTextField label="定价" v-model="form.price" color="primary"></VTextField>
-      <VTextarea label="简介" v-model="form.brief" color="primary"></VTextarea>
+      <VTextField :label="$t('original-author')" v-model="form.author" :disabled="form.isOriginal" color="primary"></VTextField>
+      <VTextField :label="$t('type')" v-model="form.tag" color="primary"></VTextField>
+      <VTextField :label="$t('price-fixing')" v-model="form.price" color="primary"></VTextField>
+      <VTextarea :label="$t('description')" v-model="form.brief" color="primary"></VTextarea>
       <VBtn type="submit"
             color="primary"
             :block="true"
             @click.prevent="upload"
             :loading="loading">
-        上传
+        {{ i18n.global.t('upload') }}
       </VBtn>
     </div>
   </div>
 </template>
 
 <script setup>
-import {ref, watch, watchEffect} from 'vue'
+import {ref, watchEffect} from 'vue'
 import {post} from '@/net'
 import {useUser} from '@/store/modules/user'
 import {useMessage} from '@/store/modules/message'
+import {i18n} from '@/i18n'
 
 const user = useUser()
 const message = useMessage()
@@ -48,6 +52,16 @@ const loading = ref(false)
 
 function upload() {
   loading.value = true
+
+  if (!form.value.files ||
+    !form.value.author ||
+    !form.value.tag ||
+    isNaN(parseInt(form.value.price))) {
+    message.error(i18n.global.t('invalid-input'))
+    loading.value = false
+    return
+  }
+
   const formUpload = new FormData()
   formUpload.append('file', form.value.files[0])
   formUpload.append('isOriginal', form.value.isOriginal)
@@ -58,7 +72,7 @@ function upload() {
   formUpload.append('uploaderId', parseInt(user.id))
   post('/api/upload/book', formUpload, {}, {'Content-Type': 'multipart/form-data'})
     .then(() => {
-      message.success('上传成功')
+      message.success(i18n.global.t('upload-success-hot-increase-10'))
       form.value = {
         files: null,
         isOriginal: true,
@@ -68,8 +82,11 @@ function upload() {
         brief: '',
       }
     })
+    .then(() => {
+      post('/api/admin/update/hot', {userId: parseInt(user.id), hot: parseInt(user.hot.toString()) + 1})
+    })
     .catch(() => {
-      message.error('上传失败')
+      message.error(i18n.global.t('upload-fail'))
     })
     .finally(() => {
       loading.value = false
@@ -77,18 +94,12 @@ function upload() {
 }
 </script>
 
-
-<style scoped lang="scss">
-//* {
-//  border: red solid 1px;
-//
-//}
-</style>
 <!--@formatter:off-->
 <route lang="json5">
 {
   meta: {
     layout: 'main',
+    requireLogin: true,
   }
 }
 </route>
