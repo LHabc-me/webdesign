@@ -170,8 +170,7 @@
         <div v-else-if="searchContent && bookList.length === 0"
              layout="row center-center"
              class="h-50">
-          <div style="color: rgb(var(--v-theme-primary))"
-               class="text-h4 font-weight-bold">
+          <div class="text-h4 font-weight-bold primary-color">
             {{ i18n.global.t('no-matching-books-found') }}(◞‸◟)
           </div>
         </div>

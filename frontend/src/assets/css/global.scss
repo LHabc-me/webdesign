@@ -21,13 +21,17 @@ a {
   color: rgba(var(--v-theme-primary), 0.8);
 
   &:hover {
-    color: rgb(var(--v-theme-primary));
+    color: rgba(var(--v-theme-primary));
   }
+}
+
+.primary-color {
+  color: rgba(var(--v-theme-primary));
 }
 
 .primary-color-hover {
   &:hover {
-    color: rgb(var(--v-theme-primary));
+    color: rgba(var(--v-theme-primary));
   }
 }
 
@@ -45,8 +49,4 @@ a {
 
 .dark {
   filter: invert(93%);
-}
-
-.profile {
-
 }

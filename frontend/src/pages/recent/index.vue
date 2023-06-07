@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <VuePdf v-for="page in numOfPages"
+  <div class="h-100">
+    <VuePdf v-if="!noRecent"
+            v-for="page in numOfPages"
             :key="page"
             :class="{'dark': theme.name === 'dark'}"
             :src="pdfSrc"
@@ -8,6 +9,11 @@
             :enable-text-selection="true"
             :enable-annotations="false"
             :ref="pdfPages"/>
+    <div v-else class="h-100" layout="row center-center">
+      <div class="text-h4 font-weight-bold primary-color">
+        {{ i18n.global.t('no-recent') }}(´･_･`)
+      </div>
+    </div>
   </div>
 </template>
 
@@ -17,13 +23,14 @@ import {VuePdf} from 'vue3-pdfjs/esm'
 import {useTheme} from '@/store/modules/theme'
 import {post} from '@/net'
 import {createLoadingTask} from 'vue3-pdfjs'
+import {i18n} from "@/i18n";
 
 const pdfSrc = ref()
 const numOfPages = ref(0)
 const theme = useTheme()
 const pdfPages = ref([])
 
-
+const noRecent = ref(false)
 //当pdf加载完成后
 watch(pdfPages, () => {
   console.log('pdfPages changed')
@@ -43,6 +50,9 @@ onActivated(() => {
           }
         }, 0)
       })
+    })
+    .catch(() => {
+      noRecent.value = true
     })
 })
 </script>
