@@ -1,6 +1,6 @@
 <template>
   <div class="h-100">
-    <VuePdf v-if="!noRecent"
+    <VuePdf v-if="!noRecent && !loading"
             v-for="page in numOfPages"
             :key="page"
             :class="{'dark': theme.name === 'dark'}"
@@ -9,6 +9,13 @@
             :enable-text-selection="true"
             :enable-annotations="false"
             :ref="pdfPages"/>
+    <div v-else-if="loading" class="h-100" layout="row center-center">
+      <VProgressCircular indeterminate
+                         color="primary"
+                         :size="70"
+                         :width="7">
+      </VProgressCircular>
+    </div>
     <div v-else class="h-100" layout="row center-center">
       <div class="text-h4 font-weight-bold primary-color">
         {{ i18n.global.t('no-recent') }}(´･_･`)
@@ -31,11 +38,14 @@ const theme = useTheme()
 const pdfPages = ref([])
 
 const noRecent = ref(false)
+const loading = ref(true)
 //当pdf加载完成后
 watch(pdfPages, () => {
   console.log('pdfPages changed')
 })
 onActivated(() => {
+  noRecent.value = false
+  loading.value = true
   post('/api/book/send', {bookId: localStorage.getItem('recentBookId')}, {}, {responseType: 'blob'})
     .then(({data}) => {
       pdfSrc.value = {data: window.atob(data)}
@@ -53,6 +63,9 @@ onActivated(() => {
     })
     .catch(() => {
       noRecent.value = true
+    })
+    .finally(() => {
+      loading.value = false
     })
 })
 </script>
