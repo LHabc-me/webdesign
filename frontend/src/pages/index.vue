@@ -337,7 +337,7 @@ function search() {
   const p = page.value
   searching.value = true
 
-  post('/api/book/search/keywords', {keywords: searchContent.value}).then(
+  post('/api/book/search/keywords', {keywords: searchContent.value ?? ''}).then(
     ({data}) => {
       // 根据高级搜索过滤
       const tmp = []
