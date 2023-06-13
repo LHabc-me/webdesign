@@ -8,12 +8,15 @@
   </div>
 </template>
 
+<script setup>
+import {i18n} from '@/i18n'
+</script>
+
 <!--@formatter:off-->
 <route lang="json5">
 {
   meta: {
-    layout: 'main',
-    requireLogin: true,
+    layout: 'blank',
   }
 }
 </route>

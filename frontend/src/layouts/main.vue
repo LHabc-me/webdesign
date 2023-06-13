@@ -74,6 +74,7 @@
         </keep-alive>
       </router-view>
     </VMain>
+    <ICPRecordNumber></ICPRecordNumber>
   </VApp>
 </template>
 
@@ -85,6 +86,7 @@ import {i18n} from '@/i18n'
 import {useUser} from '@/store/modules/user'
 import {useMessage} from '@/store/modules/message'
 import {useRouter} from 'vue-router'
+import ICPRecordNumber from '@/component/ICPRecordNumber.vue'
 
 const theme = useTheme()
 const i18nStore = useI18n()
